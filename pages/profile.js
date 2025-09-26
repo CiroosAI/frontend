@@ -351,7 +351,7 @@ export default function Profile() {
             </button>
           )}
           <a
-            href="https://chat.whatsapp.com/Kkz8cX1m0v6d8g5F4b5F7H"
+            href="https://chat.whatsapp.com/JBzwKInRdHA6ezoKxUwR0t?mode=ems_copy_t"
             target="_blank"
             rel="noopener noreferrer"
             className="bg-gradient-to-br from-purple-700/40 to-purple-600/30 hover:from-purple-600/50 hover:to-purple-500/40 text-white font-semibold p-4 rounded-2xl transition-all duration-300 border border-purple-400/20 flex items-center gap-3 text-sm hover:scale-105 shadow-lg"
