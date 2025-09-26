@@ -25,6 +25,13 @@ export default function Dashboard() {
   const [hidePopupChecked, setHidePopupChecked] = useState(false);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const token = sessionStorage.getItem('token');
+    const accessExpire = sessionStorage.getItem('access_expire');
+    if (!token || !accessExpire) {
+      router.push('/login');
+      return;
+    }
     // Get user data from localStorage
     const storedUser = localStorage.getItem('user');
     const storedApplication = localStorage.getItem('application');

@@ -37,6 +37,13 @@ export default function SpinWheel() {
 
   // Fetch prizes and user data
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const token = sessionStorage.getItem('token');
+    const accessExpire = sessionStorage.getItem('access_expire');
+    if (!token || !accessExpire) {
+      router.push('/login');
+      return;
+    }
     const fetchSpinData = async () => {
       try {
         setLoading(true);

@@ -19,6 +19,13 @@ export default function Komisi() {
   });
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const token = sessionStorage.getItem('token');
+    const accessExpire = sessionStorage.getItem('access_expire');
+    if (!token || !accessExpire) {
+      router.push('/login');
+      return;
+    }
     // Get referral code from localStorage.user.reff_code
     if (typeof window !== 'undefined') {
       try {

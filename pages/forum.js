@@ -29,6 +29,13 @@ export default function Testimoni() {
     const [totalTestimonials, setTotalTestimonials] = useState(0);
 
     useEffect(() => {
+        if (typeof window === 'undefined') return;
+        const token = sessionStorage.getItem('token');
+        const accessExpire = sessionStorage.getItem('access_expire');
+        if (!token || !accessExpire) {
+          router.push('/login');
+          return;
+        }
         const fetchTestimonials = async () => {
             setLoading(true);
             setError('');

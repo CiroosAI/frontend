@@ -20,6 +20,13 @@ export default function Bonus() {
   const [applicationData, setApplicationData] = useState(null);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const token = sessionStorage.getItem('token');
+    const accessExpire = sessionStorage.getItem('access_expire');
+    if (!token || !accessExpire) {
+      router.push('/login');
+      return;
+    }
     setIsClient(true);
     try {
       const userStr = localStorage.getItem('user');
@@ -136,18 +143,18 @@ export default function Bonus() {
           <div className="text-sm text-purple-200 space-y-3">
             <div className="flex items-start gap-3">
               <Icon icon="mdi:circle-outline" className="text-purple-300 mt-1 flex-shrink-0" />
-              <span>Level 1: Dapatkan 5% dari investasi anggota langsung.</span>
+              <span>Level 1: Dapatkan 10% dari investasi anggota langsung.</span>
             </div>
             <div className="flex items-start gap-3">
               <Icon icon="mdi:circle-outline" className="text-purple-300 mt-1 flex-shrink-0" />
-              <span>Level 2: Dapatkan 2% dari investasi anggota Level 2.</span>
+              <span>Level 2: Dapatkan 5% dari investasi anggota Level 2.</span>
             </div>
             <div className="flex items-start gap-3">
               <Icon icon="mdi:circle-outline" className="text-purple-300 mt-1 flex-shrink-0" />
-              <span>Level 3: Dapatkan 1% dari investasi anggota Level 3.</span>
+              <span>Level 3: Dapatkan 2% dari investasi anggota Level 3.</span>
             </div>
             <div className="mt-4 text-center italic">
-              Contoh: Undang 100 pengguna dan total investasi Rp 100,000,000 dapatkan Rp 5,000,000!
+              Contoh: Undang 100 pengguna dan total investasi Rp 100,000,000 dapatkan Rp 10,000,000!
             </div>
           </div>
         </div>

@@ -18,6 +18,13 @@ export default function Payment() {
   const [applicationData, setApplicationData] = useState(null);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const token = sessionStorage.getItem('token');
+    const accessExpire = sessionStorage.getItem('access_expire');
+    if (!token || !accessExpire) {
+      router.push('/login');
+      return;
+    }
     const fetchPayment = async () => {
       if (router.query.order_id) {
         setLoading(true);

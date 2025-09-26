@@ -105,6 +105,13 @@ export default function GantiSandi() {
   };
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const token = sessionStorage.getItem('token');
+    const accessExpire = sessionStorage.getItem('access_expire');
+    if (!token || !accessExpire) {
+      router.push('/login');
+      return;
+    }
   const storedApplication = localStorage.getItem('application');
   if (storedApplication) {
     try {

@@ -22,6 +22,13 @@ export default function UploadWithdrawal() {
     const [applicationData, setApplicationData] = useState(null);
 
     useEffect(() => {
+        if (typeof window === 'undefined') return;
+        const token = sessionStorage.getItem('token');
+        const accessExpire = sessionStorage.getItem('access_expire');
+        if (!token || !accessExpire) {
+        router.push('/login');
+        return;
+        }
         // Check forum status on mount
         const checkStatus = async () => {
             setStatusLoading(true);
