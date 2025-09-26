@@ -1,19 +1,19 @@
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
-const rawEndpoint = process.env.NEXT_PUBLIC_S3_ENDPOINT || 'i8h4.sg.idrivee2-24.com';
-const S3_ENDPOINT = rawEndpoint.replace(/\/+$/, ''); // trim trailing slashes
-const S3_BUCKET = process.env.NEXT_PUBLIC_S3_BUCKET || 'sf-forums';
-const S3_ACCESS_KEY = process.env.NEXT_PUBLIC_S3_ACCESS_KEY_ID || 'xiiZL72Ie1vnxyb63dcH';
-const S3_SECRET_KEY = process.env.NEXT_PUBLIC_S3_SECRET_ACCESS_KEY || 'EUMhvuNqSOvgXQlMNuQrjQ3CktyrKeppu4of3DEQ';
+const S3_ENDPOINT = process.env.NEXT_PUBLIC_S3_ENDPOINT;
+const S3_REGION = process.env.NEXT_PUBLIC_S3_REGION;
+const S3_BUCKET = process.env.NEXT_PUBLIC_S3_BUCKET;
+const S3_ACCESS_KEY = process.env.NEXT_PUBLIC_S3_ACCESS_KEY_ID;
+const S3_SECRET_KEY = process.env.NEXT_PUBLIC_S3_SECRET_ACCESS_KEY;
 
-if (!S3_ENDPOINT || !S3_BUCKET || !S3_ACCESS_KEY || !S3_SECRET_KEY) {
+if (!S3_ENDPOINT || !S3_REGION || !S3_BUCKET || !S3_ACCESS_KEY || !S3_SECRET_KEY) {
   console.warn('S3 image config missing. Check NEXT_PUBLIC_S3_* env vars.');
 }
 
 const s3Client = new S3Client({
-  region: 'sg',
-  endpoint: S3_ENDPOINT ? `https://${S3_ENDPOINT.replace(/^https?:\/\//, '')}` : undefined,
+  region: S3_REGION,
+  endpoint: S3_ENDPOINT,
   credentials: S3_ACCESS_KEY && S3_SECRET_KEY ? {
     accessKeyId: S3_ACCESS_KEY,
     secretAccessKey: S3_SECRET_KEY,

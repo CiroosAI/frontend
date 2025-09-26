@@ -151,7 +151,7 @@ export default function Bonus() {
             </div>
             <div className="flex items-start gap-3">
               <Icon icon="mdi:circle-outline" className="text-purple-300 mt-1 flex-shrink-0" />
-              <span>Level 3: Dapatkan 2% dari investasi anggota Level 3.</span>
+              <span>Level 3: Dapatkan 1% dari investasi anggota Level 3.</span>
             </div>
             <div className="mt-4 text-center italic">
               Contoh: Undang 100 pengguna dan total investasi Rp 100,000,000 dapatkan Rp 10,000,000!

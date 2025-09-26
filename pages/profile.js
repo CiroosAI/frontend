@@ -356,7 +356,7 @@ export default function Profile() {
             rel="noopener noreferrer"
             className="bg-gradient-to-br from-purple-700/40 to-purple-600/30 hover:from-purple-600/50 hover:to-purple-500/40 text-white font-semibold p-4 rounded-2xl transition-all duration-300 border border-purple-400/20 flex items-center gap-3 text-sm hover:scale-105 shadow-lg"
           >
-            <div className="w-10 h-10 bg-cyan-600/30 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-green-600/30 rounded-xl flex items-center justify-center">
               <Icon icon="mdi:whatsapp" className="w-5 h-5 text-green-300" />
             </div>
             <div className="flex-1 text-left">

@@ -1,4 +1,4 @@
-const BASE_URL = 'https://api.sqcapitall.space/api/admin';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL + '/admin';
 
 const setAdminToken = (token) => {
   if (typeof window === 'undefined') return;

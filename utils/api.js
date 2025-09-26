@@ -1,7 +1,7 @@
 // utils/api.js
 import { handleApiResponse } from './apiHandler';
 
-const BASE_URL = process.env.API_URL || 'https://api.sqcapitall.space/api';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // Cookie helpers (simple, not HttpOnly — server should set HttpOnly cookie if possible)
 function setCookie(name, value, days = 30) {
