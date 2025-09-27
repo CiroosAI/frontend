@@ -432,26 +432,26 @@ export default function AdminDashboard() {
               icon="mdi:account-plus"
               label="Kelola Pengguna"
               description="Tambah, edit, atau hapus pengguna"
-              href="/admin/users"
+              href="/panel-admin-rj/users"
             />
             <QuickActionButton
               icon="mdi:cash-check"
               label="Kelola Penarikan"
               description="Proses permintaan penarikan"
-              href="/admin/withdrawals"
+              href="/panel-admin-rj/withdrawals"
               badge={adminApps.pending_withdrawals || null}
             />
             <QuickActionButton
               icon="mdi:chart-box"
               label="Kelola Investasi"
               description="Monitor dan kelola investasi"
-              href="/admin/investments"
+              href="/panel-admin-rj/investments"
             />
             <QuickActionButton
               icon="mdi:forum"
               label="Kelola Forum"
               description="Moderasi diskusi forum"
-              href="/admin/forums"
+              href="/panel-admin-rj/forums"
               badge={adminApps.pending_forums || null}
             />
           </div>
@@ -470,7 +470,7 @@ export default function AdminDashboard() {
               <p className="text-gray-400 text-sm">Transaksi dan aktivitas pengguna</p>
             </div>
           </div>
-          <button onClick={() => router.push('/admin/transactions')} className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-sm transition-colors">
+          <button onClick={() => router.push('/panel-admin-rj/transactions')} className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-sm transition-colors">
             Lihat Semua
           </button>
         </div>

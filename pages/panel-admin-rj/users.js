@@ -316,7 +316,7 @@ export default function UserManagement() {
                   <td className="py-4 px-6">
                     <div className="flex items-center justify-center gap-2">
                       <button
-                        onClick={() => window.location.href = `/admin/users/detail/${user.id}`}
+                        onClick={() => window.location.href = `/panel-admin-rj/users/detail/${user.id}`}
                         className="p-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 rounded-xl transition-all duration-300 hover:scale-110"
                         title="Lihat Detail"
                       >

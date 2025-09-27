@@ -35,7 +35,7 @@ export default function AdminLogin() {
       if (res && res.success) {
         // Show success animation before redirect
         setTimeout(() => {
-          router.push('/admin/dashboard');
+          router.push('/panel-admin-rj/dashboard');
         }, 500);
       } else {
         setError(res?.message || 'Kredensial tidak valid');

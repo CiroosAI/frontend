@@ -13,10 +13,10 @@ export default function AdminIndex() {
     
     if (adminToken) {
       // Redirect to dashboard if authenticated
-      router.push('/admin/dashboard');
+      router.push('/panel-admin-rj/dashboard');
     } else {
       // Redirect to login if not authenticated
-      router.push('/admin/login');
+      router.push('/panel-admin-rj/login');
     }
   }, [router]);
 

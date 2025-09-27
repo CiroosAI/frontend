@@ -67,63 +67,63 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
     try { localStorage.removeItem('admin_servers'); } catch {}
     try { localStorage.removeItem('admin_applications'); } catch {}
     try { localStorage.removeItem('admin_notifications'); } catch {}
-    router.push('/admin/login');
+    router.push('/panel-admin-rj/login');
   };
 
   const menuItems = [
     { 
       icon: "mdi:view-dashboard", 
       label: "Dashboard", 
-      path: "/admin/dashboard",
+      path: "/panel-admin-rj/dashboard",
       badge: null,
       color: "from-purple-600 to-pink-600"
     },
     { 
       icon: "mdi:account-group", 
       label: "Kelola Pengguna", 
-      path: "/admin/users",
+      path: "/panel-admin-rj/users",
       badge: null,
       color: "from-blue-600 to-cyan-600"
     },
     { 
       icon: "mdi:chart-box", 
       label: "Kelola Investasi", 
-      path: "/admin/investments",
+      path: "/panel-admin-rj/investments",
       badge: null,
       color: "from-green-600 to-emerald-600"
     },
     { 
       icon: "mdi:cash-check", 
       label: "Kelola Penarikan", 
-      path: "/admin/withdrawals",
+      path: "/panel-admin-rj/withdrawals",
       badge: 3,
       color: "from-yellow-600 to-orange-600"
     },
     { 
       icon: "mdi:swap-horizontal", 
       label: "Kelola Transaksi", 
-      path: "/admin/transactions",
+      path: "/panel-admin-rj/transactions",
       badge: null,
       color: "from-indigo-600 to-purple-600"
     },
     { 
       icon: "mdi:forum", 
       label: "Kelola Forum", 
-      path: "/admin/forums",
+      path: "/panel-admin-rj/forums",
       badge: null,
       color: "from-pink-600 to-rose-600"
     },
     { 
       icon: "mdi:package-variant", 
       label: "Kelola Produk", 
-      path: "/admin/products",
+      path: "/panel-admin-rj/products",
       badge: null,
       color: "from-teal-600 to-green-600"
     },
     { 
       icon: "mdi:bank", 
       label: "Kelola Bank", 
-      path: "/admin/banks",
+      path: "/panel-admin-rj/banks",
       badge: null,
       color: "from-slate-600 to-gray-600"
     },
@@ -131,21 +131,21 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
     { 
       icon: "mdi:cards-spade", 
       label: "Kelola Spin", 
-      path: "/admin/spins",
+      path: "/panel-admin-rj/spins",
       badge: null,
       color: "from-violet-600 to-purple-600"
     },
     { 
       icon: "mdi:format-list-checks", 
       label: "Kelola Tugas", 
-      path: "/admin/tasks",
+      path: "/panel-admin-rj/tasks",
       badge: null,
       color: "from-emerald-600 to-teal-600"
     },
     { 
       icon: "mdi:cog", 
       label: "Pengaturan Website", 
-      path: "/admin/settings",
+      path: "/panel-admin-rj/settings",
       badge: null,
       color: "from-gray-600 to-slate-600"
     },
@@ -153,10 +153,10 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
 
   // Prepare menu items with dynamic badges for withdrawals and forums
   const dynamicMenuItems = menuItems.map(mi => {
-    if (mi.path === '/admin/withdrawals') {
+    if (mi.path === '/panel-admin-rj/withdrawals') {
       return { ...mi, badge: adminApps.pending_withdrawals && adminApps.pending_withdrawals > 0 ? adminApps.pending_withdrawals : null };
     }
-    if (mi.path === '/admin/forums') {
+    if (mi.path === '/panel-admin-rj/forums') {
       return { ...mi, badge: adminApps.pending_forums && adminApps.pending_forums > 0 ? adminApps.pending_forums : null };
     }
     return mi;
