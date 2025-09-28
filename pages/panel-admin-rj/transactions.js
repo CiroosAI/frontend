@@ -421,28 +421,17 @@ export default function TransactionsManagement() {
               </button>
               
               <div className="flex items-center gap-1">
-                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                  const page = filters.page <= 3 ? i + 1 : filters.page - 2 + i;
-                  if (page > totalPages) return null;
-                  return (
-                    <button
-                      key={page}
-                      onClick={() => handleFilterChange('page', page)}
-                      className={`w-10 h-10 rounded-xl transition-all duration-300 ${
-                        filters.page === page
-                          ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
-                          : 'bg-white/10 hover:bg-white/20 text-gray-300'
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  );
-                })}
+                <button
+                  className={`w-10 h-10 rounded-xl transition-all duration-300 bg-gradient-to-r from-purple-600 to-pink-600 text-white`}
+                  disabled
+                >
+                  {filters.page}
+                </button>
               </div>
               
               <button
-                onClick={() => handleFilterChange('page', Math.min(totalPages, filters.page + 1))}
-                disabled={filters.page === totalPages || totalPages === 0}
+                onClick={() => handleFilterChange('page', filters.page + 1)}
+                disabled={transactions.length < filters.limit}
                 className="px-4 py-2 bg-white/10 hover:bg-white/20 disabled:bg-white/5 disabled:text-gray-600 text-white rounded-xl transition-all duration-300 disabled:cursor-not-allowed"
               >
                 <Icon icon="mdi:chevron-right" className="w-4 h-4" />

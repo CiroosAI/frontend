@@ -26,24 +26,19 @@ export default function AdminProfile() {
   });
 
   useEffect(() => {
-    if (admin) {
-      setProfileData({
-        username: admin.username || '',
-        name: admin.name || '',
-        email: admin.email || ''
-      });
-    }
     loadProfile();
-  }, [admin]);
+    // Only run once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const loadProfile = async () => {
     try {
       const res = await adminRequest('/profile');
       if (res && res.success && res.data) {
         setProfileData({
-          username: res.data.username || '',
-          name: res.data.name || '',
-          email: res.data.email || ''
+          username: res.data.username || 'vla',
+          name: res.data.name || 'Vla Devs',
+          email: res.data.email || 'admin@vladevs.com'
         });
         // Update global admin state
         setAdmin(res.data);

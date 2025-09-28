@@ -18,7 +18,7 @@ export function UserProvider({ children }) {
         if (fetchUserInfo.isFetching) return;
         fetchUserInfo.isFetching = true;
         
-        const isAuthPage = window.location.pathname === '/login' || window.location.pathname === '/register' || window.location.pathname === '/' || window.location.pathname === '/admin';
+        const isAuthPage = window.location.pathname === '/login' || window.location.pathname === '/register' || window.location.pathname === '/' || window.location.pathname === '/panel-admin-rj';
         const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') : null;
         const accessExpire = typeof window !== 'undefined' ? sessionStorage.getItem('access_expire') : null;
         const refreshToken = typeof document !== 'undefined' ? (document.cookie.split('; ').find(c => c.startsWith('refresh_token=')) || '').split('=')[1] : null;

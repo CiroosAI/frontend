@@ -681,28 +681,17 @@ export default function TasksManagement() {
                       </button>
                       
                       <div className="flex items-center gap-1">
-                        {Array.from({ length: Math.min(5, totalUserTasksPages) }, (_, i) => {
-                          const page = userTasksFilters.page <= 3 ? i + 1 : userTasksFilters.page - 2 + i;
-                          if (page > totalUserTasksPages) return null;
-                          return (
-                            <button
-                              key={page}
-                              onClick={() => handleUserTasksFilterChange('page', page)}
-                              className={`w-10 h-10 rounded-xl transition-all duration-300 ${
-                                userTasksFilters.page === page
-                                  ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
-                                  : 'bg-white/10 hover:bg-white/20 text-gray-300'
-                              }`}
-                            >
-                              {page}
-                            </button>
-                          );
-                        })}
+                        <button
+                          className={`w-10 h-10 rounded-xl transition-all duration-300 bg-gradient-to-r from-purple-600 to-pink-600 text-white`}
+                          disabled
+                        >
+                          {userTasksFilters.page}
+                        </button>
                       </div>
                       
                       <button
-                        onClick={() => handleUserTasksFilterChange('page', Math.min(totalUserTasksPages, userTasksFilters.page + 1))}
-                        disabled={userTasksFilters.page === totalUserTasksPages || totalUserTasksPages === 0}
+                        onClick={() => handleUserTasksFilterChange('page', userTasksFilters.page + 1)}
+                        disabled={filteredUserTasks.length < userTasksFilters.limit}
                         className="px-4 py-2 bg-white/10 hover:bg-white/20 disabled:bg-white/5 disabled:text-gray-600 text-white rounded-xl transition-all duration-300 disabled:cursor-not-allowed"
                       >
                         <Icon icon="mdi:chevron-right" className="w-4 h-4" />

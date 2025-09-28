@@ -553,28 +553,17 @@ export default function BankManagement() {
                       </button>
                       
                       <div className="flex items-center gap-1">
-                        {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                          const page = accountsFilters.page <= 3 ? i + 1 : accountsFilters.page - 2 + i;
-                          if (page > totalPages) return null;
-                          return (
-                            <button
-                              key={page}
-                              onClick={() => handleAccountsFilterChange('page', page)}
-                              className={`w-10 h-10 rounded-xl transition-all duration-300 ${
-                                accountsFilters.page === page
-                                  ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
-                                  : 'bg-white/10 hover:bg-white/20 text-gray-300'
-                              }`}
-                            >
-                              {page}
-                            </button>
-                          );
-                        })}
+                        <button
+                          className={`w-10 h-10 rounded-xl transition-all duration-300 bg-gradient-to-r from-purple-600 to-pink-600 text-white`}
+                          disabled
+                        >
+                          {accountsFilters.page}
+                        </button>
                       </div>
                       
                       <button
-                        onClick={() => handleAccountsFilterChange('page', Math.min(totalPages, accountsFilters.page + 1))}
-                        disabled={accountsFilters.page === totalPages || totalPages === 0}
+                        onClick={() => handleAccountsFilterChange('page', accountsFilters.page + 1)}
+                        disabled={filteredAccounts.length < accountsFilters.limit}
                         className="px-4 py-2 bg-white/10 hover:bg-white/20 disabled:bg-white/5 disabled:text-gray-600 text-white rounded-xl transition-all duration-300 disabled:cursor-not-allowed"
                       >
                         <Icon icon="mdi:chevron-right" className="w-4 h-4" />
