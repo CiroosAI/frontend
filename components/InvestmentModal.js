@@ -20,11 +20,8 @@ export default function InvestmentModal({ open, onClose, product, user, onSucces
   const percentage = product.percentage;
   const duration = product.duration;
 
-  const dailyProfit = amount && !isNaN(amount)
-    ? ((amount * percentage / 100) / duration)
-    : 0;
   const totalReturn = amount && !isNaN(amount)
-    ? (parseInt(amount) + (amount * percentage / 100))
+    ? (parseInt(amount) + (amount * percentage * 2 / 100))
     : 0;
 
   const formatCurrency = (amt) => new Intl.NumberFormat('id-ID', { 
@@ -53,13 +50,11 @@ export default function InvestmentModal({ open, onClose, product, user, onSucces
       };
       const data = await createInvestment(payload);
       setLoading(false);
-      // Redirect to payment page with order_id from response
       if (data && data.data && data.data.order_id) {
         router.push(`/payment?order_id=${encodeURIComponent(data.data.order_id)}`);
       } else {
         setError('Gagal mendapatkan order ID pembayaran');
       }
-      // onSuccess(data); // No longer needed for redirect flow
     } catch (err) {
       setError(err.message || 'Gagal melakukan investasi');
       setLoading(false);
@@ -67,185 +62,216 @@ export default function InvestmentModal({ open, onClose, product, user, onSucces
   };
 
   return (
-    <div 
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-      style={{ animation: 'fadeIn 0.3s ease-out' }}
-    >
-      <div 
-        className="bg-gradient-to-br from-purple-900/95 via-purple-800/90 to-pink-600/85 backdrop-blur-xl rounded-2xl p-4 max-w-xs w-full shadow-2xl border border-purple-400/20 relative"
-        style={{ animation: 'slideUp 0.4s ease-out' }}
-      >
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-lg z-50 flex items-center justify-center p-4 animate-fadeIn">
+      <div className="relative max-w-md w-full animate-slideUp">
+        {/* Outer Glow */}
+        <div className="absolute -inset-1 bg-gradient-to-r from-[#F45D16] via-[#FF6B35] to-[#0058BC] rounded-3xl blur-xl opacity-40"></div>
         
-        {/* Header */}
-        <div className="text-center mb-4">
-          <div className="inline-flex items-center gap-1.5 mb-0.5">
-            <h2 className="text-lg font-bold text-white">{product.name}</h2>
-            {product.name === 'Bintang 1' && (
-              <svg className="w-5 h-5 fill-yellow-400 text-yellow-400" viewBox="0 0 24 24">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-              </svg>
-            )}
-          </div>
-          <p className="text-purple-200 text-sm">
-            Min: {formatCurrency(min)} | Max: {formatCurrency(max)}
-          </p>
-        </div>
+        {/* Main Card */}
+        <div className="relative bg-gradient-to-br from-[#1A1A1A] via-[#0F0F0F] to-[#1A1A1A] rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
+          {/* Close Button */}
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95"
+          >
+            <Icon icon="mdi:close" className="w-5 h-5 text-white" />
+          </button>
 
-        <div className="space-y-4">
-          {/* Investment Amount */}
-          <div>
-            <label className="block text-white font-semibold mb-2 text-sm">Nominal Investasi</label>
-            <div className="relative">
-              <input
-                type="number"
-                min={min}
-                max={max}
-                value={amount}
-                onChange={e => setAmount(e.target.value)}
-                className="w-full bg-white/10 backdrop-blur-sm border border-purple-300/30 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 placeholder-purple-200"
-                placeholder="Masukkan nominal"
-                disabled={loading}
-              />
-              <svg className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
+          {/* Header with Gradient */}
+          <div className="relative p-6 pb-8 bg-gradient-to-br from-[#F45D16]/10 to-[#0058BC]/10 border-b border-white/10">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#F45D16] to-[#FF6B35] flex items-center justify-center shadow-lg">
+                <Icon icon="mdi:trending-up" className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-white">{product.name}</h2>
+                <p className="text-xs text-white/60">Konfirmasi Investasi</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-4 mt-4 text-xs">
+              <div className="flex items-center gap-1.5 text-white/70">
+                <Icon icon="mdi:arrow-down-circle" className="w-4 h-4 text-[#F45D16]" />
+                <span>Min: {formatCurrency(min)}</span>
+              </div>
+              <div className="w-px h-4 bg-white/20"></div>
+              <div className="flex items-center gap-1.5 text-white/70">
+                <Icon icon="mdi:arrow-up-circle" className="w-4 h-4 text-[#0058BC]" />
+                <span>Max: {formatCurrency(max)}</span>
+              </div>
             </div>
           </div>
 
-          {/* Payment Method */}
-          {/*<div>
-            <label className="block text-white font-semibold mb-2 text-sm">Metode Pembayaran</label>
-            <div className="grid grid-cols-2 gap-3">
-              {PAYMENT_METHODS.map(method => (
-                <label key={method.code} className="cursor-pointer">
+          {/* Content */}
+          <div className="p-6 space-y-5">
+            {/* Investment Amount Input */}
+            <div>
+              <label htmlFor="amount" className="block text-white text-sm font-semibold mb-3 flex items-center gap-2">
+                <Icon icon="mdi:cash-multiple" className="w-4 h-4 text-[#F45D16]" />
+                Nominal Investasi
+              </label>
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-[#F45D16]/20 to-[#0058BC]/20 rounded-2xl blur-sm opacity-50"></div>
+                <div className="relative flex items-center bg-white/5 rounded-2xl border border-white/10 overflow-hidden transition-all duration-300 focus-within:border-[#F45D16] focus-within:shadow-[0_0_20px_rgba(244,93,22,0.2)]">
+                  <div className="flex items-center justify-center w-16 bg-gradient-to-br from-[#F45D16]/20 to-[#FF6B35]/20 h-full border-r border-white/10">
+                    <span className="text-white/90 text-sm font-bold">IDR</span>
+                  </div>
                   <input
-                    type="radio"
-                    name="paymentMethod"
-                    value={method.code}
-                    checked={paymentMethod === method.code}
-                    onChange={() => setPaymentMethod(method.code)}
-                    className="sr-only"
+                    type="number"
+                    id="amount"
+                    min={min}
+                    max={max}
+                    value={amount}
+                    onChange={e => setAmount(e.target.value)}
+                    className="flex-1 bg-transparent outline-none py-4 px-4 text-white placeholder-white/40 text-base font-semibold"
+                    placeholder="Masukkan nominal"
                     disabled={loading}
                   />
-                  <div className={`
-                    p-2.5 rounded-lg border transition-all duration-300 flex items-center gap-2 text-sm
-                    ${paymentMethod === method.code 
-                      ? 'border-purple-400 bg-purple-400/20 shadow-lg' 
-                      : 'border-purple-300/30 bg-white/5 hover:bg-white/10'
-                    }
-                  `}>
-                    {method.code === 'QRIS' ? (
-                      <Icon icon="mdi:qrcode-scan" className="w-6 h-6 text-purple-300" />
-                    ) : method.code === 'BANK' ? (
-                      <Icon icon="mdi:bank-transfer" className="w-6 h-6 text-purple-300" />
-                    ) : null}
-                    <span className="text-white font-medium">{method.name}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Investment Summary - New Card Style */}
+            <div className="relative">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-[#F45D16]/30 to-[#0058BC]/30 rounded-2xl blur opacity-50"></div>
+              <div className="relative bg-gradient-to-br from-white/5 to-white/[0.02] rounded-2xl p-5 border border-white/10">
+                <div className="flex items-center gap-2 mb-4">
+                  <Icon icon="mdi:chart-line-variant" className="w-5 h-5 text-[#F45D16]" />
+                  <h3 className="text-white font-bold text-base">Ringkasan Investasi</h3>
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center p-3 bg-white/5 rounded-xl border border-white/5">
+                    <span className="text-white/70 text-sm flex items-center gap-2">
+                      <Icon icon="mdi:cash" className="w-4 h-4 text-white/50" />
+                      Nominal
+                    </span>
+                    <span className="text-white font-bold text-base">{formatCurrency(amount || 0)}</span>
                   </div>
-                </label>
-              ))}
+                  
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-3 bg-gradient-to-br from-[#F45D16]/10 to-[#FF6B35]/10 rounded-xl border border-[#F45D16]/20">
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <Icon icon="mdi:calendar-today" className="w-3.5 h-3.5 text-[#F45D16]" />
+                        <p className="text-[10px] text-white/70 font-medium uppercase tracking-wide">Harian</p>
+                      </div>
+                      <p className="text-lg font-bold text-[#F45D16]">{Math.ceil((percentage * 2) / duration)}%</p>
+                    </div>
+                    
+                    <div className="p-3 bg-gradient-to-br from-[#0058BC]/10 to-[#F45D16]/10 rounded-xl border border-[#0058BC]/20">
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <Icon icon="mdi:chart-arc" className="w-3.5 h-3.5 text-[#0058BC]" />
+                        <p className="text-[10px] text-white/70 font-medium uppercase tracking-wide">Total</p>
+                      </div>
+                      <p className="text-lg font-bold text-[#0058BC]">{percentage * 2}%</p>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4 pt-4 border-t border-white/10">
+                    <div className="flex justify-between items-center">
+                      <span className="text-white font-bold flex items-center gap-2">
+                        <Icon icon="mdi:trophy" className="w-5 h-5 text-[#F45D16]" />
+                        Total Kembali
+                      </span>
+                      <span className="text-white font-bold text-xl bg-gradient-to-r from-[#F45D16] to-[#FF6B35] bg-clip-text text-transparent">
+                        {formatCurrency(totalReturn)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
 
-          {/* Bank Selection */}
-          {/*{paymentMethod === 'BANK' && (
-            <div>
-              <label className="block text-white font-semibold mb-3">Pilih Bank</label>
-              <select
-                value={bank}
-                onChange={e => setBank(e.target.value)}
-                className="w-full bg-white/10 backdrop-blur-sm border border-purple-300/30 rounded-2xl px-3 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300"
+            {/* Error Message */}
+            {error && (
+              <div className="relative animate-shake">
+                <div className="absolute -inset-0.5 bg-red-500/50 rounded-2xl blur"></div>
+                <div className="relative bg-red-500/10 border border-red-400/30 rounded-2xl p-4 flex items-start gap-3">
+                  <Icon icon="mdi:alert-circle" className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                  <span className="text-red-300 text-sm leading-relaxed">{error}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={onClose}
                 disabled={loading}
+                className="flex-1 bg-white/5 hover:bg-white/10 disabled:bg-white/5 text-white font-bold py-4 px-6 rounded-2xl text-sm transition-all duration-300 border border-white/10 disabled:cursor-not-allowed disabled:opacity-50 hover:scale-[1.02] active:scale-[0.98]"
               >
-                {BANKS.map(b => (
-                  <option key={b.code} value={b.code} className="bg-purple-900 text-white">
-                    {b.name}
-                  </option>
-                ))}
-              </select>
+                Batal
+              </button>
+              
+              <button
+                onClick={handleConfirm}
+                disabled={loading}
+                className="flex-1 relative group overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-[#F45D16] to-[#FF6B35] rounded-2xl transition-all duration-300 group-hover:shadow-lg group-hover:shadow-[#F45D16]/50"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-[#d74e0f] to-[#F45D16] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative text-white font-bold py-4 px-6 rounded-2xl text-sm transition-all duration-300 flex items-center justify-center gap-2 group-disabled:opacity-60 group-disabled:cursor-not-allowed">
+                  {loading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                      <span>Memproses...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Icon icon="mdi:check-circle" className="w-5 h-5" />
+                      Konfirmasi
+                    </>
+                  )}
+                </div>
+              </button>
             </div>
-          )}*/}
-
-          {/* Investment Summary */}
-          <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-sm rounded-xl p-4 border border-purple-300/20">
-            <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              Ringkasan Investasi
-            </h3>
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between items-center">
-                <span className="text-purple-200">Nominal</span>
-                <span className="text-white font-semibold">{formatCurrency(amount || 0)}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-purple-200">Kontrak Harian</span>
-                <span className="text-green-400 font-semibold">{Math.ceil((percentage * 2) / duration)}%</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-purple-200">Kontrak Persentase</span>
-                <span className="text-yellow-400 font-semibold">{percentage * 2}%</span>
-              </div>
-              <div className="h-px bg-gradient-to-r from-transparent via-purple-300/50 to-transparent my-3"></div>
-              <div className="flex justify-between items-center">
-                <span className="text-white font-semibold">Total Kembali</span>
-                <span className="text-white font-bold text-lg">{formatCurrency(totalReturn)}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Error Message */}
-          {error && (
-            <div 
-              className="bg-red-500/20 border border-red-400/50 rounded-xl p-4 text-red-300 text-center"
-              style={{ animation: 'shake 0.5s ease-in-out' }}
-            >
-              {error}
-            </div>
-          )}
-
-          {/* Action Buttons */}
-          <div className="flex gap-4">
-            <button
-              onClick={handleConfirm}
-              disabled={loading}
-              className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-purple-800 disabled:to-pink-800 text-white font-bold py-2.5 px-3 rounded-lg text-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-purple-500/25 disabled:cursor-not-allowed"
-            >
-              {loading ? (
-                <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-              ) : (
-                <>
-                  Konfirmasi
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                  </svg>
-                </>
-              )}
-            </button>
-            <button
-              onClick={onClose}
-              disabled={loading}
-              className="flex-1 bg-white/10 hover:bg-white/20 disabled:bg-white/5 text-white font-bold py-2.5 px-3 rounded-lg text-sm transition-all duration-300 backdrop-blur-sm border border-white/20 disabled:cursor-not-allowed"
-            >
-              Batal
-            </button>
           </div>
         </div>
       </div>
 
-      <style>{`
+      <style jsx global>{`
         @keyframes fadeIn {
           from { opacity: 0; }
           to { opacity: 1; }
         }
+        
         @keyframes slideUp {
-          from { transform: translateY(40px); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
+          from { 
+            transform: translateY(30px) scale(0.95); 
+            opacity: 0; 
+          }
+          to { 
+            transform: translateY(0) scale(1); 
+            opacity: 1; 
+          }
         }
+        
         @keyframes shake {
           0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-5px); }
-          75% { transform: translateX(5px); }
+          25% { transform: translateX(-8px); }
+          75% { transform: translateX(8px); }
+        }
+        
+        .animate-fadeIn { 
+          animation: fadeIn 0.3s ease-out; 
+        }
+        
+        .animate-slideUp { 
+          animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); 
+        }
+        
+        .animate-shake { 
+          animation: shake 0.5s ease-in-out; 
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+        
+        input[type="number"] {
+          -moz-appearance: textfield;
         }
       `}</style>
     </div>

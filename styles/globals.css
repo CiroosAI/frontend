@@ -3,6 +3,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Tambahkan ini di file styles/globals.css Anda */
+:root {
+  --gradient-top-right: radial-gradient(100% 80% at 85% 0%, rgba(0,88,188,0.3) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0) 100%);
+  --gradient-bottom-left: radial-gradient(90% 70% at 0% 100%, rgba(255,100,0,0.25) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0) 100%);
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

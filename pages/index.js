@@ -22,7 +22,7 @@ export default function Home() {
             <Head>
                 <title>Redirecting...</title>
                 <meta name="description" content="Vla Devs" />
-                <link rel="icon" href="/logo.png" />
+                <link rel="icon" href="/favicon.png" />
             </Head>
         </>
     );
