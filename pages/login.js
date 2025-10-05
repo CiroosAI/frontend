@@ -37,11 +37,11 @@ export default function Login() {
                 const data = await getInfo();
                 if (data && data.success && data.data) {
                     const app = data.data;
-                    if (app.name) {
+                    if (app.name && app.company) {
                         const stored = JSON.parse(localStorage.getItem('application') || '{}');
-                        const merged = { ...(stored || {}), name: app.name };
+                        const merged = { ...(stored || {}), name: app.name, company: app.company };
                         localStorage.setItem('application', JSON.stringify(merged));
-                        setApplicationData(prev => ({ ...(prev || {}), name: app.name }));
+                        setApplicationData(prev => ({ ...(prev || {}), name: app.name, company: app.company }));
                     }
                     if (app.maintenance) {
                         setMaintenanceMode(true);
@@ -108,9 +108,7 @@ export default function Login() {
                     window.dispatchEvent(new Event('user-token-changed'));
                 }
 
-                setTimeout(() => {
-                    router.push('/dashboard');
-                }, 500);
+                router.push('/dashboard');
 
             } else if (result && result.success === false) {
                 const errorMessage = result.message || 'Terjadi kesalahan. Silakan coba lagi.';
@@ -177,7 +175,6 @@ export default function Login() {
                 {/* Gradient overlays matching Ciroos theme */}
                 <div className="absolute inset-0 bg-[radial-gradient(100%_80%_at_85%_0%,rgba(0,88,188,0.4)_0%,rgba(0,0,0,0.1)_50%,rgba(0,0,0,0)_100%)]"></div>
                 <div className="absolute inset-0 bg-[radial-gradient(90%_70%_at_0%_100%,rgba(255,100,0,0.3)_0%,rgba(0,0,0,0.1)_50%,rgba(0,0,0,0)_100%)]"></div>
-                <div className="absolute inset-0 bg-[radial-gradient(60%_60%_at_100%_100%,rgba(255,80,0,0.2)_0%,rgba(0,0,0,0)_100%)]"></div>
 
                 <div className="relative z-10 w-full max-w-md p-6">
                     <div className="glassmorphism-card rounded-3xl p-8 shadow-2xl animate-fadeIn">
@@ -219,12 +216,12 @@ export default function Login() {
                         {/* Notification */}
                         {notification.message && (
                             <div className={`mb-6 px-5 py-3 rounded-xl text-sm font-medium flex items-center gap-3 animate-shake backdrop-blur-sm border ${
-                                notification.type === 'success'
-                                    ? 'bg-[#F45D16]/20 text-[#F45D16] border-[#F45D16]/30'
+                                notification.type === 'success1'
+                                    ? 'bg-green-500/20 text-green-300 border-green-400/30'
                                     : 'bg-red-500/20 text-red-300 border-red-400/30'
                             }`}>
                                 <Icon
-                                    icon={notification.type === 'success' ? 'mdi:check-circle' : 'mdi:alert-circle'}
+                                    icon={notification.type === 'success1' ? 'mdi:check-circle' : 'mdi:alert-circle'}
                                     className="w-5 h-5 flex-shrink-0"
                                 />
                                 <span className="flex-1">{notification.message}</span>
@@ -339,7 +336,7 @@ export default function Login() {
                         {/* Copyright */}
                         <div className="text-center text-[#EDE5D9]/50 text-xs flex items-center justify-center gap-2 mt-8 pt-6 border-t border-white/5">
                             <Icon icon="mdi:copyright" className="w-3.5 h-3.5" />
-                            <span>2025 {applicationData?.name || 'Ciroos AI'}. All Rights Reserved.</span>
+                            <span>2025 {applicationData?.company || 'Ciroos, Inc'}. All Rights Reserved.</span>
                         </div>
                     </div>
                 </div>

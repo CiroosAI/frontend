@@ -62,7 +62,15 @@ export default function InvestasiSaya() {
       .then(res => {
         const data = res.data || {};
         setInvestments(data);
-        const keys = Object.keys(data);
+        // Order tabs explicitly: Monitor (left), Insight (middle), Autopilot (right)
+        const origKeys = Object.keys(data);
+        const preferred = ['Monitor', 'Insight', 'Autopilot'];
+        const keys = [
+          // first include preferred keys in that exact order if they exist
+          ...preferred.filter(k => origKeys.includes(k)),
+          // then include any other keys that were present (preserve their original order)
+          ...origKeys.filter(k => !preferred.includes(k))
+        ];
         setTabKeys(keys);
         if (keys.length > 0) setActiveTab(keys[0]);
       })
@@ -166,10 +174,6 @@ export default function InvestasiSaya() {
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-xl border border-white/10">
-                <Image src="/logo.png" alt="Logo" width={16} height={16} className="w-4 h-4" onError={(e) => { e.target.style.display = 'none'; }} />
-                <span className="text-[10px] text-white/80 font-semibold">{applicationData?.name || 'Ciroos AI'}</span>
-              </div>
             </div>
             <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
               <div className="flex items-center justify-between">
@@ -217,24 +221,24 @@ export default function InvestasiSaya() {
 
         {/* Tabs dinamis dari API */}
         <div className="mb-6">
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide justify-between items-center">
             {tabKeys.length === 0 ? (
               <div className="flex items-center gap-2 text-white/60 text-xs py-2">
                 <Icon icon="mdi:information-outline" className="w-4 h-4" />
                 <span>Tidak ada kategori investasi</span>
               </div>
             ) : (
-              tabKeys.map((key) => (
+              tabKeys.map((key, idx) => (
                 <button
                   key={key}
                   onClick={() => setActiveTab(key)}
-                  className={`px-4 py-2.5 text-sm font-semibold rounded-2xl transition-all duration-300 flex items-center gap-2 whitespace-nowrap border ${
+                  className={`min-w-[110px] ${idx === 1 ? 'mx-2' : ''} flex-1 px-5 py-2.5 text-sm font-semibold rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 whitespace-nowrap border ${
                     activeTab === key
-                      ? 'bg-gradient-to-r from-[#F45D16] to-[#FF6B35] text-white border-transparent shadow-lg shadow-[#F45D16]/30 scale-105'
+                      ? 'bg-gradient-to-r from-[#F45D16] to-[#FF6B35] text-white border-transparent shadow-lg shadow-[#F45D16]/30 scale-102'
                       : 'bg-white/5 text-white/70 hover:text-white hover:bg-white/10 border-white/10 hover:scale-102'
                   }`}
                 >
-                  <Icon icon={getStarIcon(key)} className="w-4 h-4" />
+                  <Icon icon={getStarIcon(key)} className="w-5 h-5" />
                   {key}
                 </button>
               ))
@@ -353,7 +357,7 @@ export default function InvestasiSaya() {
         {/* Copyright dengan jarak yang cukup dari bottom navbar */}
         <div className="text-center text-white/60 text-xs flex items-center justify-center gap-2 mt-8">
           <Icon icon="solar:copyright-bold" className="w-3 h-3" />
-          <span>2025 {applicationData?.name || 'Ciroos AI'}. All Rights Reserved.</span>
+          <span>2025 {applicationData?.company || 'Ciroos, Inc'}. All Rights Reserved.</span>
         </div>
       </div>
 

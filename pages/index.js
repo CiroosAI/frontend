@@ -21,7 +21,7 @@ export default function Home() {
         <>
             <Head>
                 <title>Redirecting...</title>
-                <meta name="description" content="Vla Devs" />
+                <meta name="description" content="Ciroos AI" />
                 <link rel="icon" href="/favicon.png" />
             </Head>
         </>

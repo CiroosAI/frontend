@@ -95,6 +95,7 @@ export default function Testimoni() {
             <Image
               src={url}
               alt="Bukti Penarikan Besar"
+              unoptimized
               width={500}
               height={500}
               className="relative rounded-2xl shadow-2xl border-2 border-white/10 max-h-[80vh] w-auto bg-[#0A0A0A] object-contain animate-slideUp"
@@ -221,7 +222,7 @@ export default function Testimoni() {
           {/* Copyright */}
           <div className="text-center text-white/60 text-xs flex items-center justify-center gap-2 mt-8">
             <Icon icon="solar:copyright-bold" className="w-3 h-3" />
-            <span>2025 {applicationData?.name || 'Ciroos AI'}. All Rights Reserved.</span>
+            <span>2025 {applicationData?.company || 'Ciroos, Inc'}. All Rights Reserved.</span>
           </div>
         </div>
 
@@ -416,6 +417,7 @@ function TestimonialCard({ t, setModalImage, formatCurrency }) {
                 <Image
                   src={imgUrl}
                   alt="bukti penarikan"
+                  unoptimized
                   width={80}
                   height={80}
                   className="w-20 h-20 object-cover rounded-xl border-2 border-white/10 shadow-lg cursor-pointer hover:scale-105 hover:border-[#F45D16]/30 transition-all duration-200"

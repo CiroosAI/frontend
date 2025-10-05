@@ -199,10 +199,6 @@ const Withdraw = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-xl border border-white/10">
-                <Image src="/logo.png" alt="Logo" width={16} height={16} className="w-4 h-4" onError={(e) => { e.target.style.display = 'none'; }} />
-                <span className="text-[10px] text-white/80 font-semibold">{applicationData?.name || 'Ciroos AI'}</span>
-              </div>
             </div>
             <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
               <div className="flex items-center justify-between">
@@ -420,7 +416,7 @@ const Withdraw = () => {
         {/* Copyright */}
         <div className="text-center text-white/60 text-xs flex items-center justify-center gap-2 mt-8">
           <Icon icon="solar:copyright-bold" className="w-3 h-3" />
-          <span>2025 {applicationData?.name || 'Ciroos AI'}. All Rights Reserved.</span>
+          <span>2025 {applicationData?.company || 'Ciroos, Inc'}. All Rights Reserved.</span>
         </div>
       </div>
 

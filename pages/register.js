@@ -65,11 +65,11 @@ export default function Register() {
         const data = await getInfo();
         if (data && data.success && data.data) {
           const app = data.data;
-          if (app.name) {
+          if (app.name && app.company) {
             const stored = JSON.parse(localStorage.getItem('application') || '{}');
-            const merged = { ...(stored || {}), name: app.name };
+            const merged = { ...(stored || {}), name: app.name, company: app.company };
             localStorage.setItem('application', JSON.stringify(merged));
-            setApplicationData(prev => ({ ...(prev || {}), name: app.name }));
+            setApplicationData(prev => ({ ...(prev || {}), name: app.name, company: app.company }));
           }
           if (app.maintenance) {
             setMaintenanceMode(true);
@@ -158,7 +158,7 @@ export default function Register() {
       const result = await registerUser(formData);
       
       if (result && result.success === true) {
-        const successMessage = result.message || 'Registrasi berhasil! Silakan login dengan akun Anda.';
+        const successMessage = result.message || 'Registrasi berhasil! Selamat datang.';
         setNotification({ message: successMessage, type: 'success' });
         
         setFormData({ 
@@ -247,7 +247,6 @@ export default function Register() {
         {/* Gradient overlays matching Ciroos theme */}
         <div className="absolute inset-0 bg-[radial-gradient(100%_80%_at_85%_0%,rgba(0,88,188,0.4)_0%,rgba(0,0,0,0.1)_50%,rgba(0,0,0,0)_100%)]"></div>
         <div className="absolute inset-0 bg-[radial-gradient(90%_70%_at_0%_100%,rgba(255,100,0,0.3)_0%,rgba(0,0,0,0.1)_50%,rgba(0,0,0,0)_100%)]"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(60%_60%_at_100%_100%,rgba(255,80,0,0.2)_0%,rgba(0,0,0,0)_100%)]"></div>
 
         <div className="relative z-10 w-full max-w-md p-6">
           <div className="glassmorphism-card rounded-3xl p-8 shadow-2xl animate-fadeIn">
@@ -587,7 +586,7 @@ export default function Register() {
             {/* Copyright */}
             <div className="text-center text-[#EDE5D9]/50 text-xs flex items-center justify-center gap-2 mt-8 pt-6 border-t border-white/10">
               <Icon icon="mdi:copyright" className="w-4 h-4" />
-              <span>2025 {applicationData?.name || 'Vla Devs'}. All Rights Reserved.</span>
+              <span>2025 {applicationData?.company || 'Ciroos, Inc'}. All Rights Reserved.</span>
             </div>
           </div>
         </div>

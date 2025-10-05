@@ -11,6 +11,7 @@ export default function AdminSettings() {
   const { loading: authLoading } = useAdminAuth();
   const [settings, setSettings] = useState({
     name: 'Vla Devs',
+    company: 'Vla Inc,',
     min_withdraw: 50000,
     max_withdraw: 10000000,
     withdraw_charge: 2.5,
@@ -41,6 +42,7 @@ export default function AdminSettings() {
       if (res && res.data) {
         setSettings({
           name: res.data.name || 'Vla Devs',
+          company: res.data.company || 'Vla Inc.',
           link_app: res.data.link_app || '',
           link_cs: res.data.link_cs || '',
           link_group: res.data.link_group || '',
@@ -111,6 +113,7 @@ export default function AdminSettings() {
 
       const body = {
         name: settings.name,
+        company: settings.company,
         link_app: settings.link_app,
         link_cs: settings.link_cs,
         link_group: settings.link_group,
@@ -295,6 +298,20 @@ export default function AdminSettings() {
                     onChange={handleInputChange}
                     className="w-full bg-white/10 border border-white/20 text-white rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                     placeholder="Masukkan nama aplikasi"
+                    required
+                  />
+                </div>
+
+                {/* Company Name */}
+                <div>
+                  <label className="block text-gray-400 text-sm mb-2">Nama Perusahaan</label>
+                  <input
+                    type="text"
+                    name="company"
+                    value={settings.company}
+                    onChange={handleInputChange}
+                    className="w-full bg-white/10 border border-white/20 text-white rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                    placeholder="Masukkan nama perusahaan"
                     required
                   />
                 </div>

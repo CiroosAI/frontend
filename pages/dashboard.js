@@ -148,16 +148,13 @@ export default function Dashboard() {
         <link rel="icon" href="/favicon.png" />
       </Head>
 
-      {/* Animated star background */}
+      {/* Background elements */}
       <div className="stars"></div>
       <div className="stars1"></div>
       <div className="stars2"></div>
       <div className="shooting-stars"></div>
-
-      {/* Gradient overlays */}
-      <div className="absolute inset-0 bg-[radial-gradient(100%_80%_at_85%_0%,rgba(0,88,188,0.4)_0%,rgba(0,0,0,0.1)_50%,rgba(0,0,0,0)_100%)]"></div>
-      <div className="absolute inset-0 bg-[radial-gradient(90%_70%_at_0%_100%,rgba(255,100,0,0.3)_0%,rgba(0,0,0,0.1)_50%,rgba(0,0,0,0)_100%)]"></div>
-      <div className="absolute inset-0 bg-[radial-gradient(60%_60%_at_100%_100%,rgba(255,80,0,0.2)_0%,rgba(0,0,0,0)_100%)]"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(100%_80%_at_85%_0%,rgba(0,88,188,0.3)_0%,rgba(0,0,0,0.1)_50%,rgba(0,0,0,0)_100%)]"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(90%_70%_at_0%_100%,rgba(255,100,0,0.25)_0%,rgba(0,0,0,0.1)_50%,rgba(0,0,0,0)_100%)]"></div>
 
       <div className="max-w-sm mx-auto p-4 relative z-10">
         {/* Header with Logo - Simplified */}
@@ -317,9 +314,9 @@ export default function Dashboard() {
                       key={product.id}
                       onClick={() => setSelectedProduct(product)}
                       className={`
-                        px-5 py-2.5 rounded-2xl font-semibold transition-all duration-300 whitespace-nowrap flex items-center gap-2 border text-sm
+                        px-4 py-2 rounded-2xl font-semibold transition-all duration-300 whitespace-nowrap flex items-center gap-2 border text-sm
                         ${selectedProduct?.id === product.id
-                          ? 'bg-gradient-to-r from-[#F45D16] to-[#FF6B35] text-white border-transparent shadow-lg shadow-[#F45D16]/30 scale-105'
+                          ? 'bg-gradient-to-r from-[#F45D16] to-[#FF6B35] text-white border-transparent shadow-lg shadow-[#F45D16]/30 scale-102'
                           : 'bg-white/5 text-white/70 hover:text-white hover:bg-white/10 border-white/10 hover:scale-102'
                         }
                       `}
@@ -395,7 +392,7 @@ export default function Dashboard() {
         {/* Copyright */}
         <div className="text-center text-white/40 text-[10px] flex items-center justify-center gap-1.5 mt-8">
           <Icon icon="mdi:copyright" className="w-3 h-3" />
-          <span>2025 {applicationData?.name || 'Ciroos AI'}. All Rights Reserved.</span>
+          <span>2025 {applicationData?.company || 'Ciroos, Inc'}. All Rights Reserved.</span>
         </div>
       </div>
 

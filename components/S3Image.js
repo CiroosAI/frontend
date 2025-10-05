@@ -22,6 +22,7 @@ export default function S3Image({ imageKey, className = 'w-16 h-16', onClick, al
       <Image
         src={url}
         alt={alt}
+        unoptimized
         className={`${className} object-cover rounded-xl border border-purple-200/60 shadow cursor-pointer hover:scale-105 transition-transform duration-200`}
         onClick={(e) => { e?.stopPropagation(); setShowModal(true); if (onClick) onClick(); }}
         style={{ background: '#f3e8ff' }}
@@ -37,7 +38,7 @@ export default function S3Image({ imageKey, className = 'w-16 h-16', onClick, al
             >
               ✕
             </button>
-            <Image src={url} alt="preview" className="w-full h-auto rounded-xl shadow-lg" />
+            <Image src={url} alt="preview" unoptimized className="w-full h-auto rounded-xl shadow-lg" />
           </div>
         </div>
       )}

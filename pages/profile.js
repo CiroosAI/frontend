@@ -452,7 +452,7 @@ export default function Profile() {
         {/* Copyright */}
         <div className="text-center text-white/40 text-[10px] flex items-center justify-center gap-1.5 mb-4">
           <Icon icon="mdi:copyright" className="w-3 h-3" />
-          <span>2025 {applicationData?.name || 'Ciroos AI'}. All Rights Reserved.</span>
+          <span>2025 {applicationData?.company || 'Ciroos, Inc'}. All Rights Reserved.</span>
         </div>
       </div>
 

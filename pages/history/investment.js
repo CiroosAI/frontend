@@ -445,7 +445,7 @@ export default function RiwayatDeposit() {
         {/* Copyright */}
         <div className="text-center text-white/60 text-xs flex items-center justify-center gap-2 mt-8">
           <Icon icon="solar:copyright-bold" className="w-3 h-3" />
-          <span>2025 {applicationData?.name || 'Ciroos AI'}. All Rights Reserved.</span>
+          <span>2025 {applicationData?.company || 'Ciroos, Inc'}. All Rights Reserved.</span>
         </div>
       </div>
 

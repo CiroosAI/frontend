@@ -20,9 +20,7 @@ export default function InvestmentModal({ open, onClose, product, user, onSucces
   const percentage = product.percentage;
   const duration = product.duration;
 
-  const totalReturn = amount && !isNaN(amount)
-    ? (parseInt(amount) + (amount * percentage * 2 / 100))
-    : 0;
+  const totalReturn = amount * percentage * 2 / 100;
 
   const formatCurrency = (amt) => new Intl.NumberFormat('id-ID', { 
     style: 'currency', 
