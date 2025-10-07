@@ -164,47 +164,45 @@ export default function About() {
           <h2 className="text-xl font-bold text-white mb-4 text-center">Sertifikat Legal</h2>
           
           <div className="space-y-6">
-            {/* Ministry of Law Certificate */}
+            {/* Certificate of Incorporation */}
             <div className="bg-gradient-to-br from-[#0058BC]/10 to-[#0058BC]/5 p-4 rounded-2xl border border-blue-400/20">
               <div className="flex items-center gap-2 mb-3">
                 <Icon icon="mdi:government" className="w-5 h-5 text-blue-300" />
-                <h3 className="text-blue-200 font-semibold text-sm">SURAT KETERANGAN PENDIRIAN PERUSAHAAN</h3>
+                <h3 className="text-blue-200 font-semibold text-sm">Sertifikat Pendirian Perusahaan</h3>
               </div>
               
               <div className="relative w-full h-64 rounded-xl overflow-hidden mb-3 border border-blue-400/30 bg-black/20">
                 <Image
-                  src="/company-certificate.jpg"
-                  alt="Company Certificate"
+                  src="/certificate-of-incorporation.png"
+                  alt="Certificate of Incorporation"
                   fill
                   className="object-contain p-2"
                 />
               </div>
               
               <div className="text-center">
-                <p className="text-white font-bold text-sm">PT {applicationData?.name || 'Ciroos AI'} INDONESIA</p>
-                <p className="text-blue-300 text-xs mt-1">NOMOR: AHU-000985.AH.01.31.Tahun 2025</p>
+                <p className="text-white font-bold text-sm">{applicationData?.company || 'Ciroos AI'}</p>
               </div>
             </div>
             
-            {/* Tax Office Certificate */}
+            {/* Employer Identification Number */}
             <div className="bg-gradient-to-br from-green-900/10 to-green-800/5 p-4 rounded-2xl border border-green-400/20">
               <div className="flex items-center gap-2 mb-3">
                 <Icon icon="mdi:calculator" className="w-5 h-5 text-green-300" />
-                <h3 className="text-green-200 font-semibold text-sm">NOMOR POKOK WAJIB PAJAK</h3>
+                <h3 className="text-green-200 font-semibold text-sm">Nomor Identifikasi Pemberi Kerja</h3>
               </div>
               
               <div className="relative w-full h-64 rounded-xl overflow-hidden mb-3 border border-green-400/30 bg-black/20">
                 <Image
-                  src="/taxpayer-identification-number.jpg"
-                  alt="Taxpayer Identification Number"
+                  src="/employer-identification-number.png"
+                  alt="Employer Identification Number"
                   fill
                   className="object-contain p-2"
                 />
               </div>
               
               <div className="text-center">
-                <p className="text-white font-bold text-lg tracking-wider">0270 0886 1311 1000</p>
-                <p className="text-green-300 font-bold mt-1">{applicationData?.name || 'Ciroos AI'} INDONESIA</p>
+                <p className="text-white font-bold text-sm">{applicationData?.company || 'Ciroos AI'}</p>
               </div>
             </div>
           </div>
