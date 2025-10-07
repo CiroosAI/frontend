@@ -182,7 +182,7 @@ export default function Header({ sidebarOpen, setSidebarOpen, title }) {
                   <div className="max-h-64 overflow-y-auto">
                     {/* pending_withdrawals */}
                     {Array.isArray(adminNotifications.pending_withdrawals) && adminNotifications.pending_withdrawals.map((item, idx) => (
-                      <div key={`pw-${idx}`} onClick={() => { router.push('/panel-admin-rj/withdrawals'); setShowNotifications(false); }} className="p-4 hover:bg-white/5 border-b border-white/5 last:border-b-0 transition-colors cursor-pointer">
+                      <div key={`pw-${idx}`} onClick={() => { router.push('/panel-admin/withdrawals'); setShowNotifications(false); }} className="p-4 hover:bg-white/5 border-b border-white/5 last:border-b-0 transition-colors cursor-pointer">
                         <div className="flex items-start gap-3">
                           <div className={`w-8 h-8 rounded-xl flex items-center justify-center bg-yellow-600/20`}>
                             <Icon icon="mdi:cash-check" className="w-4 h-4 text-yellow-400" />
@@ -200,7 +200,7 @@ export default function Header({ sidebarOpen, setSidebarOpen, title }) {
 
                     {/* pending_forums */}
                     {Array.isArray(adminNotifications.pending_forums) && adminNotifications.pending_forums.map((item, idx) => (
-                      <div key={`pf-${idx}`} onClick={() => { router.push('/panel-admin-rj/forums'); setShowNotifications(false); }} className="p-4 hover:bg-white/5 border-b border-white/5 last:border-b-0 transition-colors cursor-pointer">
+                      <div key={`pf-${idx}`} onClick={() => { router.push('/panel-admin/forums'); setShowNotifications(false); }} className="p-4 hover:bg-white/5 border-b border-white/5 last:border-b-0 transition-colors cursor-pointer">
                         <div className="flex items-start gap-3">
                           <div className={`w-8 h-8 rounded-xl flex items-center justify-center bg-indigo-600/20`}>
                             <Icon icon="mdi:forum" className="w-4 h-4 text-indigo-400" />
@@ -218,7 +218,7 @@ export default function Header({ sidebarOpen, setSidebarOpen, title }) {
 
                     {/* new_users */}
                     {Array.isArray(adminNotifications.new_users) && adminNotifications.new_users.map((item, idx) => (
-                      <div key={`nu-${idx}`} onClick={() => { router.push('/panel-admin-rj/users'); setShowNotifications(false); }} className="p-4 hover:bg-white/5 border-b border-white/5 last:border-b-0 transition-colors cursor-pointer">
+                      <div key={`nu-${idx}`} onClick={() => { router.push('/panel-admin/users'); setShowNotifications(false); }} className="p-4 hover:bg-white/5 border-b border-white/5 last:border-b-0 transition-colors cursor-pointer">
                         <div className="flex items-start gap-3">
                           <div className={`w-8 h-8 rounded-xl flex items-center justify-center bg-blue-600/20`}>
                             <Icon icon="mdi:account-plus" className="w-4 h-4 text-blue-400" />
@@ -239,7 +239,7 @@ export default function Header({ sidebarOpen, setSidebarOpen, title }) {
             </div>
 
             {/* Settings */}
-            <button onClick={() => router.push('/panel-admin-rj/settings')} className="p-3 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-300">
+            <button onClick={() => router.push('/panel-admin/settings')} className="p-3 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-300">
               <Icon icon="mdi:cog" className="w-5 h-5" />
             </button>
 
@@ -261,13 +261,13 @@ export default function Header({ sidebarOpen, setSidebarOpen, title }) {
               {showProfileMenu && (
                 <>
                   <div className="absolute right-0 top-full mt-2 w-44 bg-gray-900/95 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl z-50 py-2">
-                    <button onClick={() => { router.push('/panel-admin-rj/profile'); setShowProfileMenu(false); }} className="w-full text-left px-4 py-2 hover:bg-white/5 transition-colors">
+                    <button onClick={() => { router.push('/panel-admin/profile'); setShowProfileMenu(false); }} className="w-full text-left px-4 py-2 hover:bg-white/5 transition-colors">
                       Profile
                     </button>
                     <button onClick={() => {
                       // Logout: clear admin info and redirect to login
                       try { localStorage.removeItem('sidebarState'); localStorage.removeItem('admin'); localStorage.removeItem('admin_servers'); localStorage.removeItem('admin_applications'); localStorage.removeItem('admin_notifications'); window.dispatchEvent(new Event('admin-info-updated')); } catch(e) {}
-                      router.push('/panel-admin-rj/login');
+                      router.push('/panel-admin/login');
                     }} className="w-full text-left px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-b-2xl transition-colors">
                       Logout
                     </button>

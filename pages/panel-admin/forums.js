@@ -405,7 +405,7 @@ export default function ForumModeration() {
                     
                     <div className="flex lg:flex-col gap-3 lg:min-w-[140px]">
                       <button
-                        onClick={() => router.push(`/panel-admin-rj/forums/${post.id}`)}
+                        onClick={() => router.push(`/panel-admin/forums/${post.id}`)}
                         className="flex-1 lg:flex-none bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 px-4 py-3 rounded-2xl flex items-center justify-center gap-2 transition-all duration-300 hover:scale-105"
                       >
                         <Icon icon="mdi:eye" className="w-4 h-4" />

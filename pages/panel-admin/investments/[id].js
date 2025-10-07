@@ -205,7 +205,7 @@ export default function InvestmentDetail() {
           <h3 className="text-white text-xl font-semibold mb-2">Investasi Tidak Ditemukan</h3>
           <p className="text-gray-400 text-center mb-6">{error || 'Investasi dengan ID tersebut tidak ada atau telah dihapus.'}</p>
           <button 
-            onClick={() => router.push('/admin/investments')}
+            onClick={() => router.push('/panel-admin/investments')}
             className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl transition-colors"
           >
             Kembali ke Daftar Investasi
@@ -228,7 +228,7 @@ export default function InvestmentDetail() {
       {/* Header */}
       <div className="mb-8">
         <button 
-          onClick={() => router.push('/admin/investments')}
+          onClick={() => router.push('/panel-admin/investments')}
           className="flex items-center gap-2 text-gray-400 hover:text-white mb-4 transition-colors"
         >
           <Icon icon="mdi:arrow-left" className="w-5 h-5" />
