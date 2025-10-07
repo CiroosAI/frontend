@@ -368,7 +368,7 @@ export default function Profile() {
           )}
           
           <a
-            href="https://chat.whatsapp.com/JBzwKInRdHA6ezoKxUwR0t?mode=ems_copy_t"
+            href="https://t.me/vla_channel"
             target="_blank"
             rel="noopener noreferrer"
             className="bg-white/5 hover:bg-white/10 text-white font-semibold p-4 rounded-2xl transition-all duration-300 border border-white/10 hover:scale-[1.02] active:scale-[0.98] flex items-center gap-3"
