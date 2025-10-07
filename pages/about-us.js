@@ -90,10 +90,10 @@ export default function About() {
           <div className="bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-3xl p-5 border border-white/10">
             <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
               <Icon icon="mdi:earth" className="w-5 h-5 text-[#F45D16]" />
-              Latar Belakang Platform
+              Latar Belakang {applicationData?.name || 'Ciroos AI'}
             </h3>
             <p className="text-sm text-white/70 leading-relaxed">
-              {applicationData?.name || 'Ciroos AI'} adalah platform investasi yang berpusat di London, United Kingdom, didirikan oleh Ukrit Thaweerat dengan visi menciptakan akses investasi properti premium bagi semua kalangan.
+              {applicationData?.name || 'Ciroos AI'} adalah platform investasi yang berpusat di California, United States of America, didirikan oleh {applicationData?.company || 'Ciroos, Inc'} dengan visi menciptakan akses investasi properti premium bagi semua kalangan.
             </p>
             <p className="mt-2 text-sm text-white/70 leading-relaxed">
               Platform ini lahir untuk menghapus hambatan tradisional dalam kepemilikan properti, sehingga investor global dapat berpartisipasi dengan modal yang lebih terjangkau namun tetap mendapatkan potensi keuntungan yang signifikan.
@@ -181,7 +181,7 @@ export default function About() {
               </div>
               
               <div className="text-center">
-                <p className="text-white font-bold text-sm">{applicationData?.company || 'Ciroos AI'}</p>
+                <p className="text-white font-bold text-sm">{applicationData?.company || 'Ciroos, Inc'}</p>
               </div>
             </div>
             
@@ -202,7 +202,7 @@ export default function About() {
               </div>
               
               <div className="text-center">
-                <p className="text-white font-bold text-sm">{applicationData?.company || 'Ciroos AI'}</p>
+                <p className="text-white font-bold text-sm">{applicationData?.company || 'Ciroos, Inc'}</p>
               </div>
             </div>
           </div>

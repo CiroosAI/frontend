@@ -416,8 +416,8 @@ export default function Dashboard() {
             <div className="relative">
               <div className="w-full aspect-square bg-gradient-to-r from-[#F45D16] to-[#0058BC] flex items-center justify-center relative overflow-hidden">
                 <Image 
-                  src="/popup.jpg" 
-                  alt="PROMO BESAR-BESARAN BONUS 10%!" 
+                  src="/popup.png" 
+                  alt="Welcome to Ciroos AI" 
                   className="w-full h-full object-cover"
                   layout="fill"
                   onError={(e) => {
