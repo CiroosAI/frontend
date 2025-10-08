@@ -373,6 +373,61 @@ export default function Dashboard() {
             )}
           </>
         )}
+
+        {/* Welcome Video Section */}
+        <div className="mt-8 mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <Icon icon="mdi:play-circle" className="text-[#F45D16] w-5 h-5" />
+            <h2 className="text-lg font-bold text-white">Kenali Ciroos AI</h2>
+          </div>
+
+          <div className="relative">
+            {/* Glow Effect */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-[#F45D16] to-[#0058BC] rounded-3xl blur-lg opacity-20"></div>
+            
+            <div className="relative bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-3xl p-4 border border-white/10 overflow-hidden">
+              {/* Decorative Corner Elements */}
+              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-[#F45D16]/10 to-transparent rounded-full blur-2xl"></div>
+              <div className="absolute bottom-0 left-0 w-20 h-20 bg-gradient-to-tr from-[#0058BC]/10 to-transparent rounded-full blur-2xl"></div>
+              
+              <div className="relative">
+                {/* Video Container with rounded corners and border */}
+                <div className="relative rounded-2xl overflow-hidden border-2 border-white/10 bg-black shadow-2xl">
+                  <video 
+                    className="w-full aspect-video object-cover"
+                    controls
+                    preload="metadata"
+                    poster="/ciroos_video_thumbnail.png"
+                  >
+                    <source src="/ciroos_welcome_video.mp4" type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                  
+                  {/* Video Overlay Gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/20 pointer-events-none"></div>
+                </div>
+
+                {/* Video Info Badge */}
+                <div className="mt-3 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#F45D16]/20 to-[#FF6B35]/20 flex items-center justify-center border border-[#F45D16]/30">
+                      <Icon icon="mdi:information" className="w-4 h-4 text-[#F45D16]" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-white">Video Pengenalan</p>
+                      <p className="text-[10px] text-white/60">Pelajari cara kerja Ciroos AI</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-1 bg-white/5 px-2 py-1 rounded-lg border border-white/10">
+                    <Icon icon="mdi:clock-outline" className="w-3 h-3 text-white/60" />
+                    <span className="text-[10px] text-white/70 font-medium">1:10</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         
         {/* Copyright */}
         <div className="text-center text-white/40 text-[10px] flex items-center justify-center gap-1.5 mt-8">
