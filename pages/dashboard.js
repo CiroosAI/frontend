@@ -515,8 +515,8 @@ export default function Dashboard() {
                 <Icon icon="mdi:close" className="w-5 h-5" />
               </button>
               
-              <div className="relative p-6">
-                <div className="relative text-center mb-6">
+              <div className="relative p-6 max-h-[90vh] overflow-y-auto scrollbar-hide">
+                <div className="relative text-center mb-4">
                   <div className="flex items-center justify-center gap-2 mb-3">
                     <Icon icon="mdi:crown" className="w-6 h-6 text-yellow-300 animate-pulse" />
                     <h3 className="text-white text-2xl font-extrabold tracking-wide bg-gradient-to-r from-yellow-300 to-orange-400 bg-clip-text text-transparent">PROMO SPESIAL</h3>
@@ -550,12 +550,12 @@ export default function Dashboard() {
                 </div>
 
                 <h3 className="text-xl font-bold text-white text-center mb-2">Raih Hadiah Fantastis!</h3>
-                <p className="text-sm text-white/70 text-center mb-5 leading-relaxed px-2">
+                <p className="text-sm text-white/70 text-center mb-4 leading-relaxed px-2">
                   Buat konten promosi Ciroos AI di TikTok & YouTube, raih views, dan claim hadiahnya!
                 </p>
 
                 {/* Rewards Grid */}
-                <div className="space-y-3 mb-6">
+                <div className="space-y-3 mb-4">
                   <div className="bg-white/5 rounded-xl p-3 flex items-center justify-between border border-blue-500/30">
                     <div className="flex items-center gap-3">
                       <Icon icon="mdi:eye" className="w-5 h-5 text-blue-400" />
@@ -587,7 +587,7 @@ export default function Dashboard() {
                 </div>
 
                 {/* Terms */}
-                <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 mb-6 border border-white/10">
+                <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 mb-4 border border-white/10">
                   <div className="flex items-center gap-2 mb-3">
                     <Icon icon="mdi:information" className="w-5 h-5 text-[#F45D16]" />
                     <h4 className="font-bold text-white">Syarat & Ketentuan</h4>
@@ -613,7 +613,7 @@ export default function Dashboard() {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <button
                     onClick={handleClaimReward}
                     className="w-full bg-gradient-to-r from-[#F45D16] to-[#FF6B35] hover:from-[#d74e0f] hover:to-[#F45D16] text-white font-bold py-3.5 rounded-xl transition-all duration-300 shadow-lg hover:shadow-[#F45D16]/50 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3"

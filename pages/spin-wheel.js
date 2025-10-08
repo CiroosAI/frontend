@@ -2,9 +2,9 @@
 import { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { getSpinPrizeList, spinWheel, spinV2 } from '../../utils/api';
+import { getSpinPrizeList, spinWheel, spinV2 } from '../utils/api';
 import { Icon } from '@iconify/react';
-import BottomNavbar from '../../components/BottomNavbar';
+import BottomNavbar from '../components/BottomNavbar';
 
 export default function SpinWheel() {
   const router = useRouter();
@@ -422,31 +422,6 @@ export default function SpinWheel() {
           </button>
         </div>
 
-        {/* Prize List */}
-        <div className="bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-3xl p-6 border border-white/10">
-          <h2 className="text-xl font-bold text-white mb-4 text-center flex items-center justify-center gap-2">
-            <Icon icon="mdi:gift" className="w-6 h-6 text-[#F45D16]" />
-            Daftar Hadiah
-          </h2>
-          <div className="grid gap-3">
-            {prizes.map((prize, index) => (
-              <div
-                key={index}
-                className="flex items-center p-3 rounded-xl bg-white/5 border border-white/10"
-              >
-                <div className="flex items-center gap-3 w-full">
-                  <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm"
-                    style={{ backgroundColor: prize.color }}
-                  >
-                    {index + 1}
-                  </div>
-                  <div className="text-white/80 font-medium text-sm">{prize.name}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
         {/* Copyright dengan jarak yang cukup dari bottom navbar */}
         <div className="text-center text-white/60 text-xs flex items-center justify-center gap-2 mt-8">
           <Icon icon="solar:copyright-bold" className="w-3 h-3" />

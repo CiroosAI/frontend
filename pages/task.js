@@ -1,15 +1,20 @@
-// pages/bonus-hub.js
+// pages/task.js
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import BottomNavbar from '../components/BottomNavbar';
 import { Icon } from '@iconify/react';
+import { getBonusTasks, submitBonusTask } from '../utils/api';
+import BottomNavbar from '../components/BottomNavbar';
 
-export default function BonusHub() {
+export default function Bonus() {
   const router = useRouter();
-  const [userData, setUserData] = useState({});
-  const [isClient, setIsClient] = useState(false);
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [claiming, setClaiming] = useState({});
+  const [message, setMessage] = useState('');
+  const [referralCode, setReferralCode] = useState('');
   const [applicationData, setApplicationData] = useState(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -19,28 +24,64 @@ export default function BonusHub() {
       router.push('/login');
       return;
     }
-    setIsClient(true);
     try {
       const userStr = localStorage.getItem('user');
-      setUserData(userStr ? JSON.parse(userStr) : {});
-    } catch {
-      setUserData({});
-    }
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        if (user && user.reff_code) setReferralCode(user.reff_code);
+      }
+    } catch {}
     const storedApplication = localStorage.getItem('application');
-  if (storedApplication) {
-    try {
-      const parsed = JSON.parse(storedApplication); 
-      setApplicationData({
-        name: parsed.name || 'Ciroos AI',
-        healthy: parsed.healthy || false,
-      });
-    } catch (e) {
+    if (storedApplication) {
+      try {
+        const parsed = JSON.parse(storedApplication); 
+        setApplicationData({
+          name: parsed.name || 'Ciroos AI',
+          healthy: parsed.healthy || false,
+        });
+      } catch (e) {
+        setApplicationData({ name: 'Ciroos AI', healthy: false });
+      }
+    } else {
       setApplicationData({ name: 'Ciroos AI', healthy: false });
     }
-  } else {
-    setApplicationData({ name: 'Ciroos AI', healthy: false });
-  }
   }, []);
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(referralCode);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  useEffect(() => {
+    let ignore = false;
+    setLoading(true);
+    setMessage('');
+    getBonusTasks()
+      .then(res => {
+        if (!ignore) setTasks(res.data || []);
+      })
+      .catch(e => { if (!ignore) setMessage(e.message || 'Gagal memuat tugas'); })
+      .finally(() => { if (!ignore) setLoading(false); });
+    return () => { ignore = true; };
+  }, []);
+
+  const handleClaim = async (taskId) => {
+    setClaiming(prev => ({ ...prev, [taskId]: true }));
+    setMessage('');
+    try {
+      await submitBonusTask(taskId);
+      setMessage('Selamat! Hadiah berhasil diklaim.');
+      setLoading(true);
+      const res = await getBonusTasks();
+      setTasks(res.data || []);
+    } catch (e) {
+      setMessage(e.message || 'Gagal mengambil hadiah');
+    } finally {
+      setClaiming(prev => ({ ...prev, [taskId]: false }));
+      setLoading(false);
+    }
+  };
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('id-ID').format(amount);
@@ -49,86 +90,222 @@ export default function BonusHub() {
   return (
     <div className="min-h-screen bg-[#0A0A0A] pb-32 relative overflow-hidden">
       <Head>
-        <title>{applicationData?.name || 'Ciroos AI'} | Bonus Hub</title>
-        <meta name="description" content={`${applicationData?.name || 'Ciroos AI'} Bonus Hub`} />
+        <title>{applicationData?.name || 'Ciroos AI'} | Bonus Tasks</title>
+        <meta name="description" content={`${applicationData?.name || 'Ciroos AI'} Bonus Tasks`} />
         <link rel="icon" href="/favicon.png" />
       </Head>
 
-      {/* Animated star background */}
+      {/* Background elements */}
       <div className="stars"></div>
       <div className="stars1"></div>
       <div className="stars2"></div>
-                      <div className="shooting-stars"></div>
-
-
-      {/* Gradient overlays */}
+      <div className='shooting-stars'></div>
       <div className="absolute inset-0 bg-[radial-gradient(100%_80%_at_85%_0%,rgba(0,88,188,0.3)_0%,rgba(0,0,0,0.1)_50%,rgba(0,0,0,0)_100%)]"></div>
       <div className="absolute inset-0 bg-[radial-gradient(90%_70%_at_0%_100%,rgba(255,100,0,0.25)_0%,rgba(0,0,0,0.1)_50%,rgba(0,0,0,0)_100%)]"></div>
 
+      {/* Top Navigation */}
+      <div className="sticky top-0 z-20 bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/10">
+        <div className="max-w-sm mx-auto p-4 flex items-center">
+          <button 
+            onClick={() => router.back()}
+            className="p-2 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all"
+          >
+            <Icon icon="mdi:arrow-left" className="w-6 h-6" />
+          </button>
+          <div className="flex-1 text-center">
+            <h1 className="text-lg font-bold text-white">Bonus Tasks</h1>
+          </div>
+          <div className="w-10"></div>
+        </div>
+      </div>
+
       <div className="max-w-sm mx-auto p-4 relative z-10">
-        {/* Header Section */}
-        <div className="text-center mb-6 pt-2">
-          <div className="inline-flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#F45D16] to-[#FF6B35] flex items-center justify-center shadow-lg">
+        {/* Hero Section - Compact */}
+        <div className="relative mb-5">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#F45D16] to-[#0058BC] rounded-2xl blur opacity-20"></div>
+          <div className="relative bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-2xl p-5 border border-white/10 text-center">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#F45D16] to-[#FF6B35] flex items-center justify-center mx-auto mb-3">
               <Icon icon="mdi:gift" className="w-7 h-7 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-white">Pusat Bonus</h1>
-          </div>
-          <p className="text-white/60 text-sm">
-            Tingkatkan penghasilan Anda dengan berbagai bonus dan hadiah menarik!
-          </p>
-        </div>
-
-        {/* Action Cards */}
-        <div className="space-y-4 mb-6">
-          {/* Spin Wheel Card */}
-          <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#F45D16]/30 to-[#FF6B35]/30 rounded-2xl blur opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
-            <button
-              onClick={() => router.push('/bonus-hub/spin-wheel')}
-              className="relative w-full bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-2xl p-4 border border-white/10 group-hover:border-white/20 transition-all duration-300"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#F45D16] to-[#FF6B35] rounded-xl flex items-center justify-center shadow-lg">
-                    <Icon icon="mdi:dharmachakra" className="w-6 h-6 text-white animate-spin" style={{ animationDuration: '5s' }} />
-                  </div>
-                  <div>
-                    <h3 className="text-base font-bold text-white text-left">Spin Wheel</h3>
-                    <p className="text-xs text-white/60 text-left">Putar & menangkan hadiah</p>
-                  </div>
-                </div>
-                <Icon icon="mdi:chevron-right" className="w-6 h-6 text-white/50 group-hover:text-white transition-colors" />
-              </div>
-            </button>
-          </div>
-
-          {/* Bonus Tasks Card */}
-          <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0058BC]/30 to-[#F45D16]/30 rounded-2xl blur opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
-            <button
-              onClick={() => router.push('/bonus-hub/task')}
-              className="relative w-full bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-2xl p-4 border border-white/10 group-hover:border-white/20 transition-all duration-300"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#0058BC] to-[#3D85C6] rounded-xl flex items-center justify-center shadow-lg">
-                    <Icon icon="mdi:star-circle" className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-base font-bold text-white text-left">Bonus Tasks</h3>
-                    <p className="text-xs text-white/60 text-left">Selesaikan & klaim bonus</p>
-                  </div>
-                </div>
-                <Icon icon="mdi:chevron-right" className="w-6 h-6 text-white/50 group-hover:text-white transition-colors" />
-              </div>
-            </button>
+            <h2 className="text-lg font-bold text-white mb-2">Raih Bonus Eksklusif</h2>
+            <p className="text-white/60 text-xs leading-relaxed">
+              Undang anggota aktif dan klaim hadiah spesial
+            </p>
           </div>
         </div>
 
-        {/* Copyright dengan jarak yang cukup dari bottom navbar */}
+        {/* Referral Code - Inline Design */}
+        <div className="bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-2xl p-4 border border-white/10 mb-5">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Icon icon="mdi:key" className="w-5 h-5 text-[#F45D16]" />
+              <span className="text-white font-semibold text-sm">Kode Referral</span>
+            </div>
+            <button
+              onClick={copyToClipboard}
+              className={`p-2 rounded-lg transition-all ${
+                copied 
+                  ? 'bg-green-500/20 text-green-400' 
+                  : 'bg-white/5 text-white/70 hover:bg-white/10'
+              }`}
+            >
+              <Icon icon={copied ? "mdi:check" : "mdi:content-copy"} className="w-5 h-5" />
+            </button>
+          </div>
+          <div className="bg-white/5 rounded-xl p-3 border border-white/10">
+            <p className="text-white font-mono font-bold text-center text-lg tracking-widest">
+              {referralCode || '---'}
+            </p>
+          </div>
+        </div>
+
+        {/* Tasks Grid - Cards with Different Layout */}
+        {loading ? (
+          <div className="flex flex-col items-center justify-center my-12">
+            <div className="relative">
+              <div className="animate-spin rounded-full h-12 w-12 border-3 border-[#F45D16]/20 border-t-[#F45D16]"></div>
+              <div className="absolute inset-0 animate-ping rounded-full h-12 w-12 border-2 border-[#F45D16]/40"></div>
+            </div>
+            <p className="text-white/70 text-center mt-4 text-sm">Memuat tugas bonus...</p>
+          </div>
+        ) : tasks.length === 0 ? (
+          <div className="bg-[#1A1A1A] border border-white/10 rounded-2xl p-8 text-center">
+            <Icon icon="mdi:gift-off" className="w-16 h-16 text-white/30 mx-auto mb-4" />
+            <h3 className="text-white font-bold mb-2">Tidak Ada Tugas</h3>
+            <p className="text-white/60 text-sm">Tugas bonus belum tersedia saat ini</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {tasks.map((task) => {
+              const percent = task.percent || 0;
+              const isLocked = task.lock;
+              const isTaken = task.taken;
+              const canClaim = !isLocked && !isTaken;
+              
+              return (
+                <div
+                  key={task.id} 
+                  className="relative bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-2xl border border-white/10 overflow-hidden"
+                >
+                  {/* Top Section with Name & Status */}
+                  <div className={`p-4 border-b ${canClaim ? 'bg-gradient-to-r from-[#F45D16]/10 to-[#FF6B35]/10 border-[#F45D16]/20' : 'border-white/5'}`}>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                          canClaim 
+                            ? 'bg-gradient-to-br from-[#F45D16] to-[#FF6B35]' 
+                            : isTaken 
+                              ? 'bg-green-500/20' 
+                              : 'bg-white/5'
+                        }`}>
+                          <Icon 
+                            icon={isTaken ? "mdi:check-circle" : isLocked ? "mdi:lock" : "mdi:gift"} 
+                            className={`w-5 h-5 ${canClaim ? 'text-white' : isTaken ? 'text-green-400' : 'text-white/40'}`} 
+                          />
+                        </div>
+                        <div>
+                          <h3 className="text-white font-bold text-sm">{task.name}</h3>
+                          <p className="text-white/60 text-xs">Level {task.required_level} Required</p>
+                        </div>
+                      </div>
+                      {canClaim && (
+                        <div className="bg-gradient-to-r from-[#F45D16] to-[#FF6B35] text-white text-[10px] font-bold py-1 px-2 rounded-lg">
+                          AKTIF
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Stats Section - Grid Layout */}
+                  <div className="p-4">
+                    <div className="grid grid-cols-2 gap-3 mb-3">
+                      <div className="bg-white/5 rounded-xl p-3 border border-white/5">
+                        <p className="text-white/60 text-[10px] mb-1">Anggota Aktif</p>
+                        <p className="text-white font-bold text-base">
+                          {task.active_subordinate_count}/{task.required_active_members}
+                        </p>
+                      </div>
+                      <div className="bg-white/5 rounded-xl p-3 border border-white/5">
+                        <p className="text-white/60 text-[10px] mb-1">Hadiah</p>
+                        <p className="text-[#F45D16] font-bold text-base">
+                          Rp {formatCurrency(task.reward)}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Progress Bar */}
+                    <div className="mb-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-white/60 text-xs">Progress</span>
+                        <span className="text-white font-bold text-xs">{percent}%</span>
+                      </div>
+                      <div className="h-2 bg-white/5 rounded-full overflow-hidden border border-white/10">
+                        <div 
+                          className={`h-full rounded-full transition-all duration-500 ${
+                            canClaim 
+                              ? 'bg-gradient-to-r from-[#F45D16] to-[#FF6B35]' 
+                              : 'bg-white/20'
+                          }`}
+                          style={{ width: `${percent}%` }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    {/* Action Button */}
+                    <button
+                      className={`w-full flex items-center justify-center gap-2 font-bold py-3 rounded-xl transition-all duration-300 ${
+                        canClaim
+                          ? 'bg-gradient-to-r from-[#F45D16] to-[#FF6B35] text-white hover:scale-[1.02] active:scale-[0.98] shadow-lg'
+                          : isTaken
+                            ? 'bg-green-500/10 text-green-400 cursor-not-allowed border border-green-500/20'
+                            : 'bg-white/5 text-white/40 cursor-not-allowed border border-white/10'
+                      }`}
+                      disabled={!canClaim || claiming[task.id]}
+                      onClick={() => handleClaim(task.id)}
+                    >
+                      {claiming[task.id] ? (
+                        <>
+                          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                          <span className="text-sm">Memproses...</span>
+                        </>
+                      ) : isTaken ? (
+                        <>
+                          <Icon icon="mdi:check-circle" className="w-5 h-5" />
+                          <span className="text-sm">Terklaim</span>
+                        </>
+                      ) : isLocked ? (
+                        <>
+                          <Icon icon="mdi:lock" className="w-5 h-5" />
+                          <span className="text-sm">Terkunci</span>
+                        </>
+                      ) : (
+                        <>
+                          <Icon icon="mdi:gift" className="w-5 h-5" />
+                          <span className="text-sm">Klaim Hadiah</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Success Message */}
+        {message && (
+          <div className="relative animate-fadeIn mt-5">
+            <div className="absolute -inset-0.5 bg-green-500/50 rounded-2xl blur"></div>
+            <div className="relative bg-green-500/10 border border-green-400/30 rounded-2xl p-4 flex items-start gap-3">
+              <Icon icon="mdi:check-circle" className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+              <span className="text-green-300 text-sm leading-relaxed">{message}</span>
+            </div>
+          </div>
+        )}
+
+        {/* Copyright */}
         <div className="text-center text-white/40 text-[10px] flex items-center justify-center gap-1.5 mt-8">
-          <Icon icon="solar:copyright-bold" className="w-3 h-3" />
+          <Icon icon="mdi:copyright" className="w-3 h-3" />
           <span>2025 {applicationData?.company || 'Ciroos, Inc'}. All Rights Reserved.</span>
         </div>
       </div>
@@ -141,8 +318,7 @@ export default function BonusHub() {
       </div>
 
       <style jsx global>{`
-          /* Stars animation from Ciroos */
-          .stars {
+        .stars {
   z-index: 10;
   width: 1px;
   height: 1px;
@@ -276,8 +452,7 @@ export default function BonusHub() {
           .animate-fadeIn { animation: fadeIn 0.6s ease-out; }
           .animate-slideUp { animation: slideUp 0.5s ease-out; }
           .animate-shake { animation: shake 0.5s ease-in-out; }
-        `}</style>
-      </div>
-    
+      `}</style>
+    </div>
   );
 }

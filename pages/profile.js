@@ -367,21 +367,6 @@ export default function Profile() {
             </button>
           )}
           
-          <a
-            href="https://t.me/vla_channel"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-white/5 hover:bg-white/10 text-white font-semibold p-4 rounded-2xl transition-all duration-300 border border-white/10 hover:scale-[1.02] active:scale-[0.98] flex items-center gap-3"
-          >
-            <div className="w-10 h-10 bg-green-500/10 rounded-xl flex items-center justify-center">
-              <Icon icon="mdi:whatsapp" className="w-5 h-5 text-green-400" />
-            </div>
-            <div className="flex-1 text-left">
-              <p className="font-semibold text-sm">Saluran</p>
-              <p className="text-xs text-white/60">WhatsApp</p>
-            </div>
-          </a>
-          
           <button 
             onClick={() => router.push('/password')}
             className="bg-white/5 hover:bg-white/10 text-white font-semibold p-4 rounded-2xl transition-all duration-300 border border-white/10 hover:scale-[1.02] active:scale-[0.98] flex items-center gap-3"
