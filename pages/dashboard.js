@@ -20,7 +20,8 @@ export default function Dashboard() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [toast, setToast] = useState({ open: false, message: '', type: 'success' });
-  const [showPopup, setShowPopup] = useState(false);
+  const [showWelcomePopup, setShowWelcomePopup] = useState(false);
+  const [showPromoPopup, setShowPromoPopup] = useState(false);
   const [hidePopupChecked, setHidePopupChecked] = useState(false);
 
   useEffect(() => {
@@ -75,7 +76,7 @@ export default function Dashboard() {
 
     if (!popupHiddenUntil || now > parseInt(popupHiddenUntil)) {
       const popupTimer = setTimeout(() => {
-        setShowPopup(true);
+        setShowWelcomePopup(true);
       }, 1000);
       return () => clearTimeout(popupTimer);
     }
@@ -131,13 +132,26 @@ export default function Dashboard() {
     return { text: 'Unhealthy', color: 'text-red-400' };
   };
 
-  const handleClosePopup = () => {
+  const handleCloseWelcomePopup = () => {
+    setShowWelcomePopup(false);
+    setTimeout(() => {
+      setShowPromoPopup(true);
+    }, 300);
+  };
+
+  const handleClosePromoPopup = () => {
     if (hidePopupChecked) {
       const tenMinutesFromNow = new Date().getTime() + 10 * 60 * 1000;
       localStorage.setItem('popupHiddenUntil', tenMinutesFromNow.toString());
     }
-    setShowPopup(false);
+    setShowPromoPopup(false);
     setHidePopupChecked(false);
+  };
+
+  const handleClaimReward = () => {
+    if (applicationData?.link_cs) {
+      window.open(applicationData.link_cs, '_blank');
+    }
   };
 
   return (
@@ -230,35 +244,6 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-
-        {/* Quick Stats - Redesigned */}
-        {/*<div className="grid grid-cols-2 gap-3 mb-6">
-          <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-br from-[#F45D16]/50 to-[#FF6B35]/50 rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity"></div>
-            <div className="relative bg-[#1A1A1A] rounded-2xl p-4 border border-white/10">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-8 rounded-lg bg-[#F45D16]/10 flex items-center justify-center">
-                  <Icon icon="mdi:chart-box" className="text-[#F45D16] w-4 h-4" />
-                </div>
-                <span className="text-white/70 text-xs font-medium">Produk</span>
-              </div>
-              <p className="text-2xl font-bold text-white">{products.length}</p>
-            </div>
-          </div>
-          
-          <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-br from-[#0058BC]/50 to-[#F45D16]/50 rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity"></div>
-            <div className="relative bg-[#1A1A1A] rounded-2xl p-4 border border-white/10">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-8 rounded-lg bg-[#0058BC]/10 flex items-center justify-center">
-                  <Icon icon="mdi:heart-pulse" className="text-[#0058BC] w-4 h-4" />
-                </div>
-                <span className="text-white/70 text-xs font-medium">Status</span>
-              </div>
-              <p className={`text-lg font-bold ${getHealthStatus().color}`}>{getHealthStatus().text}</p>
-            </div>
-          </div>
-        </div>*/}
 
         {/* Loading spinner */}
         {loading && (
@@ -403,46 +388,259 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Popup Modal */}
-      {showPopup && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-fadeIn">
-          <div className="relative bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-3xl border-2 border-[#F45D16]/50 shadow-2xl shadow-[#F45D16]/20 max-w-sm w-full overflow-hidden animate-slideUp">
-            <button
-              onClick={handleClosePopup}
-              className="absolute top-3 right-3 z-10 bg-red-500 hover:bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center transition-all duration-300 shadow-lg"
-            >
-              <Icon icon="mdi:close" className="w-5 h-5" />
-            </button>
-            <div className="relative">
-              <div className="w-full aspect-square bg-gradient-to-r from-[#F45D16] to-[#0058BC] flex items-center justify-center relative overflow-hidden">
-                <Image 
-                  src="/popup.png" 
-                  alt="Welcome to Ciroos AI" 
-                  className="w-full h-full object-cover"
-                  layout="fill"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                    const fallback = document.getElementById('popup-fallback');
-                    if (fallback) fallback.style.display = 'flex';
-                  }}
-                />
-                <div id="popup-fallback" className="hidden flex-col items-center justify-center text-white text-center p-4 absolute inset-0 bg-gradient-to-r from-[#F45D16] to-[#0058BC]">
-                  <div className="text-4xl font-bold mb-2">🎉</div>
-                  <h3 className="text-2xl font-bold mb-1">PROMO BESAR-BESARAN</h3>
-                  <div className="text-3xl font-extrabold mb-2">BONUS 10%!</div>
+      {/* Welcome Popup Modal */}
+      {showWelcomePopup && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-fadeIn">
+          <div className="relative max-w-sm w-full animate-slideUp">
+            {/* Glow Effect */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-[#F45D16] to-[#0058BC] rounded-3xl blur-xl opacity-30"></div>
+            
+            <div className="relative bg-gradient-to-br from-[#1A1A1A] via-[#0F0F0F] to-[#1A1A1A] rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
+              {/* Decorative Elements */}
+              <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-[#F45D16]/20 to-transparent rounded-full blur-3xl"></div>
+              <div className="absolute bottom-0 left-0 w-40 h-40 bg-gradient-to-tr from-[#0058BC]/20 to-transparent rounded-full blur-3xl"></div>
+              
+              <button
+                onClick={handleCloseWelcomePopup}
+                className="absolute top-4 right-4 z-10 bg-red-500/90 hover:bg-red-600 backdrop-blur-sm text-white rounded-full w-9 h-9 flex items-center justify-center transition-all duration-300 shadow-lg hover:scale-110"
+              >
+                <Icon icon="mdi:close" className="w-5 h-5" />
+              </button>
+              
+              <div className="relative p-6">
+                {/* Logo with Glow */}
+                <div className="flex justify-center mb-6">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-[#F45D16]/30 blur-xl rounded-full"></div>
+                    <Image 
+                      src="/logo_full.svg" 
+                      alt="Ciroos AI Logo" 
+                      width={140} 
+                      height={44}
+                      className="relative drop-shadow-[0_0_20px_rgba(244,93,22,0.6)]"
+                    />
+                  </div>
+                </div>
+
+                {/* Greeting with Animation */}
+                <div className="text-center mb-6">
+                  <div className="inline-flex items-center gap-2 mb-3">
+                    <div className="w-2 h-2 bg-[#F45D16] rounded-full animate-pulse"></div>
+                    <h2 className="text-2xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+                      Selamat Datang, {userData?.name || 'Investor'}!
+                    </h2>
+                    <div className="w-2 h-2 bg-[#0058BC] rounded-full animate-pulse"></div>
+                  </div>
+                  <p className="text-white/60 text-sm">Platform investasi AI terpercaya</p>
+                </div>
+                
+                {/* Feature Highlights */}
+                <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 mb-5">
+                  <div className="grid grid-cols-3 gap-3 mb-4">
+                    <div className="text-center">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#F45D16]/20 to-[#FF6B35]/20 flex items-center justify-center mx-auto mb-2 border border-[#F45D16]/30">
+                        <Icon icon="mdi:shield-check" className="w-5 h-5 text-[#F45D16]" />
+                      </div>
+                      <p className="text-[10px] text-white/70 font-medium">Aman</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0058BC]/20 to-[#F45D16]/20 flex items-center justify-center mx-auto mb-2 border border-[#0058BC]/30">
+                        <Icon icon="mdi:lightning-bolt" className="w-5 h-5 text-[#0058BC]" />
+                      </div>
+                      <p className="text-[10px] text-white/70 font-medium">Cepat</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center mx-auto mb-2 border border-green-500/30">
+                        <Icon icon="mdi:trophy" className="w-5 h-5 text-green-400" />
+                      </div>
+                      <p className="text-[10px] text-white/70 font-medium">Profit</p>
+                    </div>
+                  </div>
+                  
+                  <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-4"></div>
+                  
+                  <p className="text-white/70 text-xs text-center leading-relaxed">
+                    Bergabunglah dengan komunitas kami untuk mendapatkan update terbaru dan dukungan 24/7
+                  </p>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="space-y-3">
+                  <button
+                    onClick={() => {
+                      if (applicationData?.link_group) {
+                        window.open(applicationData.link_group, '_blank');
+                      }
+                    }}
+                    className="w-full bg-gradient-to-r from-[#0088cc] to-[#0099dd] hover:from-[#0077bb] hover:to-[#0088cc] text-white font-bold py-3.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-[#0088cc]/50 hover:scale-[1.02] active:scale-[0.98]"
+                  >
+                    <Icon icon="mdi:telegram" className="w-5 h-5" />
+                    <span>Gabung Channel Telegram</span>
+                  </button>
+                  
+                  <button
+                    onClick={() => {
+                      if (applicationData?.link_cs) {
+                        window.open(applicationData.link_cs, '_blank');
+                      }
+                    }}
+                    className="w-full bg-gradient-to-r from-[#25D366] to-[#128C7E] hover:from-[#20BD5A] hover:to-[#0F7A6C] text-white font-bold py-3.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-[#25D366]/50 hover:scale-[1.02] active:scale-[0.98]"
+                  >
+                    <Icon icon="mdi:whatsapp" className="w-5 h-5" />
+                    <span>Hubungi Customer Service</span>
+                  </button>
                 </div>
               </div>
-              <div className="p-4 bg-[#1A1A1A]/50 backdrop-blur-sm">
-                <div className="flex items-center gap-2">
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Promo Popup Modal */}
+      {showPromoPopup && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-fadeIn">
+          <div className="relative max-w-sm w-full animate-slideUp">
+            {/* Glow Effect */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-[#F45D16] to-[#0058BC] rounded-3xl blur-xl opacity-30"></div>
+            
+            <div className="relative bg-gradient-to-br from-[#1A1A1A] via-[#0F0F0F] to-[#1A1A1A] rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
+              {/* Decorative Elements */}
+              <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-[#F45D16]/20 to-transparent rounded-full blur-3xl"></div>
+              <div className="absolute bottom-0 left-0 w-40 h-40 bg-gradient-to-tr from-[#0058BC]/20 to-transparent rounded-full blur-3xl"></div>
+
+              <button
+                onClick={handleClosePromoPopup}
+                className="absolute top-4 right-4 z-10 bg-red-500/90 hover:bg-red-600 backdrop-blur-sm text-white rounded-full w-9 h-9 flex items-center justify-center transition-all duration-300 shadow-lg hover:scale-110"
+              >
+                <Icon icon="mdi:close" className="w-5 h-5" />
+              </button>
+              
+              <div className="relative p-6">
+                <div className="relative text-center mb-6">
+                  <div className="flex items-center justify-center gap-2 mb-3">
+                    <Icon icon="mdi:crown" className="w-6 h-6 text-yellow-300 animate-pulse" />
+                    <h3 className="text-white text-2xl font-extrabold tracking-wide bg-gradient-to-r from-yellow-300 to-orange-400 bg-clip-text text-transparent">PROMO SPESIAL</h3>
+                    <Icon icon="mdi:crown" className="w-6 h-6 text-yellow-300 animate-pulse" />
+                  </div>
+                  
+                  <div className="flex items-center justify-center gap-4">
+                    {/* TikTok Icon */}
+                    <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20">
+                      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none">
+                        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" 
+                        fill="url(#tiktok-gradient)"/>
+                        <defs>
+                          <linearGradient id="tiktok-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style={{ stopColor: '#00f2ea' }} />
+                            <stop offset="100%" style={{ stopColor: '#ff0050' }} />
+                          </linearGradient>
+                        </defs>
+                      </svg>
+                    </div>
+                    
+                    <div className="text-white font-bold text-lg">&</div>
+                    
+                    {/* YouTube Icon */}
+                    <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20">
+                      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                        <path fill="#FF0000" d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                <h3 className="text-xl font-bold text-white text-center mb-2">Raih Hadiah Fantastis!</h3>
+                <p className="text-sm text-white/70 text-center mb-5 leading-relaxed px-2">
+                  Buat konten promosi Ciroos AI di TikTok & YouTube, raih views, dan claim hadiahnya!
+                </p>
+
+                {/* Rewards Grid */}
+                <div className="space-y-3 mb-6">
+                  <div className="bg-white/5 rounded-xl p-3 flex items-center justify-between border border-blue-500/30">
+                    <div className="flex items-center gap-3">
+                      <Icon icon="mdi:eye" className="w-5 h-5 text-blue-400" />
+                      <span className="font-semibold text-white">20K views</span>
+                    </div>
+                    <span className="font-bold text-blue-400 text-lg">Rp 100K</span>
+                  </div>
+                  <div className="bg-white/5 rounded-xl p-3 flex items-center justify-between border border-purple-500/30">
+                    <div className="flex items-center gap-3">
+                      <Icon icon="mdi:eye" className="w-5 h-5 text-purple-400" />
+                      <span className="font-semibold text-white">50K views</span>
+                    </div>
+                    <span className="font-bold text-purple-400 text-lg">Rp 300K</span>
+                  </div>
+                  <div className="bg-white/5 rounded-xl p-3 flex items-center justify-between border border-green-500/30">
+                    <div className="flex items-center gap-3">
+                      <Icon icon="mdi:eye" className="w-5 h-5 text-green-400" />
+                      <span className="font-semibold text-white">100K views</span>
+                    </div>
+                    <span className="font-bold text-green-400 text-lg">Rp 700K</span>
+                  </div>
+                  <div className="bg-white/5 rounded-xl p-3 flex items-center justify-between border border-orange-500/30">
+                    <div className="flex items-center gap-3">
+                      <Icon icon="mdi:fire" className="w-5 h-5 text-orange-400" />
+                      <span className="font-semibold text-white">500K views</span>
+                    </div>
+                    <span className="font-bold text-orange-400 text-lg">Rp 2JT</span>
+                  </div>
+                </div>
+
+                {/* Terms */}
+                <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 mb-6 border border-white/10">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Icon icon="mdi:information" className="w-5 h-5 text-[#F45D16]" />
+                    <h4 className="font-bold text-white">Syarat & Ketentuan</h4>
+                  </div>
+                  <ul className="space-y-2 text-sm text-white/70 leading-relaxed">
+                    <li className="flex items-start gap-2">
+                      <Icon icon="mdi:check-circle" className="w-4 h-4 text-[#F45D16] flex-shrink-0 mt-1" />
+                      <span>Video original berkualitas HD, tanpa re-upload.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Icon icon="mdi:check-circle" className="w-4 h-4 text-[#F45D16] flex-shrink-0 mt-1" />
+                      <span>Dilarang menggunakan BOT atau fake views.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Icon icon="mdi:check-circle" className="w-4 h-4 text-[#F45D16] flex-shrink-0 mt-1" />
+                      <span>Wajib mencantumkan link referral di bio/deskripsi.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Icon icon="mdi:check-circle" className="w-4 h-4 text-[#F45D16] flex-shrink-0 mt-1" />
+                      <span>Hadiah akan ditambahkan langsung ke saldo akun.</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="space-y-3">
+                  <button
+                    onClick={handleClaimReward}
+                    className="w-full bg-gradient-to-r from-[#F45D16] to-[#FF6B35] hover:from-[#d74e0f] hover:to-[#F45D16] text-white font-bold py-3.5 rounded-xl transition-all duration-300 shadow-lg hover:shadow-[#F45D16]/50 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3"
+                  >
+                    <Icon icon="mdi:gift" className="w-5 h-5" />
+                    <span>Klaim Hadiah Sekarang</span>
+                  </button>
+
+                  <button
+                    onClick={handleClosePromoPopup}
+                    className="w-full bg-white/5 hover:bg-white/10 text-white/80 font-semibold py-3 rounded-xl transition-all duration-300 border border-white/10"
+                  >
+                    Nanti Saja
+                  </button>
+                </div>
+
+                {/* Hide Checkbox */}
+                <div className="flex items-center gap-2 mt-4 justify-center">
                   <input
                     type="checkbox"
-                    id="hidePopup"
+                    id="hidePromoPopup"
                     checked={hidePopupChecked}
                     onChange={(e) => setHidePopupChecked(e.target.checked)}
-                    className="w-4 h-4 rounded border-gray-500 bg-transparent text-[#F45D16] focus:ring-[#F45D16]"
+                    className="w-4 h-4 rounded border-white/30 bg-white/5 text-[#F45D16] focus:ring-[#F45D16] focus:ring-offset-0"
                   />
-                  <label htmlFor="hidePopup" className="text-white/80 text-sm">
-                    Jangan tampilkan lagi selama 10 menit
+                  <label htmlFor="hidePromoPopup" className="text-xs text-white/50">
+                    Jangan tampilkan selama 10 menit
                   </label>
                 </div>
               </div>

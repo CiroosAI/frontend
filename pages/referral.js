@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { getTeamInvited } from '../utils/api';
+import { getTeamInvited, getBonusTasks, submitBonusTask } from '../utils/api';
 import { Icon } from '@iconify/react';
 import BottomNavbar from '../components/BottomNavbar';
 
@@ -15,6 +15,12 @@ export default function Komisi() {
     2: { active: 0, count: 0 },
     3: { active: 0, count: 0 },
   });
+  
+  // Bonus Tasks State
+  const [tasks, setTasks] = useState([]);
+  const [loadingTasks, setLoadingTasks] = useState(true);
+  const [claiming, setClaiming] = useState({});
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -37,11 +43,25 @@ export default function Komisi() {
       } catch (e) {}
     }
     
+    // Get Team Data
     getTeamInvited()
       .then((res) => {
         if (res && res.data) setTeamStats(res.data);
       })
       .catch(() => {});
+    
+    // Get Bonus Tasks
+    setLoadingTasks(true);
+    getBonusTasks()
+      .then(res => {
+        setTasks(res.data || []);
+      })
+      .catch(e => { 
+        setMessage(e.message || 'Gagal memuat tugas'); 
+      })
+      .finally(() => { 
+        setLoadingTasks(false); 
+      });
       
     const storedApplication = localStorage.getItem('application');
     if (storedApplication) {
@@ -65,6 +85,27 @@ export default function Komisi() {
     setTimeout(() => setCopied((prev) => ({ ...prev, [type]: false })), 2000);
   };
 
+  const handleClaim = async (taskId) => {
+    setClaiming(prev => ({ ...prev, [taskId]: true }));
+    setMessage('');
+    try {
+      await submitBonusTask(taskId);
+      setMessage('Selamat! Hadiah berhasil diklaim.');
+      setLoadingTasks(true);
+      const res = await getBonusTasks();
+      setTasks(res.data || []);
+    } catch (e) {
+      setMessage(e.message || 'Gagal mengambil hadiah');
+    } finally {
+      setClaiming(prev => ({ ...prev, [taskId]: false }));
+      setLoadingTasks(false);
+    }
+  };
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('id-ID').format(amount);
+  };
+
   const referralLink = reffCode ? `${window.location.origin}/register?reff=${reffCode}` : '';
   
   const totalReferrals = (teamStats[1]?.count || 0) + (teamStats[2]?.count || 0) + (teamStats[3]?.count || 0);
@@ -82,7 +123,7 @@ export default function Komisi() {
       <div className="stars"></div>
       <div className="stars1"></div>
       <div className="stars2"></div>
-                      <div className="shooting-stars"></div>
+      <div className="shooting-stars"></div>
 
       <div className="absolute inset-0 bg-[radial-gradient(100%_80%_at_85%_0%,rgba(0,88,188,0.3)_0%,rgba(0,0,0,0.1)_50%,rgba(0,0,0,0)_100%)]"></div>
       <div className="absolute inset-0 bg-[radial-gradient(90%_70%_at_0%_100%,rgba(255,100,0,0.25)_0%,rgba(0,0,0,0.1)_50%,rgba(0,0,0,0)_100%)]"></div>
@@ -324,6 +365,157 @@ export default function Komisi() {
           </div>
         </div>
 
+        {/* Bonus Tasks Section */}
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Icon icon="mdi:star-circle" className="w-5 h-5 text-[#F45D16]" />
+            <h2 className="text-lg font-bold text-white">Bonus Tasks</h2>
+          </div>
+
+          {loadingTasks ? (
+            <div className="flex flex-col items-center justify-center py-12">
+              <div className="relative">
+                <div className="animate-spin rounded-full h-12 w-12 border-3 border-[#F45D16]/20 border-t-[#F45D16]"></div>
+                <div className="absolute inset-0 animate-ping rounded-full h-12 w-12 border-2 border-[#F45D16]/40"></div>
+              </div>
+              <p className="text-white/70 text-center mt-4 text-sm">Memuat tugas bonus...</p>
+            </div>
+          ) : tasks.length === 0 ? (
+            <div className="bg-[#1A1A1A] border border-white/10 rounded-2xl p-8 text-center">
+              <Icon icon="mdi:gift-off" className="w-16 h-16 text-white/30 mx-auto mb-4" />
+              <h3 className="text-white font-bold mb-2">Tidak Ada Tugas</h3>
+              <p className="text-white/60 text-sm">Tugas bonus belum tersedia saat ini</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {tasks.map((task) => {
+                const percent = task.percent || 0;
+                const isLocked = task.lock;
+                const isTaken = task.taken;
+                const canClaim = !isLocked && !isTaken;
+                
+                return (
+                  <div
+                    key={task.id} 
+                    className="relative bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-2xl border border-white/10 overflow-hidden"
+                  >
+                    {/* Top Section with Name & Status */}
+                    <div className={`p-4 border-b ${canClaim ? 'bg-gradient-to-r from-[#F45D16]/10 to-[#FF6B35]/10 border-[#F45D16]/20' : 'border-white/5'}`}>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                            canClaim 
+                              ? 'bg-gradient-to-br from-[#F45D16] to-[#FF6B35]' 
+                              : isTaken 
+                                ? 'bg-green-500/20' 
+                                : 'bg-white/5'
+                          }`}>
+                            <Icon 
+                              icon={isTaken ? "mdi:check-circle" : isLocked ? "mdi:lock" : "mdi:gift"} 
+                              className={`w-5 h-5 ${canClaim ? 'text-white' : isTaken ? 'text-green-400' : 'text-white/40'}`} 
+                            />
+                          </div>
+                          <div>
+                            <h3 className="text-white font-bold text-sm">{task.name}</h3>
+                            <p className="text-white/60 text-xs">Level {task.required_level} Required</p>
+                          </div>
+                        </div>
+                        {canClaim && (
+                          <div className="bg-gradient-to-r from-[#F45D16] to-[#FF6B35] text-white text-[10px] font-bold py-1 px-2 rounded-lg">
+                            AKTIF
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Stats Section - Grid Layout */}
+                    <div className="p-4">
+                      <div className="grid grid-cols-2 gap-3 mb-3">
+                        <div className="bg-white/5 rounded-xl p-3 border border-white/5">
+                          <p className="text-white/60 text-[10px] mb-1">Anggota Aktif</p>
+                          <p className="text-white font-bold text-base">
+                            {task.active_subordinate_count}/{task.required_active_members}
+                          </p>
+                        </div>
+                        <div className="bg-white/5 rounded-xl p-3 border border-white/5">
+                          <p className="text-white/60 text-[10px] mb-1">Hadiah</p>
+                          <p className="text-[#F45D16] font-bold text-base">
+                            Rp {formatCurrency(task.reward)}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Progress Bar */}
+                      <div className="mb-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-white/60 text-xs">Progress</span>
+                          <span className="text-white font-bold text-xs">{percent}%</span>
+                        </div>
+                        <div className="h-2 bg-white/5 rounded-full overflow-hidden border border-white/10">
+                          <div 
+                            className={`h-full rounded-full transition-all duration-500 ${
+                              canClaim 
+                                ? 'bg-gradient-to-r from-[#F45D16] to-[#FF6B35]' 
+                                : 'bg-white/20'
+                            }`}
+                            style={{ width: `${percent}%` }}
+                          ></div>
+                        </div>
+                      </div>
+
+                      {/* Action Button */}
+                      <button
+                        className={`w-full flex items-center justify-center gap-2 font-bold py-3 rounded-xl transition-all duration-300 ${
+                          canClaim
+                            ? 'bg-gradient-to-r from-[#F45D16] to-[#FF6B35] text-white hover:scale-[1.02] active:scale-[0.98] shadow-lg'
+                            : isTaken
+                              ? 'bg-green-500/10 text-green-400 cursor-not-allowed border border-green-500/20'
+                              : 'bg-white/5 text-white/40 cursor-not-allowed border border-white/10'
+                        }`}
+                        disabled={!canClaim || claiming[task.id]}
+                        onClick={() => handleClaim(task.id)}
+                      >
+                        {claiming[task.id] ? (
+                          <>
+                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                            <span className="text-sm">Memproses...</span>
+                          </>
+                        ) : isTaken ? (
+                          <>
+                            <Icon icon="mdi:check-circle" className="w-5 h-5" />
+                            <span className="text-sm">Terklaim</span>
+                          </>
+                        ) : isLocked ? (
+                          <>
+                            <Icon icon="mdi:lock" className="w-5 h-5" />
+                            <span className="text-sm">Terkunci</span>
+                          </>
+                        ) : (
+                          <>
+                            <Icon icon="mdi:gift" className="w-5 h-5" />
+                            <span className="text-sm">Klaim Hadiah</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Success Message */}
+          {message && (
+            <div className="relative animate-fadeIn mt-5">
+              <div className="absolute -inset-0.5 bg-green-500/50 rounded-2xl blur"></div>
+              <div className="relative bg-green-500/10 border border-green-400/30 rounded-2xl p-4 flex items-start gap-3">
+                <Icon icon="mdi:check-circle" className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                <span className="text-green-300 text-sm leading-relaxed">{message}</span>
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Copyright */}
         <div className="text-center text-white/40 text-[10px] flex items-center justify-center gap-1.5">
           <Icon icon="mdi:copyright" className="w-3 h-3" />
@@ -433,46 +625,52 @@ export default function Komisi() {
   }
 }
 
-          /* Glassmorphism card matching Ciroos style */
-          .glassmorphism-card {
-            background: radial-gradient(94.23% 79.86% at 50% 31.48%, rgba(243, 250, 247, 0.02) 57%, rgba(243, 250, 247, 0.10) 91.5%);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-          }
+        .glassmorphism-card {
+          background: radial-gradient(94.23% 79.86% at 50% 31.48%, rgba(243, 250, 247, 0.02) 57%, rgba(243, 250, 247, 0.10) 91.5%);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+        }
 
-          /* Input field styling */
         .input-field {
-            background: rgba(243, 250, 247, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 0.75rem;
-            transition: all 0.3s;
+          background: rgba(243, 250, 247, 0.02);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 0.75rem;
+          transition: all 0.3s;
         }
-          
+        
         .input-field:focus-within {
-            border-color: #F45D16;
-            box-shadow: 0 0 0 3px rgba(244, 93, 22, 0.2);
+          border-color: #F45D16;
+          box-shadow: 0 0 0 3px rgba(244, 93, 22, 0.2);
         }
 
-          @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-          }
-          
-          @keyframes slideUp {
-            from { transform: translateY(40px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-          }
-          
-          @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-          }
-          
-          .animate-fadeIn { animation: fadeIn 0.6s ease-out; }
-          .animate-slideUp { animation: slideUp 0.5s ease-out; }
-          .animate-shake { animation: shake 0.5s ease-in-out; }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideUp {
+          from { transform: translateY(40px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-5px); }
+          75% { transform: translateX(5px); }
+        }
+        
+        .animate-fadeIn { animation: fadeIn 0.6s ease-out; }
+        .animate-slideUp { animation: slideUp 0.5s ease-out; }
+        .animate-shake { animation: shake 0.5s ease-in-out; }
+        
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
       `}</style>
     </div>
   );
