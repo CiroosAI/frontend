@@ -237,25 +237,25 @@ export default function Login() {
                                 </label>
                                 <div className="relative group">
                                     <div className="flex items-center input-field">
-                                        <div className="flex items-center px-4 py-3.5">
-                                            <Icon icon="flag:id-4x3" className="w-5 h-5 mr-2" />
-                                            <span className="text-[#EDE5D9] text-sm font-semibold">+62</span>
+                                        <div className="flex items-center shrink-0 px-4 py-3.5">
+                                            <Icon icon="flag:id-4x3" className="w-5 h-5 mr-2 shrink-0" />
+                                            <span className="text-[#EDE5D9] text-sm font-semibold whitespace-nowrap">+62</span>
                                         </div>
                                         <input
                                             type="tel"
                                             id="number"
-                                            className="flex-1 bg-transparent outline-none px-2 py-3.5 text-[#FAF8F6] placeholder-[#EDE5D9]/50 text-sm"
+                                            className="flex-1 min-w-0 bg-transparent outline-none px-2 py-3.5 text-[#FAF8F6] placeholder-[#EDE5D9]/50 text-sm"
                                             placeholder="8xxxxxxxxxxx"
                                             value={formData.number}
                                             onChange={handleNumberChange}
                                             required
                                             autoComplete="username"
                                         />
-                                        <div className="px-4">
+                                        <div className="flex items-center shrink-0 px-4">
                                             {/^8\d{8,11}$/.test(formData.number) ? (
-                                                <Icon icon="mdi:check-circle" className="w-5 h-5 text-[#F45D16]" />
+                                                <Icon icon="mdi:check-circle" className="w-5 h-5 shrink-0 text-[#F45D16]" />
                                             ) : (
-                                                <Icon icon="mdi:phone-outline" className="w-5 h-5 text-[#EDE5D9]/30" />
+                                                <Icon icon="mdi:phone-outline" className="w-5 h-5 shrink-0 text-[#EDE5D9]/30" />
                                             )}
                                         </div>
                                     </div>
