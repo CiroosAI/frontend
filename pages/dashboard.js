@@ -530,7 +530,7 @@ export default function Dashboard() {
                     className="w-full bg-gradient-to-r from-[#0088cc] to-[#0099dd] hover:from-[#0077bb] hover:to-[#0088cc] text-white font-bold py-3.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-[#0088cc]/50 hover:scale-[1.02] active:scale-[0.98]"
                   >
                     <Icon icon="mdi:telegram" className="w-5 h-5" />
-                    <span>Gabung Channel Telegram</span>
+                    <span>Gabung Saluran Telegram</span>
                   </button>
                   
                   <button
@@ -539,10 +539,10 @@ export default function Dashboard() {
                         window.open(applicationData.link_cs, '_blank');
                       }
                     }}
-                    className="w-full bg-gradient-to-r from-[#25D366] to-[#128C7E] hover:from-[#20BD5A] hover:to-[#0F7A6C] text-white font-bold py-3.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-[#25D366]/50 hover:scale-[1.02] active:scale-[0.98]"
+                    className="w-full bg-gradient-to-r from-[#0088cc] to-[#0099dd] hover:from-[#0077bb] hover:to-[#0088cc] text-white font-bold py-3.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-[#0088cc]/50 hover:scale-[1.02] active:scale-[0.98]"
                   >
-                    <Icon icon="mdi:whatsapp" className="w-5 h-5" />
-                    <span>Hubungi Customer Service</span>
+                    <Icon icon="mdi:telegram" className="w-5 h-5" />
+                    <span>Hubungi Layanan Bantuan</span>
                   </button>
                 </div>
               </div>
