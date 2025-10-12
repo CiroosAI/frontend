@@ -4,8 +4,30 @@ const withPWA = require('next-pwa')({
   register: true,
   skipWaiting: true,
   disable: process.env.NODE_ENV === 'development',
-  buildExcludes: [/middleware-manifest\.json$/],
+  buildExcludes: [
+    /middleware-manifest\.json$/,
+    /app-build-manifest\.json$/,
+    /build-manifest\.json$/,
+    /_buildManifest\.js$/,
+    /_ssgManifest\.js$/,
+  ],
   publicExcludes: ['!robots.txt', '!sitemap.xml'],
+  
+  // Manifest transforms to filter out problematic URLs
+  manifestTransforms: [
+    (manifestEntries) => {
+      const manifest = manifestEntries.filter(entry => {
+        // Exclude Next.js internal manifests
+        if (entry.url.includes('build-manifest.json')) return false;
+        if (entry.url.includes('app-build-manifest.json')) return false;
+        if (entry.url.includes('_buildManifest')) return false;
+        if (entry.url.includes('_ssgManifest')) return false;
+        if (entry.url.includes('middleware-manifest')) return false;
+        return true;
+      });
+      return { manifest, warnings: [] };
+    },
+  ],
   
   // Runtime caching strategies
   runtimeCaching: [
