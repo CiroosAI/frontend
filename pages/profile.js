@@ -408,9 +408,12 @@ export default function Profile() {
                 />
               </div>
               <h3 className="text-white font-bold text-base">
-                {isInstalled ? 'App Terinstall' : 
-                 isInstallable ? 'Install App' : 
-                 `${applicationData?.name || 'PLATFORM'} APK`}
+                {isInstalled
+                  ? `${applicationData?.name || 'Ciroos'} Terinstall`
+                  : isInstallable
+                    ? `${applicationData?.name || 'Ciroos'} APK`
+                    : `${applicationData?.name || 'Ciroos'} APK`
+                }
               </h3>
             </div>
             
@@ -419,7 +422,7 @@ export default function Profile() {
                 ? 'Aplikasi sudah terinstall di perangkat Anda ✅'
                 : isInstallable 
                   ? 'Install aplikasi untuk akses lebih cepat & mudah'
-                  : 'Download aplikasi mobile untuk kemudahan akses'
+                  : 'Install untuk akses lebih cepat & mudah'
               }
             </p>
             
@@ -444,17 +447,8 @@ export default function Profile() {
               />
               {isInstalled ? 'TERINSTALL' : 
                isInstallable ? 'INSTALL NOW' : 
-               'DOWNLOAD NOW'}
+               'INSTALL NOW'}
             </button>
-
-            {isInstallable && !isInstalled && (
-              <div className="mt-3 flex items-center justify-center gap-1">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                <p className="text-green-400 text-[10px]">
-                  Perangkat Anda support PWA Install
-                </p>
-              </div>
-            )}
 
             {isInstalled && (
               <p className="text-[#F45D16] text-[10px] mt-3 flex items-center justify-center gap-1">
