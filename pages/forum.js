@@ -132,26 +132,51 @@ export default function Testimoni() {
 
         <div className="max-w-sm mx-auto p-4 relative z-10">
           {/* Header Section */}
-          <div className="text-center mb-6 pt-2">
-            <div className="inline-flex items-center gap-3 mb-2">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#F45D16] to-[#FF6B35] flex items-center justify-center shadow-lg">
-                <Icon icon="mdi:comment-quote" className="w-7 h-7 text-white" />
+          <div className="relative mb-6 pt-2">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#F45D16] to-[#0058BC] rounded-3xl blur opacity-20"></div>
+            
+            <div className="relative bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-3xl p-6 border border-white/10">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#F45D16] to-[#FF6B35] flex items-center justify-center shadow-lg">
+                  <Icon icon="mdi:comment-quote" className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold text-white mb-0.5">Testimoni</h1>
+                  <p className="text-white/60 text-xs">Lihat pengalaman nyata dari member kami</p>
+                </div>
               </div>
-              <h1 className="text-2xl font-bold text-white">Testimoni</h1>
+              
+              <button 
+                onClick={() => router.push('/forum/upload')}
+                className="w-full relative group overflow-hidden"
+              >
+                {/* Glow Effect */}
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-[#F45D16] to-[#0058BC] rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300"></div>
+                
+                {/* Main Button */}
+                <div className="relative bg-gradient-to-r from-[#F45D16] to-[#FF6B35] hover:from-[#d74e0f] hover:to-[#F45D16] rounded-2xl p-4 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-[#F45D16]/30 group-hover:scale-[1.02] active:scale-[0.98]">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:bg-white/30 transition-all duration-300">
+                        <Icon icon="mdi:upload" className="w-5 h-5 text-white group-hover:scale-110 transition-transform duration-300" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-white/80 font-semibold uppercase tracking-wide">Unggah Bukti</p>
+                        <p className="text-lg font-bold text-white">Penarikan</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:bg-white/30 transition-all duration-300">
+                        <Icon icon="mdi:arrow-right" className="w-4 h-4 text-white group-hover:translate-x-0.5 transition-transform duration-300" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </button>
             </div>
-            <p className="text-white/60 text-sm">Lihat pengalaman nyata dari member kami.</p>
           </div>
 
-          {/* Upload Button */}
-          <div className="mb-6">
-            <button
-              onClick={() => router.push('/forum/upload')}
-              className="w-full bg-gradient-to-r from-[#F45D16] to-[#FF6B35] hover:from-[#d74e0f] hover:to-[#F45D16] text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg shadow-[#F45D16]/30 hover:shadow-[#F45D16]/50 hover:scale-[1.02] active:scale-[0.98]"
-            >
-              <Icon icon="mdi:upload" className="w-5 h-5" />
-              Unggah Bukti Penarikan
-            </button>
-          </div>
 
           {/* Testimonials List */}
           <div className="space-y-4 mb-6">

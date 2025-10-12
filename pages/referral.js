@@ -103,13 +103,18 @@ export default function Komisi() {
   };
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('id-ID').format(amount);
+    return new Intl.NumberFormat('id-ID', { 
+      style: 'currency', 
+      currency: 'IDR', 
+      maximumFractionDigits: 0 
+    }).format(amount);
   };
 
   const referralLink = reffCode ? `${window.location.origin}/register?reff=${reffCode}` : '';
   
   const totalReferrals = (teamStats[1]?.count || 0) + (teamStats[2]?.count || 0) + (teamStats[3]?.count || 0);
   const totalActive = (teamStats[1]?.active || 0) + (teamStats[2]?.active || 0) + (teamStats[3]?.active || 0);
+  const totalInvest = (teamStats[1]?.total_invest || 0) + (teamStats[2]?.total_invest || 0) + (teamStats[3]?.total_invest || 0);
 
   return (
     <div className="min-h-screen bg-[#0A0A0A] pb-32 relative overflow-hidden">
@@ -130,14 +135,39 @@ export default function Komisi() {
 
       <div className="max-w-md mx-auto p-4 relative z-10">
         {/* Header */}
-        <div className="text-center mb-6 pt-2">
-          <div className="inline-flex items-center gap-2 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#F45D16] to-[#FF6B35] flex items-center justify-center">
-              <Icon icon="mdi:account-multiple" className="w-6 h-6 text-white" />
+        <div className="relative mb-6 pt-2">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#F45D16] to-[#0058BC] rounded-3xl blur opacity-20"></div>
+          
+          <div className="relative bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-3xl p-6 border border-white/10">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#F45D16] to-[#FF6B35] flex items-center justify-center shadow-lg">
+                <Icon icon="mdi:account-multiple" className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-white mb-0.5">Program Referral</h1>
+                <p className="text-white/60 text-xs">Dapatkan komisi hingga 30% dari jaringan Anda</p>
+              </div>
             </div>
-            <h1 className="text-2xl font-bold text-white">Program Referral</h1>
+            
+            <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#F45D16]/20 to-[#FF6B35]/20 flex items-center justify-center">
+                    <Icon icon="mdi:cash-multiple" className="w-4 h-4 text-[#F45D16]" />
+                  </div>
+                  <div>
+                    <p className="text-[9px] text-white/60 font-medium uppercase tracking-wide">Komisi Maksimal</p>
+                    <p className="text-lg font-bold text-white">30%</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-xl border border-white/10">
+                  <Icon icon="mdi:trending-up" className="w-3.5 h-3.5 text-green-400" />
+                  <span className="text-[10px] text-white/80 font-semibold">High Commission</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <p className="text-white/60 text-sm">Dapatkan komisi hingga 8% dari jaringan Anda</p>
         </div>
 
         {/* Stats Overview - Horizontal Layout */}
@@ -158,15 +188,15 @@ export default function Komisi() {
                   <Icon icon="mdi:check-circle" className="w-6 h-6 text-green-400" />
                 </div>
                 <p className="text-2xl font-bold text-white">{totalActive}</p>
-                <p className="text-white/60 text-xs mt-1">Aktif</p>
+                <p className="text-white/60 text-xs mt-1">Total Aktif</p>
               </div>
               <div className="w-px h-16 bg-white/10"></div>
               <div className="text-center">
                 <div className="w-12 h-12 rounded-xl bg-[#0058BC]/10 flex items-center justify-center mx-auto mb-2">
                   <Icon icon="mdi:layers" className="w-6 h-6 text-[#0058BC]" />
                 </div>
-                <p className="text-2xl font-bold text-white">3</p>
-                <p className="text-white/60 text-xs mt-1">Level</p>
+                <p className="text-2xl font-bold text-white">{formatCurrency(totalInvest)}</p>
+                <p className="text-white/60 text-xs mt-1">Total Investasi</p>
               </div>
             </div>
           </div>
@@ -249,72 +279,12 @@ export default function Komisi() {
                         <span className="text-white/60">•</span>
                         <span className="text-green-400">{teamStats[1]?.active || 0} Aktif</span>
                         <span className="text-white/60">•</span>
-                        <span className="text-[#F45D16] font-bold">5%</span>
+                        <span className="text-[#F45D16] font-bold">30%</span>
                       </div>
                     </div>
                   </div>
                   <button
                     onClick={() => router.push(`/referral/my-team?level=1`)}
-                    className="p-2 bg-white/5 hover:bg-white/10 rounded-lg transition-all flex-shrink-0"
-                  >
-                    <Icon icon="mdi:chevron-right" className="w-5 h-5 text-white" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Level 2 */}
-            <div className="relative">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0058BC]/30 to-[#F45D16]/30 rounded-2xl blur opacity-50"></div>
-              <div className="relative bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-2xl p-4 border border-white/10">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3 flex-1">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#0058BC] to-[#F45D16] flex items-center justify-center flex-shrink-0">
-                      <Icon icon="mdi:numeric-2" className="w-6 h-6 text-white" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-white font-bold text-sm mb-0.5">Level 2 Indirect</h3>
-                      <div className="flex items-center gap-3 text-xs">
-                        <span className="text-white/60">{teamStats[2]?.count || 0} Tim</span>
-                        <span className="text-white/60">•</span>
-                        <span className="text-green-400">{teamStats[2]?.active || 0} Aktif</span>
-                        <span className="text-white/60">•</span>
-                        <span className="text-[#0058BC] font-bold">2%</span>
-                      </div>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => router.push(`/referral/my-team?level=2`)}
-                    className="p-2 bg-white/5 hover:bg-white/10 rounded-lg transition-all flex-shrink-0"
-                  >
-                    <Icon icon="mdi:chevron-right" className="w-5 h-5 text-white" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Level 3 */}
-            <div className="relative">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-yellow-500/30 to-orange-500/30 rounded-2xl blur opacity-50"></div>
-              <div className="relative bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-2xl p-4 border border-white/10">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3 flex-1">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center flex-shrink-0">
-                      <Icon icon="mdi:numeric-3" className="w-6 h-6 text-white" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-white font-bold text-sm mb-0.5">Level 3 Network</h3>
-                      <div className="flex items-center gap-3 text-xs">
-                        <span className="text-white/60">{teamStats[3]?.count || 0} Tim</span>
-                        <span className="text-white/60">•</span>
-                        <span className="text-green-400">{teamStats[3]?.active || 0} Aktif</span>
-                        <span className="text-white/60">•</span>
-                        <span className="text-yellow-400 font-bold">1%</span>
-                      </div>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => router.push(`/referral/my-team?level=3`)}
                     className="p-2 bg-white/5 hover:bg-white/10 rounded-lg transition-all flex-shrink-0"
                   >
                     <Icon icon="mdi:chevron-right" className="w-5 h-5 text-white" />
@@ -339,7 +309,7 @@ export default function Komisi() {
               </div>
               <h4 className="text-white font-bold text-sm mb-2">Komisi Tinggi</h4>
               <p className="text-white/60 text-xs leading-relaxed">
-                Dapatkan hingga 8% total komisi dari 3 level referral
+                Dapatkan 30% komisi dari setiap referral langsung
               </p>
             </div>
 

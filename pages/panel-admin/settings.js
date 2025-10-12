@@ -20,7 +20,8 @@ export default function AdminSettings() {
     link_app: 'https://play.google.com/store/apps/details?id=com.vladevs.app',
     logo: '',
     maintenance: false,
-    closed_register: false
+    closed_register: false,
+    auto_withdraw: false
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -51,6 +52,7 @@ export default function AdminSettings() {
           closed_register: res.data.closed_register ?? false,
           max_withdraw: res.data.max_withdraw ?? 10000000,
           min_withdraw: res.data.min_withdraw ?? 50000,
+          auto_withdraw: res.data.auto_withdraw ?? false,
           withdraw_charge: res.data.withdraw_charge ?? 2.5
         });
       }
@@ -122,6 +124,7 @@ export default function AdminSettings() {
         closed_register: !!settings.closed_register,
         max_withdraw: Number(settings.max_withdraw),
         min_withdraw: Number(settings.min_withdraw),
+        auto_withdraw: !!settings.auto_withdraw,
         withdraw_charge: Number(settings.withdraw_charge)
       };
 
@@ -419,6 +422,20 @@ export default function AdminSettings() {
                 </div>
               </div>
 
+              <label className="flex items-center gap-4">
+                <input
+                  type="checkbox"
+                  name="auto_withdraw"
+                  checked={!!settings.auto_withdraw}
+                  onChange={handleInputChange}
+                  className="w-5 h-5 rounded"
+                />
+                <div>
+                  <div className="text-white font-medium">Penarikan Otomatis</div>
+                  <div className="text-gray-400 text-sm">Aktifkan untuk membuat penarikan otomatis ketika diterima</div>
+                </div>
+              </label>
+
               {/* Preview Calculation */}
               <div className="mt-6 bg-gradient-to-r from-orange-600/10 to-red-600/10 rounded-2xl p-4 border border-orange-500/20">
                 <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
@@ -487,8 +504,7 @@ export default function AdminSettings() {
                       value={settings.link_cs}
                       onChange={handleInputChange}
                       className="w-full bg-white/10 border border-white/20 text-white rounded-2xl px-4 py-3 pl-12 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-                      placeholder="https://wa.me/628123456789"
-                      required
+                      placeholder="https://t.me/cs"
                     />
                   </div>
                 </div>
@@ -503,8 +519,7 @@ export default function AdminSettings() {
                       value={settings.link_group}
                       onChange={handleInputChange}
                       className="w-full bg-white/10 border border-white/20 text-white rounded-2xl px-4 py-3 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                      placeholder="https://t.me/jasasitusponzi"
-                      required
+                      placeholder="https://t.me/cs"
                     />
                   </div>
                 </div>
@@ -520,7 +535,6 @@ export default function AdminSettings() {
                       onChange={handleInputChange}
                       className="w-full bg-white/10 border border-white/20 text-white rounded-2xl px-4 py-3 pl-12 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                       placeholder="https://play.google.com/store/apps/details?id=..."
-                      required
                     />
                   </div>
                 </div>

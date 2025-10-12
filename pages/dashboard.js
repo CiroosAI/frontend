@@ -14,10 +14,11 @@ export default function Dashboard() {
   const router = useRouter();
   const [userData, setUserData] = useState(null);
   const [applicationData, setApplicationData] = useState(null);
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState({});
+  const [selectedCategory, setSelectedCategory] = useState('Monitor');
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [selectedProduct, setSelectedProduct] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [toast, setToast] = useState({ open: false, message: '', type: 'success' });
   const [showWelcomePopup, setShowWelcomePopup] = useState(false);
@@ -44,10 +45,13 @@ export default function Dashboard() {
         setUserData({
           name: parsed.name || '',
           balance: parsed.balance || 0,
-          active: parsed.active || false
+          active: parsed.active || false,
+          level: parsed.level || 0,
+          total_invest: parsed.total_invest || 0,
+          total_invest_vip: parsed.total_invest_vip || 0
         });
       } catch (e) {
-        setUserData({ name: '', balance: 0, active: false });
+        setUserData({ name: '', balance: 0, active: false, level: 0 });
       }
     }
 
@@ -83,18 +87,33 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    if (products.length > 0 && !selectedProduct) {
-      const b1 = products.find(p => p.name === 'Bintang 1');
-      setSelectedProduct(b1 || products[0]);
+    // Auto-select first product in selected category
+    if (products[selectedCategory] && products[selectedCategory].length > 0 && !selectedProduct) {
+      setSelectedProduct(products[selectedCategory][0]);
     }
-  }, [products, selectedProduct]);
+  }, [products, selectedCategory, selectedProduct]);
 
   const fetchProducts = async () => {
     setLoading(true);
     setError('');
     try {
       const data = await getProducts();
-      setProducts((data && data.data && data.data.products) ? data.data.products : []);
+      setProducts((data && data.data) ? data.data : {});
+      
+      if (data && data.data) {
+        const categories = Object.keys(data.data);
+        // Order tabs explicitly: Monitor (left), Insight (middle), Autopilot (right)
+        const preferred = ['Monitor', 'Insight', 'Autopilot'];
+        const orderedCategories = [
+          // first include preferred keys in that exact order if they exist
+          ...preferred.filter(k => categories.includes(k)),
+          // then include any other keys that were present (preserve their original order)
+          ...categories.filter(k => !preferred.includes(k))
+        ];
+        if (orderedCategories.length > 0) {
+          setSelectedCategory(orderedCategories[0]);
+        }
+      }
     } catch (err) {
       setError(err.message || 'Gagal memuat produk');
       setToast({ open: true, message: err.message || 'Gagal memuat produk', type: 'error' });
@@ -111,11 +130,39 @@ export default function Dashboard() {
     }).format(amount);
   };
 
-  const getStarIcon = (productName) => {
-    if (productName.includes('1')) return 'mdi:star-outline';
-    if (productName.includes('2')) return 'mdi:star-half-full';
-    if (productName.includes('3')) return 'mdi:star';
+  const getCategoryIcon = (categoryName) => {
+    if (categoryName.toLowerCase().includes('monitor')) return 'mdi:monitor-dashboard';
+    if (categoryName.toLowerCase().includes('insight')) return 'mdi:lightbulb-on';
+    if (categoryName.toLowerCase().includes('autopilot')) return 'mdi:rocket-launch';
     return 'mdi:star-outline';
+  };
+
+  const getProductIcon = (productName) => {
+    if (productName.includes('1')) return 'mdi:numeric-1-box';
+    if (productName.includes('2')) return 'mdi:numeric-2-box';
+    if (productName.includes('3')) return 'mdi:numeric-3-box';
+    if (productName.includes('4')) return 'mdi:numeric-4-box';
+    if (productName.includes('5')) return 'mdi:numeric-5-box';
+    if (productName.includes('6')) return 'mdi:numeric-6-box';
+    if (productName.includes('7')) return 'mdi:numeric-7-box';
+    return 'mdi:star-outline';
+  };
+
+  const calculateTotalReturn = (product) => {
+    if (!product) return 0;
+    return product.amount + (product.daily_profit * product.duration);
+  };
+
+  const getVIPConfig = (level) => {
+    const configs = {
+      0: { icon: 'mdi:shield-account', gradient: 'from-gray-500 to-slate-600', emoji: '🎯' },
+      1: { icon: 'mdi:star-circle', gradient: 'from-yellow-700 to-orange-700', emoji: '⭐' },
+      2: { icon: 'mdi:medal', gradient: 'from-gray-400 to-gray-600', emoji: '🥈' },
+      3: { icon: 'mdi:trophy-variant', gradient: 'from-yellow-400 to-orange-500', emoji: '🏆' },
+      4: { icon: 'mdi:diamond-stone', gradient: 'from-blue-400 to-purple-600', emoji: '💎' },
+      5: { icon: 'mdi:crown-circle', gradient: 'from-cyan-400 to-blue-600', emoji: '👑' }
+    };
+    return configs[level] || configs[0];
   };
 
   const getVerificationStatus = () => {
@@ -123,13 +170,6 @@ export default function Dashboard() {
       return { text: 'Verified Investor', color: 'text-[#F45D16]' };
     }
     return { text: 'Unverified Investor', color: 'text-red-400' };
-  };
-
-  const getHealthStatus = () => {
-    if (applicationData?.healthy) {
-      return { text: 'Healthy', color: 'text-[#F45D16]' };
-    }
-    return { text: 'Unhealthy', color: 'text-red-400' };
   };
 
   const handleCloseWelcomePopup = () => {
@@ -154,6 +194,8 @@ export default function Dashboard() {
     }
   };
 
+  const vipConfig = getVIPConfig(userData?.level || 0);
+
   return (
     <div className="min-h-screen bg-[#0A0A0A] pb-32 relative overflow-hidden">
       <Head>
@@ -171,7 +213,7 @@ export default function Dashboard() {
       <div className="absolute inset-0 bg-[radial-gradient(90%_70%_at_0%_100%,rgba(255,100,0,0.25)_0%,rgba(0,0,0,0.1)_50%,rgba(0,0,0,0)_100%)]"></div>
 
       <div className="max-w-sm mx-auto p-4 relative z-10">
-        {/* Header with Logo - Simplified */}
+        {/* Header - Logo + VIP + Portfolio */}
         <div className="flex items-center justify-between mb-6 pt-2">
           <div className="w-32 h-auto relative">
             <Image 
@@ -192,13 +234,33 @@ export default function Dashboard() {
             </div>
           </div>
           
-          <button 
-            onClick={() => router.push('/portofolio')}
-            className="flex items-center gap-2 bg-gradient-to-r from-[#F45D16]/10 to-[#FF6B35]/10 hover:from-[#F45D16]/20 hover:to-[#FF6B35]/20 text-[#FAF8F6] px-4 py-2.5 rounded-2xl transition-all duration-300 border border-[#F45D16]/30"
-          >
-            <Icon icon="mdi:chart-line" className="w-4 h-4 text-[#F45D16]" />
-            <span className="text-sm font-semibold">Portfolio</span>
-          </button>
+          <div className="flex items-center gap-2">
+            {/* VIP Button - Small & Clean */}
+            <button 
+              onClick={() => router.push('/vip')}
+              className="relative group"
+            >
+              {/* Glow effect on hover */}
+              <div className={`absolute -inset-1 bg-gradient-to-r ${vipConfig.gradient} rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300`}></div>
+              
+              <div className={`relative flex items-center gap-2 bg-gradient-to-r ${vipConfig.gradient} px-3 py-2 rounded-xl transition-all duration-300 group-hover:scale-105 border border-white/20 shadow-lg`}>
+                <Icon icon={vipConfig.icon} className="w-4 h-4 text-white" />
+                <div className="flex items-center gap-1">
+                  <span className="text-white text-xs font-bold">VIP</span>
+                  <span className="text-white text-sm font-black">{userData?.level || 0}</span>
+                </div>
+              </div>
+            </button>
+
+            {/* Portfolio Button */}
+            <button 
+              onClick={() => router.push('/portofolio')}
+              className="flex items-center gap-2 bg-gradient-to-r from-[#F45D16]/10 to-[#FF6B35]/10 hover:from-[#F45D16]/20 hover:to-[#FF6B35]/20 text-[#FAF8F6] px-3 py-2 rounded-xl transition-all duration-300 border border-[#F45D16]/30"
+            >
+              <Icon icon="mdi:chart-line" className="w-4 h-4 text-[#F45D16]" />
+              <span className="text-xs font-semibold">Portfolio</span>
+            </button>
+          </div>
         </div>
 
         {/* User Card - New Design */}
@@ -277,7 +339,7 @@ export default function Dashboard() {
         {/* Product Section */}
         {!loading && !error && (
           <>
-            {products.length === 0 ? (
+            {Object.keys(products).length === 0 ? (
               <div className="bg-[#1A1A1A] border border-white/10 rounded-2xl p-6 text-center">
                 <div className="flex items-center justify-center gap-2 mb-3">
                   <Icon icon="mdi:information-outline" className="text-white/60 w-6 h-6" />
@@ -292,81 +354,139 @@ export default function Dashboard() {
                   <h2 className="text-lg font-bold text-white">Produk Investasi</h2>
                 </div>
 
-                {/* Product Tabs - New Style */}
+                {/* Category Tabs */}
                 <div className="flex gap-2 mb-5 overflow-x-auto pb-2 scrollbar-hide">
-                  {products.map((product) => (
+                  {(() => {
+                    const categories = Object.keys(products);
+                    const preferred = ['Monitor', 'Insight', 'Autopilot'];
+                    const orderedCategories = [
+                      ...preferred.filter(k => categories.includes(k)),
+                      ...categories.filter(k => !preferred.includes(k))
+                    ];
+                    return orderedCategories;
+                  })().map((categoryName, idx) => (
                     <button
-                      key={product.id}
-                      onClick={() => setSelectedProduct(product)}
-                      className={`
-                        px-4 py-2 rounded-2xl font-semibold transition-all duration-300 whitespace-nowrap flex items-center gap-2 border text-sm
-                        ${selectedProduct?.id === product.id
-                          ? 'bg-gradient-to-r from-[#F45D16] to-[#FF6B35] text-white border-transparent shadow-lg shadow-[#F45D16]/30 scale-102'
-                          : 'bg-white/5 text-white/70 hover:text-white hover:bg-white/10 border-white/10 hover:scale-102'
-                        }
-                      `}
+                      key={categoryName}
+                      onClick={() => {
+                        setSelectedCategory(categoryName);
+                        setSelectedProduct(products[categoryName][0] || null);
+                      }}
+                      className={`px-4 py-2 text-xs font-semibold rounded-xl transition-all duration-300 flex items-center gap-2 whitespace-nowrap border ${
+                        selectedCategory === categoryName
+                          ? 'bg-gradient-to-r from-[#F45D16] to-[#FF6B35] text-white border-transparent shadow-lg shadow-[#F45D16]/30'
+                          : 'bg-white/5 text-white/70 hover:text-white hover:bg-white/10 border-white/10'
+                      }`}
                     >
-                      <Icon icon={getStarIcon(product.name)} className="w-4 h-4" />
-                      {product.name}
+                      <Icon icon={getCategoryIcon(categoryName)} className="w-5 h-5" />
+                      {categoryName}
                     </button>
                   ))}
                 </div>
 
-                {/* Selected Product Details - New Card Design */}
-                {selectedProduct && (
-                  <div className="relative">
-                    {/* Glow */}
-                    <div className="absolute -inset-1 bg-gradient-to-r from-[#F45D16] to-[#FF6B35] rounded-3xl blur-lg opacity-20"></div>
-                    
-                    <div className="relative bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-3xl p-5 border border-white/10">
-                      <div className="flex items-center gap-3 mb-5">
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#F45D16] to-[#FF6B35] flex items-center justify-center shadow-lg">
-                          <Icon icon={getStarIcon(selectedProduct.name)} className="text-white w-6 h-6" />
-                        </div>
-                        <div>
-                          <h2 className="text-xl font-bold text-white">{selectedProduct.name}</h2>
-                          <p className="text-xs text-white/60">Investasi Terpercaya</p>
-                        </div>
-                      </div>
-
-                      <div className="space-y-3 mb-5">
-                        <div className="flex items-center justify-between bg-white/5 rounded-xl p-3 border border-white/10">
-                          <div className="flex items-center gap-2">
-                            <Icon icon="mdi:arrow-down-circle" className="w-4 h-4 text-[#F45D16]" />
-                            <span className="text-xs text-white/70 font-medium">Minimum</span>
-                          </div>
-                          <span className="text-sm font-bold text-white">{formatCurrency(selectedProduct.minimum)}</span>
-                        </div>
-                        
-                        <div className="flex items-center justify-between bg-white/5 rounded-xl p-3 border border-white/10">
-                          <div className="flex items-center gap-2">
-                            <Icon icon="mdi:arrow-up-circle" className="w-4 h-4 text-[#0058BC]" />
-                            <span className="text-xs text-white/70 font-medium">Maximum</span>
-                          </div>
-                          <span className="text-sm font-bold text-white">{formatCurrency(selectedProduct.maximum)}</span>
-                        </div>
-                        
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="bg-gradient-to-br from-[#F45D16]/10 to-[#FF6B35]/10 rounded-xl p-3 border border-[#F45D16]/20">
-                            <p className="text-[10px] text-white/60 font-medium mb-1">HARIAN</p>
-                            <p className="text-lg font-bold text-[#F45D16]">{Math.ceil((selectedProduct.percentage * 2 / selectedProduct.duration))}%</p>
-                          </div>
-                          <div className="bg-gradient-to-br from-[#0058BC]/10 to-[#F45D16]/10 rounded-xl p-3 border border-[#0058BC]/20">
-                            <p className="text-[10px] text-white/60 font-medium mb-1">TOTAL</p>
-                            <p className="text-lg font-bold text-[#0058BC]">{selectedProduct.percentage * 2}%</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <button
-                        onClick={() => { setShowModal(true); }}
-                        className="w-full bg-gradient-to-r from-[#F45D16] to-[#FF6B35] hover:from-[#d74e0f] hover:to-[#F45D16] text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg shadow-[#F45D16]/30 hover:shadow-[#F45D16]/50 hover:scale-[1.02] active:scale-[0.98]"
+                {/* Product Cards in Selected Category */}
+                {products[selectedCategory] && products[selectedCategory].length > 0 ? (
+                  <div className="grid grid-cols-1 gap-4 mb-5">
+                    {products[selectedCategory].map((product) => (
+                      <div 
+                        key={product.id}
+                        onClick={() => setSelectedProduct(product)}
+                        className={`
+                          relative cursor-pointer transition-all duration-300
+                          ${selectedProduct?.id === product.id ? 'scale-[1.02]' : 'hover:scale-[1.01]'}
+                        `}
                       >
-                        <Icon icon="mdi:rocket" className="w-5 h-5" />
-                        INVESTASI SEKARANG
-                        <Icon icon="mdi:arrow-right" className="w-5 h-5" />
-                      </button>
-                    </div>
+                        {selectedProduct?.id === product.id && (
+                          <div className="absolute -inset-1 bg-gradient-to-r from-[#F45D16] to-[#FF6B35] rounded-3xl blur-lg opacity-30"></div>
+                        )}
+                        
+                        <div className={`
+                          relative bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-3xl p-4 border transition-all duration-300
+                          ${selectedProduct?.id === product.id 
+                            ? 'border-[#F45D16]/50 shadow-lg shadow-[#F45D16]/20' 
+                            : 'border-white/10 hover:border-white/20'
+                          }
+                        `}>
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#F45D16] to-[#FF6B35] flex items-center justify-center shadow-lg">
+                                <Icon icon={getProductIcon(product.name)} className="text-white w-5 h-5" />
+                              </div>
+                              <div>
+                                <h3 className="text-base font-bold text-white">{product.name}</h3>
+                                <p className="text-xs text-white/60">{formatCurrency(product.amount)}</p>
+                              </div>
+                            </div>
+                            
+                            {/* VIP Badge */}
+                            {product.required_vip > 0 && (
+                              <div className="bg-yellow-500/20 border border-yellow-500/40 rounded-lg px-2 py-1 flex items-center gap-1">
+                                <Icon icon="mdi:crown" className="w-3 h-3 text-yellow-400" />
+                                <span className="text-[10px] font-bold text-yellow-300">VIP {product.required_vip}</span>
+                              </div>
+                            )}
+                          </div>
+                          
+                          <div className="grid grid-cols-2 gap-2 mb-3">
+                            <div className="bg-white/5 rounded-lg p-2 border border-white/10">
+                              <p className="text-[9px] text-white/60 font-medium mb-0.5 uppercase">Profit</p>
+                              <p className="text-sm font-bold text-[#F45D16]">{formatCurrency(product.daily_profit)}</p>
+                            </div>
+                            <div className="bg-white/5 rounded-lg p-2 border border-white/10">
+                              <p className="text-[9px] text-white/60 font-medium mb-0.5 uppercase">Durasi</p>
+                              <p className="text-sm font-bold text-[#0058BC]">{product.duration} hari</p>
+                            </div>
+                          </div>
+                          
+                          <div className="bg-gradient-to-r from-[#F45D16]/10 to-[#0058BC]/10 rounded-xl p-3 border border-white/10">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs text-white/70 font-medium">Total Return</span>
+                              <span className="text-base font-bold text-white">{formatCurrency(calculateTotalReturn(product))}</span>
+                            </div>
+                          </div>
+                          
+                          {/* Purchase Limit Badge */}
+                          {product.purchase_limit > 0 && (
+                            <div className="mt-3 flex items-center justify-center gap-1.5 bg-orange-500/10 border border-orange-500/30 rounded-lg py-1.5 px-3">
+                              <Icon icon="mdi:alert-circle" className="w-3.5 h-3.5 text-orange-400" />
+                              <span className="text-[10px] font-semibold text-orange-300">
+                                Limited: {product.purchase_limit}x pembelian
+                              </span>
+                            </div>
+                          )}
+                          
+                          {/* Buy Button per Product */}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedProduct(product);
+                              setShowModal(true);
+                            }}
+                            disabled={
+                              product.status !== 'Active' || 
+                              (userData?.level || 0) < product.required_vip
+                            }
+                            className="mt-3 w-full bg-gradient-to-r from-[#F45D16] to-[#FF6B35] hover:from-[#d74e0f] hover:to-[#F45D16] disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-white font-bold py-2.5 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-[#F45D16]/30 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100"
+                          >
+                            {(userData?.level || 0) < product.required_vip ? (
+                              <>
+                                <Icon icon="mdi:lock" className="w-4 h-4" />
+                                <span className="text-xs">Butuh VIP {product.required_vip}</span>
+                              </>
+                            ) : (
+                              <>
+                                <Icon icon="mdi:cart" className="w-4 h-4" />
+                                <span className="text-xs">Beli Sekarang</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="bg-[#1A1A1A] border border-white/10 rounded-2xl p-6 text-center">
+                    <Icon icon="mdi:package-variant" className="text-white/40 w-12 h-12 mx-auto mb-3" />
+                    <p className="text-white/60 text-sm">Tidak ada produk di kategori {selectedCategory}</p>
                   </div>
                 )}
               </>
@@ -382,16 +502,13 @@ export default function Dashboard() {
           </div>
 
           <div className="relative">
-            {/* Glow Effect */}
             <div className="absolute -inset-1 bg-gradient-to-r from-[#F45D16] to-[#0058BC] rounded-3xl blur-lg opacity-20"></div>
             
             <div className="relative bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-3xl p-4 border border-white/10 overflow-hidden">
-              {/* Decorative Corner Elements */}
               <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-[#F45D16]/10 to-transparent rounded-full blur-2xl"></div>
               <div className="absolute bottom-0 left-0 w-20 h-20 bg-gradient-to-tr from-[#0058BC]/10 to-transparent rounded-full blur-2xl"></div>
               
               <div className="relative">
-                {/* Video Container with rounded corners and border */}
                 <div className="relative rounded-2xl overflow-hidden border-2 border-white/10 bg-black shadow-2xl">
                   <video 
                     className="w-full aspect-video object-cover"
@@ -403,11 +520,9 @@ export default function Dashboard() {
                     Your browser does not support the video tag.
                   </video>
                   
-                  {/* Video Overlay Gradient */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/20 pointer-events-none"></div>
                 </div>
 
-                {/* Video Info Badge */}
                 <div className="mt-3 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#F45D16]/20 to-[#FF6B35]/20 flex items-center justify-center border border-[#F45D16]/30">
@@ -447,11 +562,9 @@ export default function Dashboard() {
       {showWelcomePopup && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-fadeIn">
           <div className="relative max-w-sm w-full animate-slideUp">
-            {/* Glow Effect */}
             <div className="absolute -inset-1 bg-gradient-to-r from-[#F45D16] to-[#0058BC] rounded-3xl blur-xl opacity-30"></div>
             
             <div className="relative bg-gradient-to-br from-[#1A1A1A] via-[#0F0F0F] to-[#1A1A1A] rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
-              {/* Decorative Elements */}
               <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-[#F45D16]/20 to-transparent rounded-full blur-3xl"></div>
               <div className="absolute bottom-0 left-0 w-40 h-40 bg-gradient-to-tr from-[#0058BC]/20 to-transparent rounded-full blur-3xl"></div>
               
@@ -463,7 +576,6 @@ export default function Dashboard() {
               </button>
               
               <div className="relative p-6">
-                {/* Logo with Glow */}
                 <div className="flex justify-center mb-6">
                   <div className="relative">
                     <div className="absolute inset-0 bg-[#F45D16]/30 blur-xl rounded-full"></div>
@@ -477,7 +589,6 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                {/* Greeting with Animation */}
                 <div className="text-center mb-6">
                   <div className="inline-flex items-center gap-2 mb-3">
                     <div className="w-2 h-2 bg-[#F45D16] rounded-full animate-pulse"></div>
@@ -489,7 +600,6 @@ export default function Dashboard() {
                   <p className="text-white/60 text-sm">Platform investasi AI terpercaya</p>
                 </div>
                 
-                {/* Feature Highlights */}
                 <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 mb-5">
                   <div className="grid grid-cols-3 gap-3 mb-4">
                     <div className="text-center">
@@ -519,7 +629,6 @@ export default function Dashboard() {
                   </p>
                 </div>
 
-                {/* Action Buttons */}
                 <div className="space-y-3">
                   <button
                     onClick={() => {
@@ -555,11 +664,9 @@ export default function Dashboard() {
       {showPromoPopup && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-fadeIn">
           <div className="relative max-w-sm w-full animate-slideUp">
-            {/* Glow Effect */}
             <div className="absolute -inset-1 bg-gradient-to-r from-[#F45D16] to-[#0058BC] rounded-3xl blur-xl opacity-30"></div>
             
             <div className="relative bg-gradient-to-br from-[#1A1A1A] via-[#0F0F0F] to-[#1A1A1A] rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
-              {/* Decorative Elements */}
               <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-[#F45D16]/20 to-transparent rounded-full blur-3xl"></div>
               <div className="absolute bottom-0 left-0 w-40 h-40 bg-gradient-to-tr from-[#0058BC]/20 to-transparent rounded-full blur-3xl"></div>
 
@@ -579,7 +686,6 @@ export default function Dashboard() {
                   </div>
                   
                   <div className="flex items-center justify-center gap-4">
-                    {/* TikTok Icon */}
                     <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20">
                       <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none">
                         <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" 
@@ -595,7 +701,6 @@ export default function Dashboard() {
                     
                     <div className="text-white font-bold text-lg">&</div>
                     
-                    {/* YouTube Icon */}
                     <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20">
                       <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
                         <path fill="#FF0000" d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
@@ -609,7 +714,6 @@ export default function Dashboard() {
                   Buat konten promosi Ciroos AI di TikTok & YouTube, raih views, dan claim hadiahnya!
                 </p>
 
-                {/* Rewards Grid */}
                 <div className="space-y-3 mb-4">
                   <div className="bg-white/5 rounded-xl p-3 flex items-center justify-between border border-blue-500/30">
                     <div className="flex items-center gap-3">
@@ -641,7 +745,6 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                {/* Terms */}
                 <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 mb-4 border border-white/10">
                   <div className="flex items-center gap-2 mb-3">
                     <Icon icon="mdi:information" className="w-5 h-5 text-[#F45D16]" />
@@ -667,7 +770,6 @@ export default function Dashboard() {
                   </ul>
                 </div>
 
-                {/* Action Buttons */}
                 <div className="space-y-2">
                   <button
                     onClick={handleClaimReward}
@@ -685,7 +787,6 @@ export default function Dashboard() {
                   </button>
                 </div>
 
-                {/* Hide Checkbox */}
                 <div className="flex items-center gap-2 mt-4 justify-center">
                   <input
                     type="checkbox"
@@ -730,7 +831,6 @@ export default function Dashboard() {
       />
       
       <style jsx global>{`
-        /* Stars animation */
         .stars {
           z-index: 0;
           width: 1px;
@@ -768,7 +868,7 @@ export default function Dashboard() {
           border-radius: 50%;
           position: absolute;
           background: transparent;
-          box-shadow: 435px 1410px #FFF , 1717px 2554px #FFF , 885px 1458px #FFF , 1614px 909px #FFF , 26px 2169px #FFF , 1627px 1343px #FFF , 511px 518px #FFF , 1388px 722px #FFF , 748px 1982px #FFF , 837px 2188px #FFF , 891px 1897px #FFF , 917px 2547px #FFF , 866px 2021px #FFF , 1748px 2464px #FFF , 409px 2476px #FFF , 1321px 1824px #FFF , 1946px 1620px #FFF , 84px 1996px #FFF , 773px 475px #FFF , 2327px 1356px #FFF , 181px 38px #FFF , 2122px 1291px #FFF , 2254px 375px #FFF , 654px 432px #FFF , 2022px 710px #FFF , 866px 1651px #FFF , 948px 2128px #FFF , 1107px 1282px #FFF , 1605px 1555px #FFF , 847px 2056px #FFF , 1678px 385px #FFF , 1723px 2282px #FFF , 516px 166px #FFF , 1764px 93px #FFF , 1947px 2302px #FFF , 1357px 1486px #FFF , 1237px 2532px #FFF , 2338px 2002px #FFF , 251px 1525px #FFF , 876px 1121px #FFF , 189px 759px #FFF , 1936px 1574px #FFF , 2510px 1440px #FFF , 204px 836px #FFF , 2044px 437px #FFF , 471px 45px #FFF , 394px 548px #FFF , 1730px 641px #FFF , 1526px 1701px #FFF , 1559px 1106px #FFF , 1396px 1826px #FFF , 1106px 644px #FFF , 160px 2149px #FFF , 1261px 1804px #FFF , 363px 714px #FFF , 2002px 2277px #FFF , 696px 1741px #FFF , 2291px 499px #FFF , 2089px 2229px #FFF;
+          box-shadow: 435px 1410px #FFF , 1717px 2554px #FFF , 885px 1458px #FFF , 1614px 909px #FFF , 26px 2169px #FFF , 1627px 1343px #FFF , 511px 518px #FFF , 1388px 722px #FFF , 748px 1982px #FFF , 837px 2188px #FFF , 891px 1897px #FFF , 917px 2547px #FFF , 866px 2021px #FFF , 1748px 2464px #FFF , 409px 2476px #FFF , 1321px 1824px #FFF , 1946px 1620px #FFF , 84px 1996px #FFF , 773px 475px #FFF , 2327px 1356px #FFF , 181px 38px #FFF , 2122px 1291px #FFF , 2254px 375px #FFF , 654px 432px #FFF , 2022px 710px #FFF , 866px 1651px #FFF , 948px 2128px #FFF , 1107px 1282px #FFF , 1605px 1555px #FFF , 847px 2056px #FFF , 1678px 385px #FFF , 1723px 2282px #FFF , 516px 166px #FFF , 1764px 93px #FFF , 1947px 2302px #FFF, 1357px 1486px #FFF , 1237px 2532px #FFF , 2338px 2002px #FFF , 251px 1525px #FFF , 876px 1121px #FFF , 189px 759px #FFF , 1936px 1574px #FFF , 2510px 1440px #FFF , 204px 836px #FFF , 2044px 437px #FFF , 471px 45px #FFF , 394px 548px #FFF , 1730px 641px #FFF , 1526px 1701px #FFF , 1559px 1106px #FFF , 1396px 1826px #FFF , 1106px 644px #FFF , 160px 2149px #FFF , 1261px 1804px #FFF , 363px 714px #FFF , 2002px 2277px #FFF , 696px 1741px #FFF , 2291px 499px #FFF , 2089px 2229px #FFF;
         }
 
         .stars2 {

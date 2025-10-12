@@ -89,7 +89,22 @@ export default function InvestasiSaya() {
     return 'bg-gradient-to-r from-gray-500 to-slate-500';
   };
 
+  const getStatusProfit = (status) => {
+    if (status === 'unlocked') return 'Terbuka';
+    if (status === 'locked') return 'Terkunci';
+    return 'Unknown';
+  };
+
+  const getStatusProfitColor = (status) => {
+    if (status === 'unlocked') return 'bg-gradient-to-r from-green-500 to-emerald-500';
+    if (status === 'locked') return 'bg-gradient-to-r from-red-500 to-rose-500';
+    return 'bg-gradient-to-r from-gray-500 to-slate-500';
+  };
+
   const getStarIcon = (tabName) => {
+    if (tabName.toLowerCase().includes('monitor')) return 'mdi:monitor-dashboard';
+    if (tabName.toLowerCase().includes('insight')) return 'mdi:lightbulb-on';
+    if (tabName.toLowerCase().includes('autopilot')) return 'mdi:rocket-launch';
     if (tabName.includes('1')) return 'mdi:star-outline';
     if (tabName.includes('2')) return 'mdi:star-half-full';
     if (tabName.includes('3')) return 'mdi:star';
@@ -283,7 +298,14 @@ export default function InvestasiSaya() {
                         <Icon icon="mdi:receipt-text" className="text-white w-5 h-5" />
                       </div>
                       <div>
-                        <p className="text-white font-semibold text-sm">{inv.product_name || 'Produk Investasi'}</p>
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <p className="text-white font-semibold text-sm">{inv.product_name || 'Produk Investasi'}</p>
+                          {inv.category_name && (
+                            <span className={`bg-white/10 border border-white/20 px-2 py-0.5 rounded text-[9px] text-white/70 font-semibold ${getStatusProfitColor(inv.product_category.profit_type)}`}>
+                              {getStatusProfit(inv.product_category.profit_type)}
+                            </span>
+                          )}
+                        </div>
                         <p className="text-white/60 text-xs font-mono">#{inv.order_id}</p>
                       </div>
                     </div>

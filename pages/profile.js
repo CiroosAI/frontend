@@ -30,7 +30,7 @@ export default function Profile() {
         balance: 0,
         total_deposit: 0,
         total_withdraw: 0,
-        vip_level: 0,
+        level: 0,
         active: false
       });
     } else {
@@ -89,6 +89,20 @@ export default function Profile() {
   };
 
   const isVerified = userData?.active === true;
+
+  const getVIPConfig = (level) => {
+    const configs = {
+      0: { icon: 'mdi:shield-account', gradient: 'from-gray-500 to-slate-600', emoji: '🎯' },
+      1: { icon: 'mdi:star-circle', gradient: 'from-yellow-700 to-orange-700', emoji: '⭐' },
+      2: { icon: 'mdi:medal', gradient: 'from-gray-400 to-gray-600', emoji: '🥈' },
+      3: { icon: 'mdi:trophy-variant', gradient: 'from-yellow-400 to-orange-500', emoji: '🏆' },
+      4: { icon: 'mdi:diamond-stone', gradient: 'from-blue-400 to-purple-600', emoji: '💎' },
+      5: { icon: 'mdi:crown-circle', gradient: 'from-cyan-400 to-blue-600', emoji: '👑' }
+    };
+    return configs[level] || configs[0];
+  };
+
+  const vipConfig = getVIPConfig(userData?.level || 0);
 
   if (loading) {
     return (
@@ -152,6 +166,23 @@ export default function Profile() {
                   </div>
                 </div>
               </div>
+              
+              {/* VIP Button */}
+              <button 
+                onClick={() => router.push('/vip')}
+                className="relative group"
+              >
+                {/* Glow effect on hover */}
+                <div className={`absolute -inset-1 bg-gradient-to-r ${vipConfig.gradient} rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300`}></div>
+                
+                <div className={`relative flex items-center gap-2 bg-gradient-to-r ${vipConfig.gradient} px-3 py-2 rounded-xl transition-all duration-300 group-hover:scale-105 border border-white/20 shadow-lg`}>
+                  <Icon icon={vipConfig.icon} className="w-4 h-4 text-white" />
+                  <div className="flex items-center gap-1">
+                    <span className="text-white text-xs font-bold">VIP</span>
+                    <span className="text-white text-sm font-black">{userData?.level || 0}</span>
+                  </div>
+                </div>
+              </button>
             </div>
           </div>
         </div>

@@ -216,7 +216,7 @@ export const getUserTransactions = async ({ limit = 20, page = 1, type } = {}) =
 
 // kept above
 
-// Get active investments
+// Get active investments (grouped by category)
 export const getActiveInvestments = async () => {
   return apiRequest('/users/investments/active', { method: 'GET' });
 };
