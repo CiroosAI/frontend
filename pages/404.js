@@ -6,8 +6,24 @@ import { Icon } from '@iconify/react';
 export default function Error404() {
   const router = useRouter();
   const [countdown, setCountdown] = useState(8);
+  const [applicationData, setApplicationData] = useState(null);
 
   useEffect(() => {
+    const storedApplication = localStorage.getItem('application');
+    if (storedApplication) {
+      try {
+        const parsed = JSON.parse(storedApplication);
+        setApplicationData({
+          name: parsed.name || 'Ciroos AI',
+          healthy: parsed.healthy || false,
+        });
+      } catch (e) {
+        setApplicationData({ name: 'Ciroos AI', healthy: false });
+      }
+    } else {
+      setApplicationData({ name: 'Ciroos AI', healthy: false });
+    }
+    
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
