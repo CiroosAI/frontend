@@ -201,7 +201,7 @@ export default function Dashboard() {
       <Head>
         <title>{applicationData?.name || 'Ciroos AI'} | Dashboard</title>
         <meta name="description" content={`${applicationData?.name || 'Ciroos AI'} Dashboard`} />
-        <link rel="icon" href="/favicon.png" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       {/* Background elements */}

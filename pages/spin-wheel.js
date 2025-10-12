@@ -258,7 +258,7 @@ export default function SpinWheel() {
         <Head>
           <title>{applicationData?.name || 'Ciroos AI'} | Spin Wheel</title>
           <meta name="description" content={`${applicationData?.name || 'Ciroos AI'} Spin Wheel`} />
-          <link rel="icon" href="/favicon.png" />
+          <link rel="icon" href="/favicon.ico" />
         </Head>
         <div className="stars"></div>
         <div className="stars1"></div>
@@ -279,7 +279,7 @@ export default function SpinWheel() {
       <Head>
         <title>{applicationData?.name || 'Ciroos AI'} | Spin Wheel</title>
         <meta name="description" content={`${applicationData?.name || 'Ciroos AI'} Spin Wheel`} />
-        <link rel="icon" href="/favicon.png" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       {/* Background elements */}

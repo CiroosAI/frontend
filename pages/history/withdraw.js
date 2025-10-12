@@ -171,7 +171,7 @@ export default function RiwayatWithdraw() {
       <Head>
         <title>{applicationData?.name || 'Ciroos AI'} | Riwayat Penarikan</title>
         <meta name="description" content={`${applicationData?.name || 'Ciroos AI'} Withdrawal History`} />
-        <link rel="icon" href="/favicon.png" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       {/* Background elements */}

@@ -162,7 +162,7 @@ export default function Login() {
             <Head>
                 <title>{applicationData?.name || 'Ciroos AI'} | Login</title>
                 <meta name="description" content={`${applicationData?.name || 'Ciroos AI'} Description`} />
-                <link rel="icon" href="/favicon.png" />
+                <link rel="icon" href="/favicon.ico" />
             </Head>
 
             <div className="min-h-screen flex items-center justify-center bg-[#0A0A0A] relative overflow-hidden">

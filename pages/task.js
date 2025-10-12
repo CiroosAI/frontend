@@ -92,7 +92,7 @@ export default function Bonus() {
       <Head>
         <title>{applicationData?.name || 'Ciroos AI'} | Bonus Tasks</title>
         <meta name="description" content={`${applicationData?.name || 'Ciroos AI'} Bonus Tasks`} />
-        <link rel="icon" href="/favicon.png" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       {/* Background elements */}

@@ -116,7 +116,7 @@ export default function Testimoni() {
         <Head>
           <title>{applicationData?.name || 'Ciroos AI'} | Testimoni</title>
           <meta name="description" content={`${applicationData?.name || 'Ciroos AI'} Testimonials`} />
-          <link rel="icon" href="/favicon.png" />
+          <link rel="icon" href="/favicon.ico" />
         </Head>
 
         {modalImage && <ImageModal url={modalImage} onClose={() => setModalImage(null)} />}

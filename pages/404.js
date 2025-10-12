@@ -33,8 +33,9 @@ export default function Error404() {
   return (
     <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center p-4 relative overflow-hidden">
       <Head>
-        <title>Ciroos | 404 - Halaman Tidak Ditemukan</title>
-        <meta name="description" content="Halaman yang Anda cari tidak ditemukan" />
+        <title>{applicationData?.name || 'Ciroos'} | 404 - Halaman Tidak Ditemukan</title>
+        <meta name="description" content={`${applicationData?.name || 'Ciroos'} 404 - Halaman Tidak Ditemukan`} />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       {/* Background elements */}

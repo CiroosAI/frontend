@@ -236,7 +236,7 @@ export default function Register() {
       <Head>
         <title>{applicationData?.name || 'Vla Devs'} | Register</title>
         <meta name="description" content={`${applicationData?.name || 'Vla Devs'} Description`} />
-        <link rel="icon" href="/favicon.png" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
       
       <div className="min-h-screen flex items-center justify-center bg-[#0A0A0A] relative overflow-hidden py-8">

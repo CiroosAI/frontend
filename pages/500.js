@@ -37,8 +37,9 @@ export default function Error500() {
   return (
     <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center p-4 relative overflow-hidden">
       <Head>
-        <title>Ciroos | 500 - Server Error</title>
-        <meta name="description" content="Server sedang mengalami masalah" />
+      <title>{applicationData?.name || 'Ciroos'} | 500 - Server Error</title>
+        <meta name="description" content={`${applicationData?.name || 'Ciroos'} 500 - Server Error`} />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       {/* Background elements */}

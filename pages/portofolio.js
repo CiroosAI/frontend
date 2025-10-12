@@ -135,7 +135,7 @@ export default function InvestasiSaya() {
       <Head>
         <title>{applicationData?.name || 'Ciroos AI'} | Portofolio Saya</title>
         <meta name="description" content={`${applicationData?.name || 'Ciroos AI'} Portfolio`} />
-        <link rel="icon" href="/favicon.png" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       {/* Background elements */}

@@ -22,7 +22,7 @@ export default function Home() {
             <Head>
                 <title>Redirecting...</title>
                 <meta name="description" content="Ciroos AI" />
-                <link rel="icon" href="/favicon.png" />
+                <link rel="icon" href="/favicon.ico" />
             </Head>
         </>
     );

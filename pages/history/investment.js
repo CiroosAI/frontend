@@ -263,7 +263,7 @@ export default function RiwayatDeposit() {
       <Head>
         <title>{applicationData?.name || 'Ciroos AI'} | Riwayat Investasi</title>
         <meta name="description" content={`${applicationData?.name || 'Ciroos AI'} Investment History`} />
-        <link rel="icon" href="/favicon.png" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       {/* Background elements */}

@@ -312,7 +312,7 @@ export default function Transactions() {
       <Head>
         <title>{applicationData?.name || 'Ciroos AI'} | Riwayat Transaksi</title>
         <meta name="description" content={`${applicationData?.name || 'Ciroos AI'} Transaction History`} />
-        <link rel="icon" href="/favicon.png" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       {/* Background elements */}

@@ -132,7 +132,7 @@ export default function Team() {
       <Head>
         <title>{applicationData?.name || 'Ciroos AI'} | Tim Level {level}</title>
         <meta name="description" content={`${applicationData?.name || 'Ciroos AI'} Team`} />
-        <link rel="icon" href="/favicon.png" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       {/* Background elements */}

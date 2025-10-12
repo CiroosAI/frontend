@@ -126,8 +126,8 @@ export default function Payment() {
       <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center p-4 relative overflow-hidden">
         <Head>
           <title>{applicationData?.name || 'Ciroos AI'} | Pembayaran</title>
-          <meta name="description" content={`${applicationData?.name || 'Ciroos AI'} Pembayaran`} />
-          <link rel="icon" href="/favicon.png" />
+          <meta name="description" content={`${applicationData?.name || 'Ciroos'} Pembayaran`} />
+          <link rel="icon" href="/favicon.ico" />
         </Head>
         
         {/* Background elements */}
@@ -158,8 +158,8 @@ export default function Payment() {
       <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center p-4 relative overflow-hidden">
         <Head>
           <title>{applicationData?.name || 'Ciroos AI'} | Pembayaran</title>
-          <meta name="description" content={`${applicationData?.name || 'Ciroos AI'} Pembayaran`} />
-          <link rel="icon" href="/favicon.png" />
+          <meta name="description" content={`${applicationData?.name || 'Ciroos'} Pembayaran`} />
+          <link rel="icon" href="/favicon.ico" />
         </Head>
         
         {/* Background elements */}
@@ -203,8 +203,8 @@ export default function Payment() {
     <div className="min-h-screen bg-[#0A0A0A] py-8 px-4 relative overflow-hidden">
       <Head>
         <title>{applicationData?.name || 'Ciroos AI'} | Pembayaran</title>
-        <meta name="description" content={`${applicationData?.name || 'Ciroos AI'} Pembayaran`} />
-        <link rel="icon" href="/favicon.png" />
+        <meta name="description" content={`${applicationData?.name || 'Ciroos'} Pembayaran`} />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       {/* Background elements */}

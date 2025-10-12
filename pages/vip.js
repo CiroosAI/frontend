@@ -167,7 +167,7 @@ export default function VIPPage() {
       <Head>
         <title>{applicationData?.name || 'Ciroos AI'} | VIP Status</title>
         <meta name="description" content="VIP Membership Status" />
-        <link rel="icon" href="/favicon.png" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       {/* Background elements */}

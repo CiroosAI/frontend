@@ -121,7 +121,7 @@ export default function Komisi() {
       <Head>
         <title>{applicationData?.name || 'Ciroos AI'} | Referral</title>
         <meta name="description" content={`${applicationData?.name || 'Ciroos AI'} Referral`} />
-        <link rel="icon" href="/favicon.png" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       {/* Background elements */}

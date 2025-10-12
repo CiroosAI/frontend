@@ -94,7 +94,7 @@ export default function BankAccount() {
       <Head>
         <title>{applicationData?.name || 'Ciroos AI'} | Akun Bank</title>
         <meta name="description" content={`${applicationData?.name || 'Ciroos AI'} Bank Accounts`} />
-        <link rel="icon" href="/favicon.png" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       {/* Background elements */}

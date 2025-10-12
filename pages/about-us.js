@@ -32,7 +32,7 @@ export default function About() {
       <Head>
         <title>{applicationData?.name || 'Ciroos AI'} | Tentang Kami</title>
         <meta name="description" content={`Tentang ${applicationData?.name || 'Ciroos AI'}`} />
-        <link rel="icon" href="/favicon.png" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       {/* Background elements */}

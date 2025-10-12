@@ -141,7 +141,7 @@ export default function UploadWithdrawal() {
            <Head>
               <title>{applicationData?.name || 'Ciroos AI'} | Unggah Testimoni</title>
               <meta name="description" content={`${applicationData?.name || 'Ciroos AI'} Upload Testimonial`} />
-              <link rel="icon" href="/favicon.png" />
+              <link rel="icon" href="/favicon.ico" />
             </Head>
 
             {/* Background elements */}

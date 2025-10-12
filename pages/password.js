@@ -122,7 +122,7 @@ export default function GantiSandi() {
       <Head>
         <title>{applicationData?.name || 'Ciroos AI'} | Ganti Kata Sandi</title>
         <meta name="description" content={`${applicationData?.name || 'Ciroos AI'} Change Password`} />
-        <link rel="icon" href="/favicon.png" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       {/* Background elements */}

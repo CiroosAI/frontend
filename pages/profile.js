@@ -243,7 +243,7 @@ export default function Profile() {
       <Head>
         <title>{applicationData?.name || 'Ciroos AI'} | Profile</title>
         <meta name="description" content={`${applicationData?.name || 'Ciroos AI'} Profile`} />
-        <link rel="icon" href="/favicon.png" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       {/* Background elements */}
