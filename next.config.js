@@ -45,9 +45,6 @@ const withPWA = require('next-pwa')({
     },
   ],
   
-  // Custom service worker
-  swCustom: true,
-  
   // Fallback for offline
   fallbacks: {
     document: '/offline.html',
