@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - Ciroos AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0A0A0A;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated Stars Background */
+        .stars {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            background: transparent;
+            box-shadow: 
+                718px 1689px #FFF, 1405px 2127px #FFF, 1270px 1148px #FFF,
+                620px 641px #FFF, 1538px 708px #FFF, 2169px 1632px #FFF,
+                523px 1494px #FFF, 1081px 2018px #FFF, 1372px 585px #FFF;
+            animation: animStar 100s linear infinite;
+        }
+
+        .stars:after {
+            content: " ";
+            position: absolute;
+            top: -600px;
+            width: 1px;
+            height: 1px;
+            background: transparent;
+            box-shadow: 
+                1229px 1419px #FFF, 672px 2257px #FFF, 821px 854px #FFF,
+                731px 1239px #FFF, 1244px 58px #FFF, 687px 2428px #FFF;
+        }
+
+        @keyframes animStar {
+            from { transform: translateY(0px); }
+            to { transform: translateY(-2560px) translateX(-2560px); }
+        }
+
+        /* Container */
+        .container {
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Icon Container */
+        .icon-container {
+            position: relative;
+            margin: 0 auto 30px;
+            width: 120px;
+            height: 120px;
+        }
+
+        .glow-circle {
+            position: absolute;
+            inset: -10px;
+            background: linear-gradient(135deg, #F45D16, #FF6B35);
+            border-radius: 50%;
+            filter: blur(20px);
+            opacity: 0.3;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .icon-bg {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1A1A1A, #0F0F0F);
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wifi-icon {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+
+        .wifi-slash {
+            position: absolute;
+            width: 80px;
+            height: 3px;
+            background: #F45D16;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            border-radius: 2px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.1); opacity: 0.5; }
+        }
+
+        /* Content */
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #F45D16, #FF6B35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        /* Status Card */
+        .status-card {
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.8), rgba(15, 15, 15, 0.8));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .status-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .status-value {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status-offline {
+            color: #F45D16;
+        }
+
+        .status-waiting {
+            color: #FFB800;
+        }
+
+        /* Loading dots */
+        .loading-dots {
+            display: inline-flex;
+            gap: 4px;
+            margin-left: 4px;
+        }
+
+        .dot {
+            width: 4px;
+            height: 4px;
+            background: #FFB800;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* Button */
+        .retry-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #F45D16, #FF6B35);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 24px rgba(244, 93, 22, 0.3);
+        }
+
+        .retry-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(244, 93, 22, 0.4);
+        }
+
+        .retry-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Tips */
+        .tips {
+            margin-top: 24px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .tips-title {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .tips-list {
+            list-style: none;
+            text-align: left;
+        }
+
+        .tips-list li {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            padding: 6px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .tips-list li:before {
+            content: "•";
+            position: absolute;
+            left: 8px;
+            color: #F45D16;
+        }
+
+        /* Connection status indicator */
+        .connection-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 16px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #F45D16;
+            border-radius: 50%;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .online .status-dot {
+            background: #4CAF50;
+            animation: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+
+    <div class="container">
+        <!-- Icon -->
+        <div class="icon-container">
+            <div class="glow-circle"></div>
+            <div class="icon-bg">
+                <svg class="wifi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                    <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+                    <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                    <line x1="12" y1="20" x2="12.01" y2="20"></line>
+                </svg>
+                <div class="wifi-slash"></div>
+            </div>
+        </div>
+
+        <!-- Title -->
+        <h1 class="title">Tidak Ada Koneksi</h1>
+        <p class="subtitle">Sepertinya Anda sedang offline atau server sedang maintenance</p>
+
+        <!-- Status Card -->
+        <div class="status-card">
+            <div class="status-item">
+                <span class="status-label">Status Koneksi</span>
+                <span class="status-value status-offline" id="connectionStatus">Offline</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Status Server</span>
+                <span class="status-value status-waiting" id="serverStatus">
+                    Memeriksa<span class="loading-dots">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </span>
+                </span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Terakhir Online</span>
+                <span class="status-value" id="lastOnline" style="color: rgba(255, 255, 255, 0.7);">Baru saja</span>
+            </div>
+        </div>
+
+        <!-- Retry Button -->
+        <button class="retry-btn" onclick="retryConnection()">
+            <span id="btnText">🔄 Coba Lagi</span>
+        </button>
+
+        <!-- Tips -->
+        <div class="tips">
+            <div class="tips-title">Tips Mengatasi:</div>
+            <ul class="tips-list">
+                <li>Periksa koneksi WiFi atau data seluler Anda</li>
+                <li>Coba matikan dan nyalakan mode pesawat</li>
+                <li>Restart aplikasi atau browser Anda</li>
+                <li>Hubungi CS jika masalah berlanjut</li>
+            </ul>
+        </div>
+
+        <!-- Connection Indicator -->
+        <div class="connection-indicator" id="connectionIndicator">
+            <span class="status-dot"></span>
+            <span>Menunggu koneksi...</span>
+        </div>
+    </div>
+
+    <script>
+        // Check connection status
+        function updateConnectionStatus() {
+            const isOnline = navigator.onLine;
+            const statusEl = document.getElementById('connectionStatus');
+            const indicatorEl = document.getElementById('connectionIndicator');
+            
+            if (isOnline) {
+                statusEl.textContent = 'Online';
+                statusEl.className = 'status-value';
+                statusEl.style.color = '#4CAF50';
+                indicatorEl.classList.add('online');
+                indicatorEl.querySelector('span:last-child').textContent = 'Koneksi kembali!';
+            } else {
+                statusEl.textContent = 'Offline';
+                statusEl.className = 'status-value status-offline';
+                indicatorEl.classList.remove('online');
+                indicatorEl.querySelector('span:last-child').textContent = 'Menunggu koneksi...';
+            }
+        }
+
+        // Retry connection
+        function retryConnection() {
+            const btn = document.querySelector('.retry-btn');
+            const btnText = document.getElementById('btnText');
+            
+            btn.disabled = true;
+            btnText.textContent = '⏳ Memeriksa...';
+            
+            setTimeout(() => {
+                if (navigator.onLine) {
+                    btnText.textContent = '✅ Menghubungkan...';
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
+                } else {
+                    btnText.textContent = '❌ Masih Offline';
+                    setTimeout(() => {
+                        btnText.textContent = '🔄 Coba Lagi';
+                        btn.disabled = false;
+                    }, 2000);
+                }
+            }, 1500);
+        }
+
+        // Auto-retry when online
+        window.addEventListener('online', () => {
+            updateConnectionStatus();
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        });
+
+        window.addEventListener('offline', () => {
+            updateConnectionStatus();
+        });
+
+        // Update last online time
+        function updateLastOnline() {
+            const now = new Date();
+            const lastOnlineEl = document.getElementById('lastOnline');
+            lastOnlineEl.textContent = now.toLocaleTimeString('id-ID', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+        }
+
+        // Initialize
+        updateConnectionStatus();
+        updateLastOnline();
+
+        // Update time every minute
+        setInterval(updateLastOnline, 60000);
+
+        // Periodically check connection
+        setInterval(() => {
+            if (navigator.onLine) {
+                fetch('/', { method: 'HEAD', cache: 'no-cache' })
+                    .then(() => {
+                        document.getElementById('serverStatus').innerHTML = '<span style="color: #4CAF50;">Online</span>';
+                        setTimeout(() => window.location.reload(), 1000);
+                    })
+                    .catch(() => {
+                        document.getElementById('serverStatus').innerHTML = '<span style="color: #F45D16;">Server Error</span>';
+                    });
+            }
+        }, 5000);
+    </script>
+</body>
+</html>
