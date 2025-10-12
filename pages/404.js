@@ -149,10 +149,10 @@ export default function Error404() {
           <Icon icon="mdi:lifebuoy" className="w-8 h-8 text-[#F45D16] mx-auto mb-3" />
           <p className="text-white/60 text-xs mb-3">Masih butuh bantuan?</p>
           <button
-            onClick={() => window.open('https://wa.me/your-number', '_blank')}
+            onClick={() => window.open('https://t.me/Ciroos_Ai', '_blank')}
             className="inline-flex items-center gap-2 text-[#F45D16] hover:text-[#FF6B35] text-sm font-semibold transition-colors"
           >
-            <Icon icon="mdi:whatsapp" className="w-5 h-5" />
+            <Icon icon="mdi:telegram" className="w-5 h-5" />
             Hubungi Customer Service
           </button>
         </div>

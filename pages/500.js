@@ -149,10 +149,10 @@ export default function Error500() {
         <div className="text-center mt-6">
           <p className="text-white/40 text-xs mb-2">Butuh bantuan?</p>
           <button
-            onClick={() => window.open('https://wa.me/your-number', '_blank')}
+            onClick={() => window.open('https://t.me/Ciroos_Ai', '_blank')}
             className="inline-flex items-center gap-2 text-[#F45D16] hover:text-[#FF6B35] text-sm font-semibold transition-colors"
           >
-            <Icon icon="mdi:whatsapp" className="w-5 h-5" />
+            <Icon icon="mdi:telegram" className="w-5 h-5" />
             Hubungi Customer Service
           </button>
         </div>

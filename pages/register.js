@@ -28,7 +28,8 @@ export default function Register() {
     name: false,
     number: false,
     password: false,
-    passwordMatch: false
+    passwordMatch: false,
+    referralCode: false
   });
 
   const checkPasswordStrength = (password) => {
@@ -91,7 +92,8 @@ export default function Register() {
       name: formData.name.trim().length >= 3,
       number: /^8[0-9]{8,11}$/.test(formData.number),
       password: formData.password.length >= 6,
-      passwordMatch: formData.password === formData.password_confirmation && formData.password.length > 0
+      passwordMatch: formData.password === formData.password_confirmation && formData.password.length > 0,
+      referralCode: formData.referral_code.trim().length > 0
     });
     setPasswordStrength(checkPasswordStrength(formData.password));
     
@@ -474,7 +476,6 @@ export default function Register() {
                 <label htmlFor="referral_code" className="block text-[#EDE5D9] text-sm font-semibold mb-2 flex items-center gap-2">
                   <Icon icon="mdi:gift-outline" className="w-4 h-4 text-[#f45d16]" />
                   Kode Referral
-                  <span className="text-xs text-[#EDE5D9]/50">(Opsional)</span>
                 </label>
                 <div className="relative group">
                   <div className={`flex items-center input-field ${referralLocked ? 'opacity-75' : ''}`}>
@@ -483,10 +484,11 @@ export default function Register() {
                       type="text"
                       id="referral_code"
                       className={`flex-1 bg-transparent outline-none px-2 py-3 text-[#FAF8F6] placeholder-[#EDE5D9]/50 text-sm ${referralLocked ? 'cursor-not-allowed' : ''}`}
-                      placeholder="Masukkan kode referral (jika ada)"
+                      placeholder="Masukkan kode referral"
                       value={formData.referral_code}
                       onChange={handleChange}
                       disabled={referralLocked}
+                      required
                     />
                     <div className="px-3">
                       {referralLocked ? (
@@ -561,6 +563,12 @@ export default function Register() {
                       <div className="flex items-center gap-2">
                         <Icon icon="mdi:circle-small" className="w-3 h-3" />
                         <span>Password tidak sama</span>
+                      </div>
+                    )}
+                    {!formValidation.referralCode && (
+                      <div className="flex items-center gap-2">
+                        <Icon icon="mdi:circle-small" className="w-3 h-3" />
+                        <span>Kode referral wajib diisi</span>
                       </div>
                     )}
                   </div>
