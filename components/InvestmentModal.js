@@ -116,28 +116,6 @@ export default function InvestmentModal({ open, onClose, product, user, onSucces
                 <p className="text-xs text-white/60">Kategori: {categoryName}</p>
               </div>
             </div>
-            
-            {/* Category & VIP Info */}
-            <div className="flex items-center gap-2 mt-2">
-              {isLocked ? (
-                <div className="flex items-center gap-1.5 bg-purple-500/20 border border-purple-500/40 rounded-lg px-2.5 py-1">
-                  <Icon icon="mdi:lock" className="w-3 h-3 text-purple-400" />
-                  <span className="text-[10px] font-semibold text-purple-300">Profit Terkunci</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-1.5 bg-green-500/20 border border-green-500/40 rounded-lg px-2.5 py-1">
-                  <Icon icon="mdi:flash" className="w-3 h-3 text-green-400" />
-                  <span className="text-[10px] font-semibold text-green-300">Profit Langsung</span>
-                </div>
-              )}
-              
-              {product.purchase_limit > 0 && (
-                <div className="flex items-center gap-1.5 bg-orange-500/20 border border-orange-500/40 rounded-lg px-2.5 py-1">
-                  <Icon icon="mdi:numeric" className="w-3 h-3 text-orange-400" />
-                  <span className="text-[10px] font-semibold text-orange-300">Limit {product.purchase_limit}x</span>
-                </div>
-              )}
-            </div>
           </div>
 
           {/* Scrollable Content */}
@@ -191,45 +169,6 @@ export default function InvestmentModal({ open, onClose, product, user, onSucces
                   </div>
                 </div>
               </div>
-            </div>
-
-            {/* Warnings/Info based on category */}
-            <div className="space-y-1.5">
-              {isLocked && (
-                <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-2 flex items-start gap-2">
-                  <Icon icon="mdi:information" className="w-3.5 h-3.5 text-purple-400 flex-shrink-0 mt-0.5" />
-                  <div className="text-[11px] text-purple-200 leading-relaxed">
-                    <span className="font-semibold">Profit Terkunci:</span> Total profit akan dibayarkan saat investasi selesai
-                  </div>
-                </div>
-              )}
-              
-              {!isLocked && (
-                <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-2 flex items-start gap-2">
-                  <Icon icon="mdi:check-circle" className="w-3.5 h-3.5 text-green-400 flex-shrink-0 mt-0.5" />
-                  <div className="text-[11px] text-green-200 leading-relaxed">
-                    <span className="font-semibold">Profit Langsung:</span> Profit dibayarkan segera saat investasi selesai
-                  </div>
-                </div>
-              )}
-              
-              {product.purchase_limit > 0 && (
-                <div className="bg-orange-500/10 border border-orange-500/30 rounded-lg p-2 flex items-start gap-2">
-                  <Icon icon="mdi:alert-circle" className="w-3.5 h-3.5 text-orange-400 flex-shrink-0 mt-0.5" />
-                  <div className="text-[11px] text-orange-200 leading-relaxed">
-                    <span className="font-semibold">Limited:</span> Produk ini hanya bisa dibeli {product.purchase_limit}x selamanya
-                  </div>
-                </div>
-              )}
-              
-              {isLocked && (
-                <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-2 flex items-start gap-2">
-                  <Icon icon="mdi:star" className="w-3.5 h-3.5 text-blue-400 flex-shrink-0 mt-0.5" />
-                  <div className="text-[11px] text-blue-200 leading-relaxed">
-                    <span className="font-semibold">VIP Bonus:</span> Investasi ini akan menambah level VIP Anda
-                  </div>
-                </div>
-              )}
             </div>
 
             {/* Payment Method Selection */}
