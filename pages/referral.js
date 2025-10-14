@@ -112,9 +112,9 @@ export default function Komisi() {
 
   const referralLink = reffCode ? `${window.location.origin}/register?reff=${reffCode}` : '';
   
-  const totalReferrals = (teamStats[1]?.count || 0) + (teamStats[2]?.count || 0) + (teamStats[3]?.count || 0);
-  const totalActive = (teamStats[1]?.active || 0) + (teamStats[2]?.active || 0) + (teamStats[3]?.active || 0);
-  const totalInvest = (teamStats[1]?.total_invest || 0) + (teamStats[2]?.total_invest || 0) + (teamStats[3]?.total_invest || 0);
+  const totalReferrals = (teamStats[1]?.count || 0);
+  const totalActive = (teamStats[1]?.active || 0);
+  const totalInvest = (teamStats[1]?.total_invest || 0);
 
   return (
     <div className="min-h-screen bg-[#0A0A0A] pb-32 relative overflow-hidden">
