@@ -236,27 +236,7 @@ export default function RiwayatDeposit() {
     return false;
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center relative overflow-hidden">
-        <Head>
-          <title>{applicationData?.name || 'Ciroos AI'} | Riwayat Investasi</title>
-        </Head>
-        <div className="stars"></div>
-        <div className="stars1"></div>
-        <div className="stars2"></div>
-        <div className='shooting-stars'></div>
-
-        <div className="flex flex-col items-center relative z-10">
-          <div className="relative">
-            <div className="animate-spin rounded-full h-12 w-12 border-3 border-[#F45D16]/20 border-t-[#F45D16]"></div>
-            <div className="absolute inset-0 animate-ping rounded-full h-12 w-12 border-2 border-[#F45D16]/40"></div>
-          </div>
-          <p className="text-white/70 text-sm mt-4">Memuat riwayat investasi...</p>
-        </div>
-      </div>
-    );
-  }
+  /* Loading handled inline within the page content */
 
   return (
     <div className="min-h-screen bg-[#0A0A0A] pb-32 relative overflow-hidden">
@@ -345,7 +325,15 @@ export default function RiwayatDeposit() {
         )}
 
         {/* Investments List */}
-        {investments.length === 0 && !error ? (
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-10">
+            <div className="relative">
+              <div className="animate-spin rounded-full h-12 w-12 border-3 border-[#F45D16]/20 border-t-[#F45D16]"></div>
+              <div className="absolute inset-0 animate-ping rounded-full h-12 w-12 border-2 border-[#F45D16]/40"></div>
+            </div>
+            <p className="text-white/70 text-sm mt-4">Memuat riwayat investasi...</p>
+          </div>
+        ) : investments.length === 0 && !error ? (
           <div className="bg-[#1A1A1A] border border-white/10 rounded-2xl p-6 text-center">
             <Icon icon="mdi:database-off" className="text-white/60 w-8 h-8 mx-auto mb-2" />
             <h3 className="text-white font-semibold">Belum Ada Riwayat</h3>

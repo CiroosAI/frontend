@@ -177,7 +177,6 @@ export default function Testimoni() {
             </div>
           </div>
 
-
           {/* Testimonials List */}
           <div className="space-y-4 mb-6">
             {loading && (

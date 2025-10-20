@@ -252,28 +252,6 @@ export default function SpinWheel() {
   });
 };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center relative overflow-hidden">
-        <Head>
-          <title>{applicationData?.name || 'Ciroos AI'} | Spin Wheel</title>
-          <meta name="description" content={`${applicationData?.name || 'Ciroos AI'} Spin Wheel`} />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-        <div className="stars"></div>
-        <div className="stars1"></div>
-        <div className="stars2"></div>
-        <div className="flex flex-col items-center relative z-10">
-          <div className="relative">
-            <div className="animate-spin rounded-full h-12 w-12 border-3 border-[#F45D16]/20 border-t-[#F45D16]"></div>
-            <div className="absolute inset-0 animate-ping rounded-full h-12 w-12 border-2 border-[#F45D16]/40"></div>
-          </div>
-          <p className="text-white/70 text-sm mt-4">Memuat hadiah...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-[#0A0A0A] pb-32 relative overflow-hidden">
       <Head>
@@ -290,32 +268,23 @@ export default function SpinWheel() {
       <div className="absolute inset-0 bg-[radial-gradient(100%_80%_at_85%_0%,rgba(0,88,188,0.3)_0%,rgba(0,0,0,0.1)_50%,rgba(0,0,0,0)_100%)]"></div>
       <div className="absolute inset-0 bg-[radial-gradient(90%_70%_at_0%_100%,rgba(255,100,0,0.25)_0%,rgba(0,0,0,0.1)_50%,rgba(0,0,0,0)_100%)]"></div>
 
-      {/* Top Navigation */}
-      <div className="sticky top-0 z-20 bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/10">
-        <div className="max-w-sm mx-auto p-4 flex items-center justify-between">
-          <button 
-            onClick={() => router.back()}
-            className="w-10 h-10 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-xl transition-all duration-300"
-          >
-            <Icon icon="mdi:arrow-left" className="w-5 h-5 text-white" />
-          </button>
-          <h1 className="text-lg font-bold text-white">Spin Wheel</h1>
-          <div className="w-10 h-10"></div>
-        </div>
-      </div>
-
       <div className="max-w-sm mx-auto p-4 relative z-10">
-        {/* Header Section */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#F45D16] to-[#FF6B35] flex items-center justify-center shadow-lg">
-              <Icon icon="mdi:dharmachakra" className="w-7 h-7 text-white" />
+        {/* Header Section - Card like Referral */}
+        <div className="relative mb-6 pt-2">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#F45D16] to-[#0058BC] rounded-3xl blur opacity-20"></div>
+          <div className="relative bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-3xl p-6 border border-white/10">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#F45D16] to-[#FF6B35] flex items-center justify-center shadow-lg">
+                <Icon icon="mdi:dharmachakra" className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-xl font-bold text-white">Roda Keberuntungan</h1>
+                </div>
+                <p className="text-white/60 text-xs">Dapatkan uang dari roda keberuntungan!</p>
+              </div>
             </div>
-            <h1 className="text-2xl font-bold text-white">Spin Wheel</h1>
           </div>
-          <p className="text-white/60 text-sm">
-              Dapatkan hadiah menarik dengan memutar roda keberuntungan!
-          </p>
         </div>
 
         {/* User Info Section */}
@@ -358,16 +327,6 @@ export default function SpinWheel() {
               <div className="text-3xl font-bold text-yellow-400 mb-4 bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
               {result.prize.name}
             </div>
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                <div className="bg-white/5 rounded-xl p-3 border border-white/10">
-                  <p className="text-white/60 text-xs">Saldo Sebelum</p>
-                  <p className="text-white font-bold">Rp {formatCurrency(result.previousBalance)}</p>
-                </div>
-                <div className="bg-white/5 rounded-xl p-3 border border-white/10">
-                  <p className="text-white/60 text-xs">Saldo Sekarang</p>
-                  <p className="text-white font-bold">Rp {formatCurrency(result.currentBalance)}</p>
-                </div>
-              </div>
             </div>
           </div>
         )}
@@ -377,18 +336,27 @@ export default function SpinWheel() {
           <div className="absolute -inset-1 bg-gradient-to-r from-[#F45D16] to-[#0058BC] rounded-full blur-2xl opacity-30"></div>
           <div className="relative flex justify-center p-4">
             <div className="relative w-72 h-72">
-              {/* Wheel SVG */}
-              <svg 
-                ref={wheelRef}
-                className="absolute inset-0 w-full h-full drop-shadow-2xl"
-                viewBox="0 0 240 240"
-                style={{ 
-                  transform: `rotate(${currentRotation}deg)`,
-                  transition: 'transform 4s cubic-bezier(0.2, 0.7, 0.3, 1)'
-                }}
-              >
-                {createWheelSegments()}
-              </svg>
+              {/* Wheel SVG or loading placeholder */}
+              {loading ? (
+                <div className="absolute inset-0 rounded-full bg-white/5 border border-white/10 grid place-items-center">
+                  <div className="relative">
+                    <div className="animate-spin rounded-full h-12 w-12 border-3 border-[#F45D16]/20 border-t-[#F45D16]"></div>
+                    <div className="absolute inset-0 animate-ping rounded-full h-12 w-12 border-2 border-[#F45D16]/40"></div>
+                  </div>
+                </div>
+              ) : (
+                <svg 
+                  ref={wheelRef}
+                  className="absolute inset-0 w-full h-full drop-shadow-2xl"
+                  viewBox="0 0 240 240"
+                  style={{ 
+                    transform: `rotate(${currentRotation}deg)`,
+                    transition: 'transform 4s cubic-bezier(0.2, 0.7, 0.3, 1)'
+                  }}
+                >
+                  {createWheelSegments()}
+                </svg>
+              )}
               
               {/* Center circle */}
               <div className="absolute top-1/2 left-1/2 w-10 h-10 bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-full transform -translate-x-1/2 -translate-y-1/2 z-10 shadow-lg border-4 border-[#F45D16]"></div>
@@ -453,7 +421,7 @@ export default function SpinWheel() {
   height: 1px;
   border-radius: 50%;
   position: absolute;
-  backgroud: transparent;
+  background: transparent;
   box-shadow: 1229px 1419px #FFF , 672px 2257px #FFF , 821px 854px #FFF , 731px 1239px #FFF , 1244px 58px #FFF , 687px 2428px #FFF , 173px 1549px #FFF , 1973px 940px #FFF , 2334px 1057px #FFF , 792px 882px #FFF , 1499px 1912px #FFF , 1892px 9px #FFF , 172px 1753px #FFF , 22px 1577px #FFF , 934px 2059px #FFF , 1398px 2309px #FFF , 100px 77px #FFF , 1545px 22px #FFF , 595px 1917px #FFF , 941px 1452px #FFF , 1226px 1022px #FFF , 1254px 990px #FFF , 2507px 352px #FFF , 111px 887px #FFF , 1666px 168px #FFF , 966px 986px #FFF , 121px 2559px #FFF , 1424px 792px #FFF , 1973px 2544px #FFF , 577px 503px #FFF , 1167px 1107px #FFF , 2397px 1653px #FFF , 1054px 810px #FFF , 663px 805px #FFF , 1084px 317px #FFF , 2214px 759px #FFF , 190px 975px #FFF , 2218px 2104px #FFF , 2013px 1227px #FFF , 383px 1778px #FFF , 1287px 1660px #FFF , 2131px 994px #FFF , 1073px 748px #FFF , 1745px 2372px #FFF , 1424px 252px #FFF , 1274px 2457px #FFF , 1976px 2422px #FFF , 1644px 1665px #FFF , 2372px 1772px #FFF , 1593px 580px #FFF , 894px 2361px #FFF , 31px 1802px #FFF , 1552px 1134px #FFF , 1477px 1847px #FFF , 1647px 2464px #FFF , 599px 510px #FFF , 2016px 226px #FFF , 1402px 243px #FFF , 748px 953px #FFF , 387px 1212px #FFF , 453px 1525px #FFF , 1032px 93px #FFF , 1420px 1399px #FFF , 146px 948px #FFF , 2256px 1631px #FFF , 1405px 394px #FFF , 201px 2149px #FFF , 1077px 1765px #FFF , 34px 2213px #FFF , 2388px 246px #FFF , 392px 667px #FFF , 1595px 181px #FFF , 323px 426px #FFF , 2405px 2410px #FFF , 2484px 280px #FFF;
 }
 
@@ -473,7 +441,7 @@ export default function SpinWheel() {
   height: 2px;
   border-radius: 50%;
   position: absolute;
-  backgroud: transparent;
+  background: transparent;
   box-shadow: 435px 1410px #FFF , 1717px 2554px #FFF , 885px 1458px #FFF , 1614px 909px #FFF , 26px 2169px #FFF , 1627px 1343px #FFF , 511px 518px #FFF , 1388px 722px #FFF , 748px 1982px #FFF , 837px 2188px #FFF , 891px 1897px #FFF , 917px 2547px #FFF , 866px 2021px #FFF , 1748px 2464px #FFF , 409px 2476px #FFF , 1321px 1824px #FFF , 1946px 1620px #FFF , 84px 1996px #FFF , 773px 475px #FFF , 2327px 1356px #FFF , 181px 38px #FFF , 2122px 1291px #FFF , 2254px 375px #FFF , 654px 432px #FFF , 2022px 710px #FFF , 866px 1651px #FFF , 948px 2128px #FFF , 1107px 1282px #FFF , 1605px 1555px #FFF , 847px 2056px #FFF , 1678px 385px #FFF , 1723px 2282px #FFF , 516px 166px #FFF , 1764px 93px #FFF , 1947px 2302px #FFF , 1357px 1486px #FFF , 1237px 2532px #FFF , 2338px 2002px #FFF , 251px 1525px #FFF , 876px 1121px #FFF , 189px 759px #FFF , 1936px 1574px #FFF , 2510px 1440px #FFF , 204px 836px #FFF , 2044px 437px #FFF , 471px 45px #FFF , 394px 548px #FFF , 1730px 641px #FFF , 1526px 1701px #FFF , 1559px 1106px #FFF , 1396px 1826px #FFF , 1106px 644px #FFF , 160px 2149px #FFF , 1261px 1804px #FFF , 363px 714px #FFF , 2002px 2277px #FFF , 696px 1741px #FFF , 2291px 499px #FFF , 2089px 2229px #FFF;
 }
 
@@ -493,7 +461,7 @@ export default function SpinWheel() {
   height: 3px;
   border-radius: 50%;
   position: absolute;
-  backgroud: transparent;
+  background: transparent;
   box-shadow: 148px 2112px #FFF , 2328px 2246px #FFF , 793px 1150px #FFF , 2476px 867px #FFF , 195px 2295px #FFF , 721px 1158px #FFF , 344px 1096px #FFF , 1434px 1247px #FFF , 2251px 1334px #FFF , 1696px 1404px #FFF , 1928px 1929px #FFF , 473px 1718px #FFF , 1176px 1364px #FFF , 133px 1990px #FFF , 1396px 1179px #FFF , 1355px 1046px #FFF , 676px 869px #FFF , 2255px 1676px #FFF , 2393px 2105px #FFF , 1032px 1390px #FFF , 773px 2159px #FFF , 1235px 945px #FFF , 1161px 209px #FFF , 1878px 175px #FFF , 287px 1787px #FFF , 509px 935px #FFF , 473px 442px #FFF , 1864px 177px #FFF , 768px 2004px #FFF , 513px 744px #FFF , 2060px 2271px #FFF , 2187px 2135px #FFF , 1818px 505px #FFF , 809px 1998px #FFF , 323px 2553px #FFF , 1420px 167px #FFF , 2418px 2233px #FFF , 1955px 2053px #FFF , 1822px 145px #FFF , 931px 629px #FFF , 94px 2440px #FFF , 1816px 718px #FFF , 386px 668px #FFF , 2040px 397px #FFF , 40px 866px #FFF , 1397px 2398px #FFF , 2399px 297px #FFF , 1611px 259px #FFF , 1393px 1139px #FFF;
 }
 
