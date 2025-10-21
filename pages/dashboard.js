@@ -189,8 +189,8 @@ export default function Dashboard() {
   };
 
   const handleClaimReward = () => {
-    if (applicationData?.link_cs) {
-      window.open(applicationData.link_cs, '_blank');
+    if (applicationData?.link_group) {
+      window.open(applicationData.link_group, '_blank');
     }
   };
 
@@ -736,12 +736,19 @@ export default function Dashboard() {
                     </div>
                     <span className="font-bold text-green-400 text-lg">Rp 700K</span>
                   </div>
-                  <div className="bg-white/5 rounded-xl p-3 flex items-center justify-between border border-orange-500/30">
+		  <div className="bg-white/5 rounded-xl p-3 flex items-center justify-between border border-orange-500/30">
                     <div className="flex items-center gap-3">
                       <Icon icon="mdi:fire" className="w-5 h-5 text-orange-400" />
+                      <span className="font-semibold text-white">250K views</span>
+                    </div>
+                    <span className="font-bold text-orange-400 text-lg">Rp 1JT</span>
+                  </div>
+                  <div className="bg-white/5 rounded-xl p-3 flex items-center justify-between border border-red-500/30">
+                    <div className="flex items-center gap-3">
+                      <Icon icon="mdi:fire" className="w-5 h-5 text-red-400" />
                       <span className="font-semibold text-white">500K views</span>
                     </div>
-                    <span className="font-bold text-orange-400 text-lg">Rp 2JT</span>
+                    <span className="font-bold text-red-400 text-lg">Rp 2JT</span>
                   </div>
                 </div>
 
