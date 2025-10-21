@@ -405,7 +405,7 @@ export default function Register() {
                       </label>
                       <div className="relative group">
                         <div className="input-field-modern">
-                          <div className="px-4 py-4">
+                          <div className="flex items-center px-4 py-4">
                             <Icon icon="mdi:account-outline" className="text-[#EDE5D9]/50 w-5 h-5" />
                           </div>
                           <input
@@ -528,7 +528,7 @@ export default function Register() {
                       </label>
                       <div className="relative group">
                         <div className="input-field-modern">
-                          <div className="px-4 py-4">
+                          <div className="flex items-center px-4 py-4">
                             <Icon icon="mdi:lock-check-outline" className="text-[#EDE5D9]/50 w-5 h-5" />
                           </div>
                           <input
@@ -544,7 +544,7 @@ export default function Register() {
                           <button
                             type="button"
                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                            className="px-4 py-4 text-[#EDE5D9]/50 hover:text-[#FAF8F6] transition-colors"
+                            className="flex items-center px-4 py-4 text-[#EDE5D9]/50 hover:text-[#FAF8F6] transition-colors"
                           >
                             <Icon 
                               icon={showConfirmPassword ? "mdi:eye-off" : "mdi:eye"} 
@@ -569,7 +569,7 @@ export default function Register() {
                       </label>
                       <div className="relative group">
                         <div className={`input-field-modern ${referralLocked ? 'opacity-75' : ''}`}>
-                          <div className="px-4 py-4">
+                          <div className="flex items-center px-4 py-4">
                             <Icon icon="mdi:gift-outline" className="text-[#EDE5D9]/50 w-5 h-5" />
                           </div>
                           <input

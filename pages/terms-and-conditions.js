@@ -3,10 +3,11 @@ import Head from 'next/head';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Icon } from '@iconify/react';
+import { useRouter } from 'next/router';
 
 export default function TermsAndConditions() {
   const [applicationData, setApplicationData] = useState(null);
-
+  const router = useRouter();
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const storedApplication = localStorage.getItem('application');
@@ -36,6 +37,20 @@ export default function TermsAndConditions() {
         <div className="shooting-stars"></div>
         <div className="absolute inset-0 bg-[radial-gradient(100%_80%_at_85%_0%,rgba(0,88,188,0.3)_0%,rgba(0,0,0,0.1)_50%,rgba(0,0,0,0)_100%)]"></div>
         <div className="absolute inset-0 bg-[radial-gradient(90%_70%_at_0%_100%,rgba(255,100,0,0.25)_0%,rgba(0,0,0,0.1)_50%,rgba(0,0,0,0)_100%)]"></div>
+
+        {/* Top Navigation */}
+        <div className="sticky top-0 z-20 bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/10">
+          <div className="max-w-sm mx-auto p-4 flex items-center justify-between">
+            <button 
+              onClick={() => router.back()}
+              className="w-10 h-10 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-xl transition-all duration-300"
+            >
+              <Icon icon="mdi:arrow-left" className="w-5 h-5 text-white" />
+            </button>
+            <h1 className="text-lg font-bold text-white">Syarat dan Ketentuan</h1>
+            <div className="w-10 h-10"></div>
+          </div>
+        </div>
 
         {/* Header */}
         <div className="relative z-10 pt-8 pb-6 px-4">
