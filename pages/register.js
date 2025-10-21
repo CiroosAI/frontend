@@ -405,20 +405,20 @@ export default function Register() {
                       </label>
                       <div className="relative group">
                         <div className="input-field-modern">
-                          <div className="flex items-center px-4 py-4">
+                          <div className="flex items-center px-4 py-4 shrink-0">
                             <Icon icon="mdi:account-outline" className="text-[#EDE5D9]/50 w-5 h-5" />
                           </div>
                           <input
                             type="text"
                             id="name"
-                            className="flex-1 bg-transparent outline-none px-2 py-4 text-[#FAF8F6] placeholder-[#EDE5D9]/40 text-sm font-medium"
+                            className="flex-1 bg-transparent outline-none px-2 py-4 text-[#FAF8F6] placeholder-[#EDE5D9]/40 text-sm font-medium min-w-0"
                             placeholder="Masukkan nama lengkap Anda"
                             value={formData.name}
                             onChange={handleChange}
                             required
                             autoComplete="name"
                           />
-                          <div className="px-4">
+                          <div className="flex items-center px-4 py-4 shrink-0">
                             {formValidation.name ? (
                               <Icon icon="mdi:check-circle" className="w-5 h-5 text-[#F45D16]" />
                             ) : (
@@ -528,13 +528,13 @@ export default function Register() {
                       </label>
                       <div className="relative group">
                         <div className="input-field-modern">
-                          <div className="flex items-center px-4 py-4">
+                          <div className="flex items-center px-4 py-4 shrink-0">
                             <Icon icon="mdi:lock-check-outline" className="text-[#EDE5D9]/50 w-5 h-5" />
                           </div>
                           <input
                             type={showConfirmPassword ? "text" : "password"}
                             id="password_confirmation"
-                            className="flex-1 bg-transparent outline-none px-2 py-4 text-[#FAF8F6] placeholder-[#EDE5D9]/40 text-sm font-medium"
+                            className="flex-1 bg-transparent outline-none px-2 py-4 text-[#FAF8F6] placeholder-[#EDE5D9]/40 text-sm font-medium min-w-0"
                             placeholder="Ulangi password Anda"
                             value={formData.password_confirmation}
                             onChange={handleChange}
@@ -544,7 +544,7 @@ export default function Register() {
                           <button
                             type="button"
                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                            className="flex items-center px-4 py-4 text-[#EDE5D9]/50 hover:text-[#FAF8F6] transition-colors"
+                            className="flex items-center px-4 py-4 text-[#EDE5D9]/50 hover:text-[#FAF8F6] transition-colors shrink-0"
                           >
                             <Icon 
                               icon={showConfirmPassword ? "mdi:eye-off" : "mdi:eye"} 
@@ -569,20 +569,20 @@ export default function Register() {
                       </label>
                       <div className="relative group">
                         <div className={`input-field-modern ${referralLocked ? 'opacity-75' : ''}`}>
-                          <div className="flex items-center px-4 py-4">
+                          <div className="flex items-center px-4 py-4 shrink-0">
                             <Icon icon="mdi:gift-outline" className="text-[#EDE5D9]/50 w-5 h-5" />
                           </div>
                           <input
                             type="text"
                             id="referral_code"
-                            className={`flex-1 bg-transparent outline-none px-2 py-4 text-[#FAF8F6] placeholder-[#EDE5D9]/40 text-sm font-medium ${referralLocked ? 'cursor-not-allowed' : ''}`}
+                            className={`flex-1 bg-transparent outline-none px-2 py-4 text-[#FAF8F6] placeholder-[#EDE5D9]/40 text-sm font-medium min-w-0 ${referralLocked ? 'cursor-not-allowed' : ''}`}
                             placeholder="Masukkan kode referral"
                             value={formData.referral_code}
                             onChange={handleChange}
                             disabled={referralLocked}
                             required
                           />
-                          <div className="px-4">
+                          <div className="flex items-center px-4 py-4 shrink-0">
                             {referralLocked ? (
                               <Icon icon="mdi:lock" className="w-5 h-5 text-yellow-400" />
                             ) : formData.referral_code ? (
