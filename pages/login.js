@@ -255,6 +255,19 @@ export default function Login() {
                                     </div>
                                 </div>
 
+                                {/* Privacy & Terms Links */}
+                                <div className="glass-card p-6 rounded-3xl hover-lift">
+                                    <div className="flex items-center justify-center gap-1 text-xs text-[#EDE5D9]/60">
+                                        <Link href="/privacy-policy">
+                                            <span className="hover:text-[#F45D16] transition-colors cursor-pointer">Kebijakan Privasi</span>
+                                        </Link>
+                                        <span>•</span>
+                                        <Link href="/terms-and-conditions">
+                                            <span className="hover:text-[#F45D16] transition-colors cursor-pointer">Syarat & Ketentuan</span>
+                                        </Link>
+                                    </div>
+                                </div>
+
                             </div>
 
                             {/* Right Side - Login Form */}
@@ -348,13 +361,13 @@ export default function Login() {
                                             </label>
                                             <div className="relative group">
                                                 <div className="input-field-modern">
-                                                    <div className="px-4 py-4">
+                                                    <div className="flex items-center px-4 py-4">
                                                         <Icon icon="mdi:lock-outline" className="text-[#EDE5D9]/50 w-5 h-5" />
                                                     </div>
                                                     <input
                                                         type={showPassword ? "text" : "password"}
                                                         id="password"
-                                                        className="flex-1 bg-transparent outline-none px-2 py-4 text-[#FAF8F6] placeholder-[#EDE5D9]/40 text-sm font-medium"
+                                                        className="flex-1 bg-transparent outline-none px-2 py-4 text-[#FAF8F6] placeholder-[#EDE5D9]/40 text-sm font-medium min-w-0"
                                                         placeholder="Masukkan password Anda"
                                                         value={formData.password}
                                                         onChange={handleChange}
@@ -364,7 +377,7 @@ export default function Login() {
                                                     <button
                                                         type="button"
                                                         onClick={() => setShowPassword(!showPassword)}
-                                                        className="px-4 py-4 text-[#EDE5D9]/50 hover:text-[#FAF8F6] transition-colors"
+                                                        className="flex items-center px-4 py-4 text-[#EDE5D9]/50 hover:text-[#FAF8F6] transition-colors flex-shrink-0"
                                                     >
                                                         <Icon
                                                             icon={showPassword ? "mdi:eye-off" : "mdi:eye"}

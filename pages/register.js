@@ -24,6 +24,7 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
+  const [termsAgreed, setTermsAgreed] = useState(false);
   const [formValidation, setFormValidation] = useState({
     name: false,
     number: false,
@@ -230,7 +231,7 @@ export default function Register() {
     return 'Sangat Kuat';
   };
 
-  const isFormValid = Object.values(formValidation).every(Boolean);
+  const isFormValid = Object.values(formValidation).every(Boolean) && termsAgreed;
 
   return (
     <>
@@ -312,23 +313,37 @@ export default function Register() {
                   </div>
                 </div>
 
-                {/* Stats Card */}
+                {/* Trust Indicators */}
                 <div className="glass-card p-6 rounded-3xl hover-lift">
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="flex items-center justify-center gap-6">
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-[#F45D16] mb-1">10K+</div>
-                      <div className="text-[#EDE5D9]/60 text-xs">Pengguna</div>
+                      <Icon icon="mdi:shield-check" className="w-8 h-8 text-[#F45D16] mx-auto mb-2" />
+                      <p className="text-[#EDE5D9]/60 text-xs">Terverifikasi</p>
                     </div>
-                    <div className="text-center border-x border-white/10">
-                      <div className="text-2xl font-bold text-[#0058BC] mb-1">99.9%</div>
-                      <div className="text-[#EDE5D9]/60 text-xs">Uptime</div>
+                    <div className="text-center border-x border-white/10 px-6">
+                      <Icon icon="mdi:lock-check" className="w-8 h-8 text-[#0058BC] mx-auto mb-2" />
+                      <p className="text-[#EDE5D9]/60 text-xs">Aman</p>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-[#F45D16] mb-1">4.9</div>
-                      <div className="text-[#EDE5D9]/60 text-xs">Rating</div>
+                      <Icon icon="mdi:certificate" className="w-8 h-8 text-[#F45D16] mx-auto mb-2" />
+                      <p className="text-[#EDE5D9]/60 text-xs">Terpercaya</p>
                     </div>
                   </div>
                 </div>
+
+                {/* Privacy & Terms Links */}
+                <div className="glass-card p-6 rounded-3xl hover-lift">
+                  <div className="flex items-center justify-center gap-1 text-xs text-[#EDE5D9]/60">
+                    <Link href="/privacy-policy">
+                      <span className="hover:text-[#F45D16] transition-colors cursor-pointer">Kebijakan Privasi</span>
+                    </Link>
+                    <span>•</span>
+                    <Link href="/terms-and-conditions">
+                      <span className="hover:text-[#F45D16] transition-colors cursor-pointer">Syarat & Ketentuan</span>
+                    </Link>
+                  </div>
+                </div>
+
               </div>
 
               {/* Right Side - Register Form */}
@@ -455,13 +470,13 @@ export default function Register() {
                       </label>
                       <div className="relative group">
                         <div className="input-field-modern">
-                          <div className="px-4 py-4">
+                          <div className="flex items-center px-4 py-4">
                             <Icon icon="mdi:lock-outline" className="text-[#EDE5D9]/50 w-5 h-5" />
                           </div>
                           <input
                             type={showPassword ? "text" : "password"}
                             id="password"
-                            className="flex-1 bg-transparent outline-none px-2 py-4 text-[#FAF8F6] placeholder-[#EDE5D9]/40 text-sm font-medium"
+                            className="flex-1 bg-transparent outline-none px-2 py-4 text-[#FAF8F6] placeholder-[#EDE5D9]/40 text-sm font-medium min-w-0"
                             placeholder="Buat password yang kuat"
                             value={formData.password}
                             onChange={handleChange}
@@ -471,7 +486,7 @@ export default function Register() {
                           <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="px-4 py-4 text-[#EDE5D9]/50 hover:text-[#FAF8F6] transition-colors"
+                            className="flex items-center px-4 py-4 text-[#EDE5D9]/50 hover:text-[#FAF8F6] transition-colors flex-shrink-0"
                           >
                             <Icon 
                               icon={showPassword ? "mdi:eye-off" : "mdi:eye"} 
@@ -577,7 +592,40 @@ export default function Register() {
                             )}
                           </div>
                         </div>
+                        {referralLocked && (
+                          <div className="text-xs text-[#F45D16] flex items-center gap-1 mt-2">
+                            <Icon icon="mdi:information" className="w-4 h-4" />
+                            Kode referral dari link undangan, tidak dapat diubah
+                          </div>
+                        )}
                       </div>
+                    </div>
+
+                    {/* Terms Agreement Checkbox */}
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-4 mt-4">
+                      <label className="flex items-start gap-3 cursor-pointer group">
+                        <input
+                          type="checkbox"
+                          checked={termsAgreed}
+                          onChange={(e) => setTermsAgreed(e.target.checked)}
+                          className="w-5 h-5 rounded border-2 border-white/30 bg-transparent checked:bg-[#F45D16] checked:border-[#F45D16] focus:ring-2 focus:ring-[#F45D16]/50 focus:ring-offset-0 cursor-pointer mt-0.5 flex-shrink-0"
+                        />
+                        <span className="text-xs text-[#EDE5D9]/80 leading-relaxed">
+                          Saya telah membaca dan menyetujui{' '}
+                          <Link href="/privacy-policy">
+                            <span className="text-[#F45D16] hover:text-[#FF6B35] font-semibold cursor-pointer underline">
+                              Kebijakan Privasi
+                            </span>
+                          </Link>
+                          {' '}dan{' '}
+                          <Link href="/terms-and-conditions">
+                            <span className="text-[#F45D16] hover:text-[#FF6B35] font-semibold cursor-pointer underline">
+                              Syarat & Ketentuan
+                            </span>
+                          </Link>
+                          {' '}.
+                        </span>
+                      </label>
                     </div>
 
                     {/* Submit Button */}

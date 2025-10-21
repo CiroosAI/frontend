@@ -199,8 +199,8 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-[#0A0A0A] pb-32 relative overflow-hidden">
       <Head>
-        <title>{applicationData?.name || 'Ciroos AI'} | Dashboard</title>
-        <meta name="description" content={`${applicationData?.name || 'Ciroos AI'} Dashboard`} />
+        <title>{applicationData?.name || 'Ciroos'} | Dashboard</title>
+        <meta name="description" content={`${applicationData?.name || 'Ciroos'} Dashboard`} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 

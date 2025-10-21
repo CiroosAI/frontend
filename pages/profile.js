@@ -581,6 +581,35 @@ export default function Profile() {
           </button>
         </div>
 
+        {/* Legal Links */}
+        <div className="grid grid-cols-2 gap-3 mb-5">
+          <button 
+            onClick={() => router.push('/privacy-policy')}
+            className="bg-white/5 hover:bg-white/10 text-white font-semibold p-4 rounded-2xl transition-all duration-300 border border-white/10 hover:scale-[1.02] active:scale-[0.98] flex items-center gap-3"
+          >
+            <div className="w-10 h-10 bg-[#F45D16]/10 rounded-xl flex items-center justify-center">
+              <Icon icon="mdi:shield-check" className="w-5 h-5 text-[#F45D16]" />
+            </div>
+            <div className="flex-1 text-left">
+              <p className="font-semibold text-sm">Kebijakan</p>
+              <p className="text-xs text-white/60">Privasi</p>
+            </div>
+          </button>
+          
+          <button 
+            onClick={() => router.push('/terms-and-conditions')}
+            className="bg-white/5 hover:bg-white/10 text-white font-semibold p-4 rounded-2xl transition-all duration-300 border border-white/10 hover:scale-[1.02] active:scale-[0.98] flex items-center gap-3"
+          >
+            <div className="w-10 h-10 bg-[#0058BC]/10 rounded-xl flex items-center justify-center">
+              <Icon icon="mdi:file-document" className="w-5 h-5 text-[#0058BC]" />
+            </div>
+            <div className="flex-1 text-left">
+              <p className="font-semibold text-sm">Syarat &</p>
+              <p className="text-xs text-white/60">Ketentuan</p>
+            </div>
+          </button>
+        </div>
+
         {/* Account Status */}
         <div className="relative mb-5">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#F45D16]/30 to-[#0058BC]/30 rounded-2xl blur opacity-50"></div>
