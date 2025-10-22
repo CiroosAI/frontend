@@ -20,8 +20,8 @@ export default function Home() {
     return (
         <>
             <Head>
-                <title>Redirecting...</title>
-                <meta name="description" content="Ciroos AI" />
+                <title>Ciroos - Your Partnert Investment</title>
+                <meta name="description" content="Ciroos - Your Partnert Investment" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
         </>

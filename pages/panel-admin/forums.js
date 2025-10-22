@@ -630,12 +630,23 @@ function ImagePreviewModal() {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4" onClick={() => setOpen(false)}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" onClick={() => setOpen(false)}>
       <div className="relative max-w-full max-h-full" onClick={(e) => e.stopPropagation()}>
-        <button onClick={() => setOpen(false)} className="absolute -top-3 -right-3 bg-gray-900/80 text-white rounded-full p-2 z-50">
-          ✕
+        <button 
+          onClick={() => setOpen(false)} 
+          className="absolute -top-3 -right-3 bg-red-500/80 hover:bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg transition-all z-50"
+          aria-label="Tutup"
+        >
+          <Icon icon="mdi:close" className="w-5 h-5" />
         </button>
-        <Image src={url} alt="Preview" className="max-h-[70vh] max-w-[70vw] rounded-2xl shadow-2xl" />
+        <Image 
+          src={url} 
+          alt="Preview" 
+          unoptimized
+          width={800}
+          height={600}
+          className="max-h-[80vh] max-w-[80vw] rounded-2xl shadow-2xl border-2 border-white/10 object-contain bg-gray-900" 
+        />
       </div>
     </div>
   );
