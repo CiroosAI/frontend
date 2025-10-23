@@ -1,5 +1,5 @@
 /**
- * Utility functions for detecting mobile app environment
+ * Utility functions for detecting mobile app environment and device types
  */
 
 /**
@@ -27,6 +27,33 @@ export const isMobileApp = () => {
 };
 
 /**
+ * Detect if the device is iOS
+ * @returns {boolean} True if iOS device
+ */
+export const isIOS = () => {
+  if (typeof window === 'undefined') return false;
+  return /iPad|iPhone|iPod/.test(navigator.userAgent);
+};
+
+/**
+ * Detect if the device is Android
+ * @returns {boolean} True if Android device
+ */
+export const isAndroid = () => {
+  if (typeof window === 'undefined') return false;
+  return /Android/.test(navigator.userAgent);
+};
+
+/**
+ * Detect if the device is desktop
+ * @returns {boolean} True if desktop device
+ */
+export const isDesktop = () => {
+  if (typeof window === 'undefined') return false;
+  return !isIOS() && !isAndroid();
+};
+
+/**
  * Get mobile app detection info
  * @returns {object} Detection information
  */
@@ -34,6 +61,9 @@ export const getMobileAppInfo = () => {
   if (typeof window === 'undefined') {
     return {
       isMobileApp: false,
+      isIOS: false,
+      isAndroid: false,
+      isDesktop: false,
       userAgent: '',
       referrer: '',
       displayMode: 'browser'
@@ -46,6 +76,9 @@ export const getMobileAppInfo = () => {
   
   return {
     isMobileApp: isMobileApp(),
+    isIOS: isIOS(),
+    isAndroid: isAndroid(),
+    isDesktop: isDesktop(),
     userAgent,
     referrer,
     displayMode,

@@ -5,6 +5,7 @@ import { isMobileApp } from '../utils/mobileAppDetection';
 /**
  * MobileAppStatus Component
  * Shows mobile app status when running in TWA/WebView
+ * Only shows for mobile app users, hidden for browser users
  */
 export default function MobileAppStatus({ applicationData, className = "" }) {
   const [isInMobileApp, setIsInMobileApp] = useState(false);
@@ -14,7 +15,7 @@ export default function MobileAppStatus({ applicationData, className = "" }) {
     setIsInMobileApp(isMobileApp());
   }, []);
 
-  // Don't render if not in mobile app
+  // Jangan tampilkan jika tidak di aplikasi mobile
   if (!isInMobileApp) {
     return null;
   }

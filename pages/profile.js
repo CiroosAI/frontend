@@ -5,6 +5,7 @@ import { Icon } from '@iconify/react';
 import BottomNavbar from '../components/BottomNavbar';
 import AppInstallButton from '../components/AppInstallButton';
 import MobileAppStatus from '../components/MobileAppStatus';
+import AndroidAppLinksTester from '../components/AndroidAppLinksTester';
 import { logoutUser } from '../utils/api';
 import { isMobileApp } from '../utils/mobileAppDetection';
 import Image from 'next/image';
@@ -640,6 +641,9 @@ export default function Profile() {
           .animate-slideUp { animation: slideUp 0.5s ease-out; }
           .animate-shake { animation: shake 0.5s ease-in-out; }
       `}</style>
+      
+      {/* Android App Links Tester - Development Only */}
+      <AndroidAppLinksTester />
     </div>
   );
 }
