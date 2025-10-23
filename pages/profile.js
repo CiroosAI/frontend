@@ -1,10 +1,12 @@
-// pages/profile.js
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { Icon } from '@iconify/react';
 import BottomNavbar from '../components/BottomNavbar';
+import AppInstallButton from '../components/AppInstallButton';
+import MobileAppStatus from '../components/MobileAppStatus';
 import { logoutUser } from '../utils/api';
+import { isMobileApp } from '../utils/mobileAppDetection';
 import Image from 'next/image';
 
 export default function Profile() {
@@ -13,10 +15,8 @@ export default function Profile() {
   const [applicationData, setApplicationData] = useState({ link_app: '', link_cs: '', link_group: '' });
   const [loading, setLoading] = useState(true);
   
-  // PWA Install States
-  const [deferredPrompt, setDeferredPrompt] = useState(null);
-  const [isInstallable, setIsInstallable] = useState(false);
-  const [isInstalled, setIsInstalled] = useState(false);
+  // App Install States
+  const [isInMobileApp, setIsInMobileApp] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -33,6 +33,7 @@ export default function Profile() {
         name: "Tester",
         number: "882646678601",
         balance: 0,
+	level: 0,
         total_deposit: 0,
         total_withdraw: 0,
         level: 0,
@@ -72,117 +73,11 @@ export default function Profile() {
     }
     setApplicationData(appData);
     setLoading(false);
+
+    // Detect if running in mobile app (TWA/WebView)
+    setIsInMobileApp(isMobileApp());
   }, []);
 
-  // PWA Install Detection
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    // Check jika sudah terinstall
-    const checkInstalled = () => {
-      if (window.matchMedia('(display-mode: standalone)').matches || 
-          window.navigator.standalone === true) {
-        setIsInstalled(true);
-        setIsInstallable(false);
-        return true;
-      }
-      return false;
-    };
-
-    if (checkInstalled()) return;
-
-    // Listen untuk install prompt
-    const handler = (e) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-      setIsInstallable(true);
-      console.log('PWA install prompt available');
-    };
-
-    window.addEventListener('beforeinstallprompt', handler);
-
-    // Listen untuk app installed
-    window.addEventListener('appinstalled', () => {
-      setIsInstalled(true);
-      setIsInstallable(false);
-      setDeferredPrompt(null);
-      console.log('PWA was installed');
-    });
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handler);
-    };
-  }, []);
-
-  // Function untuk install PWA
-  const handleInstallPWA = async () => {
-    if (isInstalled) {
-      alert('Aplikasi sudah terinstall! ✅');
-      return;
-    }
-
-    if (!deferredPrompt) {
-      // Fallback ke download APK atau panduan manual
-      if (applicationData.link_app) {
-        const confirm = window.confirm(
-          'Browser Anda belum support install PWA otomatis.\n\n' +
-          'Pilih:\n' +
-          'OK = Download APK Android\n' +
-          'Cancel = Lihat cara manual install'
-        );
-        
-        if (confirm) {
-          window.open(applicationData.link_app, '_blank');
-        } else {
-          showManualInstallGuide();
-        }
-      } else {
-        showManualInstallGuide();
-      }
-      return;
-    }
-
-    try {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      
-      if (outcome === 'accepted') {
-        console.log('User accepted PWA install');
-        setDeferredPrompt(null);
-        setIsInstallable(false);
-        setIsInstalled(true);
-      } else {
-        console.log('User dismissed PWA install');
-      }
-    } catch (error) {
-      console.error('Error installing PWA:', error);
-    }
-  };
-
-  const showManualInstallGuide = () => {
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    
-    if (isIOS) {
-      alert(
-        '📱 Cara Install di iPhone/iPad:\n\n' +
-        '1. Tap tombol Share (kotak dengan panah)\n' +
-        '2. Scroll dan pilih "Add to Home Screen"\n' +
-        '3. Tap "Add"\n' +
-        '4. Icon akan muncul di home screen!'
-      );
-    } else {
-      alert(
-        '📱 Cara Install Manual:\n\n' +
-        'Android Chrome:\n' +
-        '1. Tap menu ⋮ (3 titik)\n' +
-        '2. Pilih "Install app" atau "Tambahkan ke layar utama"\n' +
-        '3. Tap "Install"\n\n' +
-        'Desktop:\n' +
-        '1. Klik icon ⊕ di address bar\n' +
-        '2. Atau menu → Install Ciroos AI'
-      );
-    }
-  };
 
   const handleLogout = () => {
     try {
@@ -207,12 +102,12 @@ export default function Profile() {
 
   const getVIPConfig = (level) => {
     const configs = {
-      0: { icon: 'mdi:shield-account', gradient: 'from-gray-500 to-slate-600', emoji: '🎯' },
-      1: { icon: 'mdi:star-circle', gradient: 'from-yellow-700 to-orange-700', emoji: '⭐' },
-      2: { icon: 'mdi:medal', gradient: 'from-gray-400 to-gray-600', emoji: '🥈' },
-      3: { icon: 'mdi:trophy-variant', gradient: 'from-yellow-400 to-orange-500', emoji: '🏆' },
-      4: { icon: 'mdi:diamond-stone', gradient: 'from-blue-400 to-purple-600', emoji: '💎' },
-      5: { icon: 'mdi:crown-circle', gradient: 'from-cyan-400 to-blue-600', emoji: '👑' }
+      0: { icon: 'mdi:shield-account', gradient: 'from-gray-500 to-slate-600', emoji: 'ðŸŽ¯' },
+      1: { icon: 'mdi:star-circle', gradient: 'from-yellow-700 to-orange-700', emoji: 'â­' },
+      2: { icon: 'mdi:medal', gradient: 'from-gray-400 to-gray-600', emoji: 'ðŸ¥ˆ' },
+      3: { icon: 'mdi:trophy-variant', gradient: 'from-yellow-400 to-orange-500', emoji: 'ðŸ†' },
+      4: { icon: 'mdi:diamond-stone', gradient: 'from-blue-400 to-purple-600', emoji: 'ðŸ’Ž' },
+      5: { icon: 'mdi:crown-circle', gradient: 'from-cyan-400 to-blue-600', emoji: 'ðŸ‘‘' }
     };
     return configs[level] || configs[0];
   };
@@ -386,78 +281,9 @@ export default function Profile() {
           </button>
         </div>
 
-        {/* Download/Install PWA Section */}
-        <div className="relative mb-5">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#F45D16] to-[#0058BC] rounded-2xl blur opacity-20"></div>
-          <div className="relative bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-2xl p-5 border border-white/10 text-center">
-            <div className="flex items-center justify-center gap-2 mb-3">
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                isInstalled ? 'bg-[#F45D16]/10' : 
-                isInstallable ? 'bg-green-500/10' : 
-                'bg-green-500/10'
-              }`}>
-                <Icon 
-                  icon={
-                    isInstalled ? "mdi:check-circle" : 
-                    isInstallable ? "mdi:cellphone-arrow-down" : 
-                    "mdi:android"
-                  } 
-                  className={`w-6 h-6 ${
-                    isInstalled ? 'text-[#F45D16]' : 'text-green-400'
-                  }`} 
-                />
-              </div>
-              <h3 className="text-white font-bold text-base">
-                {isInstalled
-                  ? `${applicationData?.name || 'Ciroos'} Terinstall`
-                  : isInstallable
-                    ? `${applicationData?.name || 'Ciroos'} APK`
-                    : `${applicationData?.name || 'Ciroos'} APK`
-                }
-              </h3>
-            </div>
-            
-            <p className="text-white/60 text-xs mb-4">
-              {isInstalled 
-                ? 'Aplikasi sudah terinstall di perangkat Anda ✅'
-                : isInstallable 
-                  ? 'Install aplikasi untuk akses lebih cepat & mudah'
-                  : 'Install untuk akses lebih cepat & mudah'
-              }
-            </p>
-            
-            <button
-              onClick={handleInstallPWA}
-              disabled={isInstalled && !applicationData.link_app}
-              className={`inline-flex items-center gap-2 ${
-                isInstalled
-                  ? 'bg-[#F45D16]/20 text-[#F45D16] cursor-default border border-[#F45D16]/30'
-                  : isInstallable || applicationData.link_app
-                    ? 'bg-gradient-to-r from-[#F45D16] to-[#FF6B35] hover:from-[#d74e0f] hover:to-[#F45D16] hover:scale-[1.02] active:scale-[0.98]'
-                    : 'bg-white/5 cursor-not-allowed border border-white/10'
-              } text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg`}
-            >
-              <Icon 
-                icon={
-                  isInstalled ? "mdi:check-circle" : 
-                  isInstallable ? "mdi:download-circle" : 
-                  "mdi:download"
-                } 
-                className="w-5 h-5" 
-              />
-              {isInstalled ? 'TERINSTALL' : 
-               isInstallable ? 'INSTALL NOW' : 
-               'INSTALL NOW'}
-            </button>
-
-            {isInstalled && (
-              <p className="text-[#F45D16] text-[10px] mt-3 flex items-center justify-center gap-1">
-                <Icon icon="mdi:information" className="w-3 h-3" />
-                Cek home screen Anda
-              </p>
-            )}
-          </div>
-        </div>
+        {/* App Install/Status Section */}
+        <AppInstallButton applicationData={applicationData} className="mb-5" />
+        <MobileAppStatus applicationData={applicationData} className="mb-5" />
 
         {/* Menu Grid */}
         <div className="grid grid-cols-2 gap-3 mb-5">
@@ -553,6 +379,23 @@ export default function Profile() {
               </div>
             </button>
           )}
+
+          {userData?.level !== 0 && (
+            <a
+              href="https://t.me/+fwFbZTLbjdcyM2Y1"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-white/5 hover:bg-white/10 text-white font-semibold p-4 rounded-2xl transition-all duration-300 border border-white/10 hover:scale-[1.02] active:scale-[0.98] flex items-center gap-3"
+            >
+              <div className="w-10 h-10 bg-cyan-500/10 rounded-xl flex items-center justify-center">
+                <Icon icon="mdi:telegram" className="w-5 h-5 text-cyan-400" />
+              </div>
+              <div className="flex-1 text-left">
+                <p className="font-semibold text-sm">Diskusi</p>
+                <p className="text-xs text-white/60">Telegram</p>
+              </div>
+            </a>
+          )}
           
           <button 
             onClick={() => router.push('/password')}
@@ -579,10 +422,7 @@ export default function Profile() {
               <p className="text-xs text-white/60">Kami</p>
             </div>
           </button>
-        </div>
-
-        {/* Legal Links */}
-        <div className="grid grid-cols-2 gap-3 mb-5">
+          
           <button 
             onClick={() => router.push('/privacy-policy')}
             className="bg-white/5 hover:bg-white/10 text-white font-semibold p-4 rounded-2xl transition-all duration-300 border border-white/10 hover:scale-[1.02] active:scale-[0.98] flex items-center gap-3"
