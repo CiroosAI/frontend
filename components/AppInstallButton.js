@@ -55,12 +55,42 @@ export default function AppInstallButton({ applicationData, className = "" }) {
 
   const openApp = () => {
     if (deviceType.isAndroid) {
-      // Android: Gunakan intent untuk membuka aplikasi
-      const intent = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=ca.ciroos;end`;
-      window.location.href = intent;
+      // Android: Coba buka aplikasi menggunakan intent atau link Play Store
+      if (applicationData?.link_app) {
+        // Coba gunakan intent untuk membuka aplikasi langsung
+        const packageName = extractPackageName(applicationData.link_app);
+        if (packageName) {
+          // Intent untuk membuka aplikasi jika terinstall
+          const intent = `intent://open#Intent;scheme=https;package=${packageName};end`;
+          
+          // Buat iframe tersembunyi untuk mencoba membuka aplikasi
+          const iframe = document.createElement('iframe');
+          iframe.style.display = 'none';
+          iframe.src = intent;
+          document.body.appendChild(iframe);
+          
+          // Hapus iframe setelah beberapa saat
+          setTimeout(() => {
+            document.body.removeChild(iframe);
+          }, 1000);
+          
+          // Jika aplikasi tidak terbuka, arahkan ke Play Store setelah delay
+          setTimeout(() => {
+            // Check if page is still visible (app didn't open)
+            if (!document.hidden) {
+              window.open(applicationData.link_app, '_blank');
+            }
+          }, 1500);
+        } else {
+          // Jika tidak bisa extract package name, langsung buka Play Store
+          window.open(applicationData.link_app, '_blank');
+        }
+      } else {
+        showNoLinkAlert();
+      }
     } else if (deviceType.isIOS) {
       // iOS: Gunakan custom URL scheme atau fallback ke PWA
-      const customScheme = `ciroos://${window.location.pathname}`;
+      const customScheme = `ciroos://open`;
       
       // Try custom scheme first
       const testLink = document.createElement('a');
@@ -72,13 +102,11 @@ export default function AppInstallButton({ applicationData, className = "" }) {
       
       // Fallback setelah timeout
       setTimeout(() => {
-        // Jika tidak bisa buka custom scheme, buka PWA
-        if (window.matchMedia('(display-mode: standalone)').matches) {
-          // Already in PWA, do nothing
-        } else {
+        // Jika tidak bisa buka custom scheme, tampilkan guide
+        if (!document.hidden) {
           showIOSInstallGuide();
         }
-      }, 1000);
+      }, 1500);
     }
   };
 
@@ -105,9 +133,18 @@ export default function AppInstallButton({ applicationData, className = "" }) {
     showNoLinkAlert();
   };
 
+  // Helper function untuk extract package name dari Play Store URL
+  const extractPackageName = (playStoreUrl) => {
+    if (!playStoreUrl) return null;
+    
+    // Format: https://play.google.com/store/apps/details?id=com.example.app
+    const match = playStoreUrl.match(/[?&]id=([^&]+)/);
+    return match ? match[1] : null;
+  };
+
   const showIOSInstallGuide = () => {
     setAlertConfig({
-      title: 'Install Aplikasi di iPhone/iPad',
+      title: 'Install Aplikasi pada Perangkat iOS',
       message: 'Untuk menginstall aplikasi di iPhone/iPad:\n\n1. Tap tombol Share (kotak dengan panah) di bawah\n2. Scroll dan pilih "Add to Home Screen"\n3. Tap "Add"\n4. Icon aplikasi akan muncul di home screen Anda!',
       type: 'info',
       confirmText: 'Mengerti'
@@ -128,7 +165,7 @@ export default function AppInstallButton({ applicationData, className = "" }) {
   const showNoLinkAlert = () => {
     setAlertConfig({
       title: 'Link Download Belum Tersedia',
-      message: 'Link download aplikasi belum tersedia. Silakan hubungi admin untuk informasi lebih lanjut.',
+      message: 'Link download aplikasi belum tersedia. Silakan hubungi layanan bantuan untuk informasi lebih lanjut.',
       type: 'error',
       confirmText: 'OK'
     });
@@ -145,8 +182,8 @@ export default function AppInstallButton({ applicationData, className = "" }) {
     if (isCheckingInstallation) {
       return {
         icon: 'mdi:loading',
-        text: 'MENGECEK...',
-        subtitle: 'Checking installation',
+        text: 'Checking...',
+        subtitle: 'Memeriksa instalasi',
         isLoading: true
       };
     }
@@ -154,8 +191,8 @@ export default function AppInstallButton({ applicationData, className = "" }) {
     if (isAppInstalledState) {
       return {
         icon: 'mdi:open-in-app',
-        text: 'LANJUTKAN DI APLIKASI',
-        subtitle: 'Buka aplikasi Ciroos',
+        text: 'BUKA APLIKASI',
+        subtitle: 'Lanjutkan di aplikasi Ciroos',
         isLoading: false
       };
     }
@@ -163,22 +200,22 @@ export default function AppInstallButton({ applicationData, className = "" }) {
     if (deviceType.isIOS) {
       return {
         icon: 'mdi:apple',
-        text: 'INSTALL PWA',
+        text: 'INSTALL APLIKASI',
         subtitle: 'Add to Home Screen',
         isLoading: false
       };
     } else if (deviceType.isAndroid) {
       return {
-        icon: 'mdi:android',
-        text: 'DOWNLOAD APK',
-        subtitle: 'Play Store',
+        icon: 'ri:google-play-fill',
+        text: 'INSTALL APLIKASI',
+        subtitle: 'Google Play Store',
         isLoading: false
       };
     } else {
       return {
-        icon: 'mdi:cellphone',
-        text: 'INSTALL APP',
-        subtitle: 'Mobile Only',
+        icon: 'mdi:cellphone-download',
+        text: 'INSTALL APLIKASI',
+        subtitle: 'Khusus Mobile',
         isLoading: false
       };
     }
@@ -193,27 +230,27 @@ export default function AppInstallButton({ applicationData, className = "" }) {
         <div className="relative bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-2xl p-5 border border-white/10 text-center">
           <div className="flex items-center justify-center gap-2 mb-3">
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-              isAppInstalledState ? 'bg-green-500/10' : 'bg-green-500/10'
+              isAppInstalledState ? 'bg-green-500/10' : 'bg-[#F45D16]/10'
             }`}>
               <Icon 
                 icon={buttonConfig.icon} 
                 className={`w-6 h-6 ${
-                  isAppInstalledState ? 'text-green-400' : 'text-green-400'
+                  isAppInstalledState ? 'text-green-400' : 'text-[#F45D16]'
                 } ${buttonConfig.isLoading ? 'animate-spin' : ''}`} 
               />
             </div>
             <h3 className="text-white font-bold text-base">
-              {applicationData?.name || 'Ciroos'} {isAppInstalledState ? 'App' : deviceType.isIOS ? 'PWA' : 'APK'}
+              {applicationData?.name || 'Ciroos'} App
             </h3>
           </div>
           
           <p className="text-white/60 text-xs mb-4">
             {isAppInstalledState 
-              ? 'Aplikasi sudah terinstall, lanjutkan menggunakan aplikasi'
+              ? 'Aplikasi sudah terinstall, klik untuk membuka'
               : deviceType.isIOS 
                 ? 'Install aplikasi untuk akses lebih cepat & mudah'
                 : deviceType.isAndroid
-                  ? 'Download aplikasi untuk akses lebih cepat & mudah'
+                  ? 'Download aplikasi resmi dari Play Store'
                   : 'Aplikasi tersedia untuk perangkat mobile'
             }
           </p>
@@ -227,16 +264,26 @@ export default function AppInstallButton({ applicationData, className = "" }) {
                 : 'bg-gradient-to-r from-[#F45D16] to-[#FF6B35] hover:from-[#d74e0f] hover:to-[#F45D16]'
             } hover:scale-[1.02] active:scale-[0.98] text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg ${
               isCheckingInstallation ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
+            } w-full`}
           >
             <Icon icon={buttonConfig.icon} className={`w-5 h-5 ${buttonConfig.isLoading ? 'animate-spin' : ''}`} />
-            {buttonConfig.text}
+            <span className="flex-1">{buttonConfig.text}</span>
           </button>
 
           <p className="text-white/40 text-[10px] mt-3 flex items-center justify-center gap-1">
-            <Icon icon="mdi:information" className="w-3 h-3" />
+            <Icon icon="mdi:information-outline" className="w-3 h-3" />
             {buttonConfig.subtitle}
           </p>
+
+          {/* Additional info for Android users */}
+          {deviceType.isAndroid && !isAppInstalledState && (
+            <div className="mt-4 p-3 bg-white/5 rounded-lg border border-white/10">
+              <p className="text-white/50 text-[10px] leading-relaxed">
+                <Icon icon="mdi:shield-check" className="w-3 h-3 inline mr-1 text-green-400" />
+                Aplikasi resmi & aman dari Google Play Store
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
