@@ -9,6 +9,7 @@ import Toast from '../components/Toast';
 import { Icon } from '@iconify/react';
 import BottomNavbar from '../components/BottomNavbar';
 import Image from 'next/image';
+import AppRedirectButton from '../components/AppRedirectButton';
 
 export default function Dashboard() {
   const router = useRouter();
@@ -262,6 +263,9 @@ export default function Dashboard() {
             </button>
           </div>
         </div>
+
+        {/* App Redirect Button - Only shows if app is installed */}
+        <AppRedirectButton applicationData={applicationData} className="mb-6" />
 
         {/* User Card - New Design */}
         <div className="relative mb-5">

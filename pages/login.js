@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { Icon } from '@iconify/react';
 import { loginUser, getInfo } from '../utils/api';
 import Image from 'next/image';
+import AppRedirectButton from '../components/AppRedirectButton';
 
 export default function Login() {
     const router = useRouter();
@@ -301,6 +302,9 @@ export default function Login() {
                                         <h2 className="text-3xl font-bold text-[#FAF8F6] mb-2">Masuk Akun</h2>
                                         <p className="text-[#EDE5D9]/70 text-sm">Kelola investasi Anda dengan aman</p>
                                     </div>
+
+                                    {/* App Redirect Button - Only shows if app is installed */}
+                                    <AppRedirectButton applicationData={applicationData} className="mb-6" />
 
                                     {/* Notification */}
                                     {notification.message && (
