@@ -1,16 +1,18 @@
 import { useState, useEffect } from 'react';
 import { Icon } from '@iconify/react';
-import { isMobileApp, isIOS, isAndroid, isDesktop } from '../utils/mobileAppDetection';
+import { isMobileApp, isIOS, isAndroid, isDesktop, isAppInstalled } from '../utils/mobileAppDetection';
 import CustomAlert from './CustomAlert';
 
 /**
  * AppInstallButton Component
- * Handles app installation by redirecting to link_app (Play Store) or PWA for iOS
+ * Smart app installation button that detects if app is installed
  * Only shows for browser users, hidden for mobile app users
  */
 export default function AppInstallButton({ applicationData, className = "" }) {
   const [isInMobileApp, setIsInMobileApp] = useState(false);
   const [deviceType, setDeviceType] = useState({ isIOS: false, isAndroid: false, isDesktop: false });
+  const [isAppInstalledState, setIsAppInstalledState] = useState(false);
+  const [isCheckingInstallation, setIsCheckingInstallation] = useState(true);
   const [showAlert, setShowAlert] = useState(false);
   const [alertConfig, setAlertConfig] = useState({});
 
@@ -23,7 +25,62 @@ export default function AppInstallButton({ applicationData, className = "" }) {
       isAndroid: isAndroid(),
       isDesktop: isDesktop()
     });
+
+    // Check if app is installed
+    const checkAppInstallation = async () => {
+      try {
+        const installed = await isAppInstalled();
+        setIsAppInstalledState(installed);
+      } catch (error) {
+        console.log('Error checking app installation:', error);
+        setIsAppInstalledState(false);
+      } finally {
+        setIsCheckingInstallation(false);
+      }
+    };
+
+    checkAppInstallation();
   }, []);
+
+  const handleAppAction = () => {
+    // Jika sudah terinstall, buka aplikasi
+    if (isAppInstalledState) {
+      openApp();
+      return;
+    }
+
+    // Jika belum terinstall, install aplikasi
+    handleInstallApp();
+  };
+
+  const openApp = () => {
+    if (deviceType.isAndroid) {
+      // Android: Gunakan intent untuk membuka aplikasi
+      const intent = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=https;package=ca.ciroos;end`;
+      window.location.href = intent;
+    } else if (deviceType.isIOS) {
+      // iOS: Gunakan custom URL scheme atau fallback ke PWA
+      const customScheme = `ciroos://${window.location.pathname}`;
+      
+      // Try custom scheme first
+      const testLink = document.createElement('a');
+      testLink.href = customScheme;
+      testLink.style.display = 'none';
+      document.body.appendChild(testLink);
+      testLink.click();
+      document.body.removeChild(testLink);
+      
+      // Fallback setelah timeout
+      setTimeout(() => {
+        // Jika tidak bisa buka custom scheme, buka PWA
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+          // Already in PWA, do nothing
+        } else {
+          showIOSInstallGuide();
+        }
+      }, 1000);
+    }
+  };
 
   const handleInstallApp = () => {
     // Jika Android dan ada link_app, redirect ke Play Store
@@ -83,25 +140,46 @@ export default function AppInstallButton({ applicationData, className = "" }) {
     return null;
   }
 
-  // Tentukan icon dan text berdasarkan device
+  // Tentukan icon dan text berdasarkan status
   const getButtonConfig = () => {
+    if (isCheckingInstallation) {
+      return {
+        icon: 'mdi:loading',
+        text: 'MENGECEK...',
+        subtitle: 'Checking installation',
+        isLoading: true
+      };
+    }
+
+    if (isAppInstalledState) {
+      return {
+        icon: 'mdi:open-in-app',
+        text: 'LANJUTKAN DI APLIKASI',
+        subtitle: 'Buka aplikasi Ciroos',
+        isLoading: false
+      };
+    }
+
     if (deviceType.isIOS) {
       return {
         icon: 'mdi:apple',
         text: 'INSTALL PWA',
-        subtitle: 'Add to Home Screen'
+        subtitle: 'Add to Home Screen',
+        isLoading: false
       };
     } else if (deviceType.isAndroid) {
       return {
         icon: 'mdi:android',
         text: 'DOWNLOAD APK',
-        subtitle: 'Play Store'
+        subtitle: 'Play Store',
+        isLoading: false
       };
     } else {
       return {
         icon: 'mdi:cellphone',
         text: 'INSTALL APP',
-        subtitle: 'Mobile Only'
+        subtitle: 'Mobile Only',
+        isLoading: false
       };
     }
   };
@@ -114,31 +192,44 @@ export default function AppInstallButton({ applicationData, className = "" }) {
         <div className="absolute -inset-0.5 bg-gradient-to-r from-[#F45D16] to-[#0058BC] rounded-2xl blur opacity-20"></div>
         <div className="relative bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-2xl p-5 border border-white/10 text-center">
           <div className="flex items-center justify-center gap-2 mb-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-green-500/10">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+              isAppInstalledState ? 'bg-green-500/10' : 'bg-green-500/10'
+            }`}>
               <Icon 
                 icon={buttonConfig.icon} 
-                className="w-6 h-6 text-green-400" 
+                className={`w-6 h-6 ${
+                  isAppInstalledState ? 'text-green-400' : 'text-green-400'
+                } ${buttonConfig.isLoading ? 'animate-spin' : ''}`} 
               />
             </div>
             <h3 className="text-white font-bold text-base">
-              {applicationData?.name || 'Ciroos'} {deviceType.isIOS ? 'PWA' : 'APK'}
+              {applicationData?.name || 'Ciroos'} {isAppInstalledState ? 'App' : deviceType.isIOS ? 'PWA' : 'APK'}
             </h3>
           </div>
           
           <p className="text-white/60 text-xs mb-4">
-            {deviceType.isIOS 
-              ? 'Install aplikasi untuk akses lebih cepat & mudah'
-              : deviceType.isAndroid
-                ? 'Download aplikasi untuk akses lebih cepat & mudah'
-                : 'Aplikasi tersedia untuk perangkat mobile'
+            {isAppInstalledState 
+              ? 'Aplikasi sudah terinstall, lanjutkan menggunakan aplikasi'
+              : deviceType.isIOS 
+                ? 'Install aplikasi untuk akses lebih cepat & mudah'
+                : deviceType.isAndroid
+                  ? 'Download aplikasi untuk akses lebih cepat & mudah'
+                  : 'Aplikasi tersedia untuk perangkat mobile'
             }
           </p>
           
           <button
-            onClick={handleInstallApp}
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-[#F45D16] to-[#FF6B35] hover:from-[#d74e0f] hover:to-[#F45D16] hover:scale-[1.02] active:scale-[0.98] text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg"
+            onClick={handleAppAction}
+            disabled={isCheckingInstallation}
+            className={`inline-flex items-center gap-2 ${
+              isAppInstalledState
+                ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+                : 'bg-gradient-to-r from-[#F45D16] to-[#FF6B35] hover:from-[#d74e0f] hover:to-[#F45D16]'
+            } hover:scale-[1.02] active:scale-[0.98] text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg ${
+              isCheckingInstallation ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           >
-            <Icon icon="mdi:download" className="w-5 h-5" />
+            <Icon icon={buttonConfig.icon} className={`w-5 h-5 ${buttonConfig.isLoading ? 'animate-spin' : ''}`} />
             {buttonConfig.text}
           </button>
 

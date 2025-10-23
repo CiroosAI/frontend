@@ -4,7 +4,7 @@
 
 Website telah diperbarui untuk **menghapus PWA sepenuhnya** dan hanya menggunakan `applicationData.link_app` untuk redirect ke Play Store. Tampilan download hanya muncul di browser, dan dihilangkan untuk pengguna yang sudah menggunakan aplikasi mobile (TWA/WebView).
 
-**Update Terbaru**: Menambahkan deteksi iOS untuk PWA dan custom alert yang sesuai dengan desain website.
+**Update Terbaru**: Menambahkan deteksi iOS untuk PWA, custom alert yang sesuai dengan desain website, dan **smart detection untuk aplikasi terinstall**.
 
 ## Perubahan Utama
 
@@ -16,9 +16,9 @@ Website telah diperbarui untuk **menghapus PWA sepenuhnya** dan hanya menggunaka
 - **File**: `public/manifest.json`
 - **Perubahan**: File dihapus karena tidak diperlukan lagi
 
-### 2. Deteksi Mobile App & Device Type
+### 2. Deteksi Mobile App & Device Type & App Installation
 - **File**: `utils/mobileAppDetection.js`
-- **Fungsi**: Utility untuk mendeteksi device type dan mobile app environment
+- **Fungsi**: Utility untuk mendeteksi device type, mobile app environment, dan aplikasi terinstall
 - **Deteksi**: 
   - WebView indicators (`wv` dalam user agent)
   - Chrome WebView patterns
@@ -26,6 +26,7 @@ Website telah diperbarui untuk **menghapus PWA sepenuhnya** dan hanya menggunaka
   - Custom app user agents
   - App referrer patterns
   - **Device Type**: iOS, Android, Desktop
+  - **App Installation**: Android intent detection, iOS PWA detection
 
 ### 3. Komponen Baru
 
@@ -39,6 +40,10 @@ Website telah diperbarui untuk **menghapus PWA sepenuhnya** dan hanya menggunaka
 #### AppInstallButton (`components/AppInstallButton.js`)
 - **Hanya untuk pengguna browser** - tidak ditampilkan jika di aplikasi mobile
 - **Smart detection**: iOS → PWA, Android → Play Store, Desktop → Alert
+- **App Installation Detection**: Otomatis deteksi apakah aplikasi sudah terinstall
+- **Dynamic Button**: 
+  - Jika belum terinstall → "DOWNLOAD APK" / "INSTALL PWA"
+  - Jika sudah terinstall → "LANJUTKAN DI APLIKASI"
 - **Custom alerts** untuk setiap device type
 - **Tidak ada PWA logic** - semua logika PWA dihapus
 - **Syarat tampil**: Tidak di aplikasi mobile
@@ -61,15 +66,25 @@ Website telah diperbarui untuk **menghapus PWA sepenuhnya** dan hanya menggunaka
 
 #### Android Browser
 1. Sistem mendeteksi Android device
-2. **Jika ada `applicationData.link_app`**: Menampilkan tombol "DOWNLOAD APK"
-3. Ketika tombol diklik: **Redirect langsung ke Play Store**
-4. **Jika tidak ada `link_app`**: Menampilkan custom alert error
+2. **Otomatis cek apakah aplikasi sudah terinstall**
+3. **Jika belum terinstall**:
+   - **Jika ada `applicationData.link_app`**: Menampilkan tombol "DOWNLOAD APK"
+   - Ketika tombol diklik: **Redirect langsung ke Play Store**
+   - **Jika tidak ada `link_app`**: Menampilkan custom alert error
+4. **Jika sudah terinstall**:
+   - Menampilkan tombol "LANJUTKAN DI APLIKASI"
+   - Ketika tombol diklik: **Buka aplikasi langsung**
 
 #### iOS Browser (Safari)
 1. Sistem mendeteksi iOS device
-2. Menampilkan tombol "INSTALL PWA"
-3. Ketika tombol diklik: **Menampilkan custom alert dengan panduan PWA**
-4. Panduan: "Add to Home Screen" di Safari
+2. **Otomatis cek apakah PWA sudah terinstall**
+3. **Jika belum terinstall**:
+   - Menampilkan tombol "INSTALL PWA"
+   - Ketika tombol diklik: **Menampilkan custom alert dengan panduan PWA**
+   - Panduan: "Add to Home Screen" di Safari
+4. **Jika sudah terinstall**:
+   - Menampilkan tombol "LANJUTKAN DI APLIKASI"
+   - Ketika tombol diklik: **Buka PWA langsung**
 
 #### Desktop Browser
 1. Sistem mendeteksi desktop device
@@ -96,6 +111,8 @@ Admin dapat mengatur `link_app` melalui:
 1. **Pengalaman Pengguna Lebih Baik**: 
    - Pengguna aplikasi mobile tidak melihat tombol download yang tidak relevan
    - Pengguna browser mendapat panduan yang sesuai dengan device mereka
+   - **Smart detection**: Otomatis deteksi aplikasi terinstall
+   - **Dynamic button**: Tombol berubah sesuai status aplikasi
    - Custom alert yang sesuai dengan desain website
 
 2. **Kode Lebih Sederhana**: 
@@ -106,7 +123,7 @@ Admin dapat mengatur `link_app` melalui:
 3. **Deteksi Otomatis**: 
    - Tidak perlu konfigurasi manual untuk deteksi aplikasi
    - Komponen otomatis menampilkan/menyembunyikan diri
-   - Smart detection berdasarkan device type
+   - Smart detection berdasarkan device type dan app installation
 
 4. **Maintainable**: 
    - Pemisahan logika ke komponen terpisah
@@ -117,15 +134,23 @@ Admin dapat mengatur `link_app` melalui:
 
 ### Android Browser
 - Buka website di browser Android
-- **Jika ada `link_app`**: Harus menampilkan tombol "DOWNLOAD APK"
-- **Jika tidak ada `link_app`**: Menampilkan custom alert error
-- Klik tombol → Redirect ke Play Store
+- **Jika belum terinstall**:
+  - **Jika ada `link_app`**: Harus menampilkan tombol "DOWNLOAD APK"
+  - **Jika tidak ada `link_app`**: Menampilkan custom alert error
+  - Klik tombol → Redirect ke Play Store
+- **Jika sudah terinstall**:
+  - Harus menampilkan tombol "LANJUTKAN DI APLIKASI"
+  - Klik tombol → Buka aplikasi langsung
 
 ### iOS Browser (Safari)
 - Buka website di Safari iOS
-- Harus menampilkan tombol "INSTALL PWA"
-- Klik tombol → Menampilkan custom alert dengan panduan PWA
-- Panduan: "Add to Home Screen"
+- **Jika belum terinstall**:
+  - Harus menampilkan tombol "INSTALL PWA"
+  - Klik tombol → Menampilkan custom alert dengan panduan PWA
+  - Panduan: "Add to Home Screen"
+- **Jika sudah terinstall**:
+  - Harus menampilkan tombol "LANJUTKAN DI APLIKASI"
+  - Klik tombol → Buka PWA langsung
 
 ### Desktop Browser
 - Buka website di browser desktop
@@ -152,9 +177,9 @@ Admin dapat mengatur `link_app` melalui:
 
 ## File Baru
 
-1. `utils/mobileAppDetection.js` - Utility deteksi mobile app & device type
+1. `utils/mobileAppDetection.js` - Utility deteksi mobile app, device type & app installation
 2. `components/CustomAlert.js` - Custom alert modal
-3. `components/AppInstallButton.js` - Komponen tombol download (browser only)
+3. `components/AppInstallButton.js` - Komponen tombol download (browser only) dengan smart detection
 4. `components/MobileAppStatus.js` - Komponen status aplikasi mobile (app only)
 
 ## Catatan Penting
@@ -164,6 +189,8 @@ Admin dapat mengatur `link_app` melalui:
 - **iOS**: Menggunakan PWA dengan panduan manual "Add to Home Screen"
 - **Desktop**: Custom alert bahwa install hanya untuk mobile
 - **Tampilan download hanya di browser** - dihilangkan untuk pengguna aplikasi mobile
+- **Smart detection**: Otomatis deteksi aplikasi terinstall
+- **Dynamic button**: Tombol berubah sesuai status aplikasi
 - **Custom alert** - tidak menggunakan alert() bawaan browser
 - Pastikan `applicationData.link_app` sudah dikonfigurasi di admin panel untuk Android
 - Deteksi mobile app bekerja berdasarkan user agent dan display mode
@@ -181,4 +208,6 @@ Admin dapat mengatur `link_app` melalui:
 | Alert | alert() browser | **Custom alert sesuai desain** |
 | Tampilan di App | Ada tombol download | **Dihilangkan** |
 | Device Detection | Basic | **Smart detection (iOS/Android/Desktop)** |
+| App Installation Detection | Tidak ada | **Otomatis deteksi aplikasi terinstall** |
+| Button Text | Static | **Dynamic berdasarkan status aplikasi** |
 | Kompleksitas | Tinggi | **Sederhana** |
