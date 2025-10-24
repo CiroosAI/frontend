@@ -22,6 +22,45 @@ const Withdraw = () => {
   const [maxWithdraw, setMaxWithdraw] = useState(5000000);
   const [fee, setFee] = useState(10);
   const [applicationData, setApplicationData] = useState(null);
+  const [isWithdrawalAvailable, setIsWithdrawalAvailable] = useState(false);
+  const [withdrawalMessage, setWithdrawalMessage] = useState('');
+
+  // Check if withdrawal is available (Monday-Saturday, 12:00-17:00 WIB)
+  const checkWithdrawalAvailability = () => {
+    const now = new Date();
+
+    // Get WIB time (UTC+7)
+    const wibTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Jakarta' }));
+    const day = wibTime.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+    const hours = wibTime.getHours();
+
+    // Check if it's Sunday (day 0)
+    if (day === 0) {
+      setIsWithdrawalAvailable(false);
+      setWithdrawalMessage('Penarikan hanya dapat dilakukan pada hari kerja');
+      return false;
+    }
+
+    // Check if it's within working hours (12:00 - 17:00)
+    if (hours < 12 || hours >= 17) {
+      setIsWithdrawalAvailable(false);
+      setWithdrawalMessage('Penarikan hanya dapat dilakukan pada jam kerja');
+      return false;
+    }
+
+    // Available
+    setIsWithdrawalAvailable(true);
+    setWithdrawalMessage('');
+    return true;
+  };
+
+  useEffect(() => {
+    // Check availability on mount and every minute
+    checkWithdrawalAvailability();
+    const interval = setInterval(checkWithdrawalAvailability, 60000); // Check every minute
+
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') : null;
@@ -312,6 +351,20 @@ const Withdraw = () => {
             </div>
 
             <form onSubmit={handleWithdraw} className="space-y-6">
+              {/* Withdrawal Not Available Warning */}
+              {!isWithdrawalAvailable && withdrawalMessage && (
+                <div className="relative animate-fadeIn">
+                  <div className="absolute -inset-0.5 bg-yellow-500/50 rounded-2xl blur"></div>
+                  <div className="relative bg-yellow-500/10 border border-yellow-400/30 rounded-2xl p-4 flex items-start gap-3">
+                    <Icon icon="mdi:clock-alert-outline" className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-yellow-300 text-sm font-semibold mb-1">{withdrawalMessage}</p>
+                      <p className="text-yellow-200/80 text-xs">Penarikan dana tersedia Senin-Sabtu pukul 12:00 - 17:00 WIB</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Error/Success Message */}
               {errorMsg && (
                 <div className="relative animate-shake">
@@ -372,13 +425,18 @@ const Withdraw = () => {
               {/* Confirmation Button */}
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || !isWithdrawalAvailable}
                 className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-4 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-green-500/25 hover:scale-[1.02] flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
               >
                 {loading ? (
                   <div className="flex items-center gap-3">
                     <div className="animate-spin rounded-full h-5 w-5 border-2 border-white/30 border-t-white"></div>
                     <span>Memproses...</span>
+                  </div>
+                ) : !isWithdrawalAvailable ? (
+                  <div className="flex items-center gap-3">
+                    <Icon icon="mdi:lock-clock" className="w-5 h-5" />
+                    <span>Penarikan Tidak Tersedia</span>
                   </div>
                 ) : (
                   <div className="flex items-center gap-3">
@@ -399,9 +457,10 @@ const Withdraw = () => {
                 {[
                   { icon: "mdi:cash-multiple", text: `Penarikan dana min sebesar Rp ${formatCurrency(minWithdraw)}` },
                   { icon: "mdi:cash-minus", text: `Penarikan memakan biaya ${fee}% yang dipotong langsung dari jumlah penarikan` },
-                  { icon: "mdi:clock-outline", text: "Penarikan dana akan tersedia setiap hari Senin hingga Sabtu pada pukul 12.00 - 17.00 WIB" },
                   { icon: "mdi:wallet-outline", text: "Pengguna dapat menarik seluruh saldo tersedia tanpa syarat apapun" },
-                  { icon: "mdi:lightning-bolt", text: "Penarikan akan diproses sangat instan dalam 1-30 Menit" }
+                  { icon: "mdi:calendar-clock", text: "Pengguna hanya dapat melakukan penarikan 1x per hari" },
+                  { icon: "mdi:clock-outline", text: "Penarikan dana akan terbuka setiap hari Senin hingga Sabtu pada pukul 12.00 - 17.00 WIB" },
+                  { icon: "mdi:lightning-bolt", text: "Seluruh Penarikan akan diproses dengan sistem batch secara otomatis pada pukul 17:00 - 19:00 WIB" }
                 ].map((item, index) => (
                   <div key={index} className="flex items-start gap-3">
                     <Icon icon={item.icon} className="text-blue-300 w-4 h-4 mt-0.5 flex-shrink-0" />
